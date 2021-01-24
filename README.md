@@ -12,4 +12,4 @@ You need to create a new `conda` environment with all the essential `python` pac
 - `conda env create -f env.yml`
 
 # Run unittests
-Use the above command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
+Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
