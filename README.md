@@ -1,5 +1,5 @@
 # My Drone Twin
-:helicopter: :walking: :running:
+:walking:   :helicopter:   :running:
 
 # Prep
 The project is mainly built with `python=3.7` version on Windows 10 OS.
