@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="human_pose_estimation",
+    name="my_drone_twin",
     version="0.0.1",
     description="3D Human pose estimation and extract biomechanics info",
     url="",
