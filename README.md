@@ -10,3 +10,6 @@ To install `miniconda` you can follow [the instructions of official website](htt
 # Conda environment
 You need to create a new `conda` environment with all the essential `python` packages installed. You can create this environment from the provided `env.yml` file in this repository in the following way:
 - `conda env create -f env.yml`
+
+# Run unittests
+Use the above command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
