@@ -9,7 +9,12 @@ setup(
     author_email="",
     license="Creative Commons Zero v1.0 Universal",
     packages=[
+        "biomechanics",
+        "pose_estimation"      
     ],
-    install_requires=["pandas", "numpy", "pyrealsense2"],
+    install_requires=[
+        "pandas", 
+        "numpy", 
+        "pyrealsense2"],
     zip_safe=False,
 )
