@@ -10,7 +10,7 @@ class TestAngularKinematics(TestCase):
         knee = [1.22, 0.51]
         ankle = [1.09, 0.09]
         theta = ang.calculate_abs_angle(knee, ankle)
-        self.assertEqual(72.8, theta)
+        self.assertEqual(72.80145877993417, theta)
 
     def test_calculate_rel_angle(self):
         ang = angular_kinematics()
@@ -18,7 +18,7 @@ class TestAngularKinematics(TestCase):
         knee = [1.22, 0.51]
         ankle = [1.09, 0.09]
         theta = ang.calculate_rel_angle(hip, knee, ankle)
-        self.assertEqual(147.379, theta)
+        self.assertEqual(147.37929746119542, theta)
 
 
 class TestLinearKinematics(TestCase):
@@ -40,4 +40,4 @@ class TestEnergy(TestCase):
         en = energy()
         v = 40.2
         e = en.energy_expenditure(v)
-        self.assertEqual(0.934, e)
+        self.assertEqual(0.9344530348258706, e)
