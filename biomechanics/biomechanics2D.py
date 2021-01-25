@@ -177,7 +177,7 @@ class LinearKinematics:
             acc_x.append(x)
             acc_y.append(y)
 
-        return acc_x, acc_y
+        return time, acc_x, acc_y
 
 
 class Energy:

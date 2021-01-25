@@ -33,6 +33,21 @@ class TestLinearKinematics(TestCase):
         vel_df_T = vel_df_T.rename(columns={0: 'time', 1: 'velocity_x', 2: 'velocity_y'})
         self.assertEqual(vel_df_T.at[0, 'time'], 0.0167)
         self.assertEqual(vel_df_T.at[2, 'velocity_y'], 2.395209580838323)
+    
+    def test_calculate_acceleration(self):
+        k = linear_kinematics()
+        data = [[0.0000, 0.00, 0.00], [0.0167, 0.10, 0.15], [0.0334, 0.12, 0.22], [0.0501, 0.15, 0.27], [0.0668, 0.15, 0.30], [0.0835, 0.18, 0.20]]
+        df = pd.DataFrame(data, columns = ['time', 'joint_x', 'joint_y'])
+        vel = k.calculate_velocity(df)
+        vel_df = pd.DataFrame(data = vel)
+        vel_df_T = vel_df.T
+        vel_df_T = vel_df_T.rename(columns={0: 'time', 1: 'velocity_x', 2: 'velocity_y'})
+        acc = k.calculate_acceleration(vel_df_T)
+        acc_df = pd.DataFrame(data = acc)
+        acc_df_T = acc_df.T
+        acc_df_T = acc_df_T.rename(columns={0: 'time', 1: 'acceleration_x', 2: 'acceleration_y'})
+        self.assertEqual(acc_df_T.at[0, 'time'], 0.0334)
+        self.assertEqual(acc_df_T.at[1, 'acceleration_x'], -17.928215425436555)
 
 class TestEnergy(TestCase):
     def test_energy_expenditure(self):
