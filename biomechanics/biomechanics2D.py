@@ -127,7 +127,8 @@ class LinearKinematics:
         if data.shape[1] != 3:
             print("DataFrame should have three columns.")
             return 1
-
+        
+        time = []
         vel_x = []
         vel_y = []
 
@@ -138,10 +139,11 @@ class LinearKinematics:
             y = (data.at[i + 1, "joint_y"] - data.at[i - 1, "joint_y"]) / (
                 data.at[i + 1, "time"] - data.at[i - 1, "time"]
             )
+            time.append(data.at[i, "time"])
             vel_x.append(x)
             vel_y.append(y)
 
-        return vel_x, vel_y
+        return time, vel_x, vel_y
 
     """
     Description: [text]:
@@ -159,7 +161,8 @@ class LinearKinematics:
         if data.shape[1] != 3:
             print("DataFrame should have three columns.")
             return 1
-
+        
+        time = []
         acc_x = []
         acc_y = []
 
@@ -170,6 +173,7 @@ class LinearKinematics:
             y = (data.at[i + 1, "velocity_y"] - data.at[i - 1, "velocity_y"]) / (
                 data.at[i + 1, "time"] - data.at[i - 1, "time"]
             )
+            time.append(data.at[i, "time"])
             acc_x.append(x)
             acc_y.append(y)
 
@@ -192,4 +196,3 @@ class Energy:
     def energy_expenditure(self, velocity):
         e = 29 / velocity + 0.0053 * velocity
         return e
-
