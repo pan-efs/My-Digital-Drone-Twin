@@ -25,4 +25,4 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 `python.pythonPath` may not be the same. Look your directory.
 
 # Run unittests
-Use the above command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
+Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
