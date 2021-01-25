@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "C:\\Users\\user\\miniconda3\\envs\\thesis\\python.exe",
+    "python.linting.pylintArgs": ["--generate-members"],
+}
