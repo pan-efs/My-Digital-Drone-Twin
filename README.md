@@ -1,7 +1,7 @@
 # My Digital Drone Twin
 :walking:   :helicopter:   :running:
 
-<img src="https://www.kth.se/en/api/2.61673/what:job/jobID:339294/where:4/" width = "300" height = "300">
+![kth logo](https://www.findaphd.com/common/institutions/logos/Institutions/PID208.gif)
 
 # Prep
 The project is mainly built with `python=3.7` version on Windows 10 OS.
