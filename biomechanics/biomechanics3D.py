@@ -13,7 +13,7 @@ class LinearKinematics:
 
     "Parameters: [dataframe]: [time, joint_x, joint_y, joint_z]"
 
-    "Returns: [tuple]: [speed],  [units]: m/s"
+    "Returns: [list]: [speed],  [units]: m/s"
 
     def calculate_speed(self, data):
 
