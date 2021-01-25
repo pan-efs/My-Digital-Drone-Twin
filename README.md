@@ -1,7 +1,7 @@
 # My Digital Drone Twin
 :walking:   :helicopter:   :running:
 
-<img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/KTH_Royal_Institute_of_Technology_logo.svg/1200px-KTH_Royal_Institute_of_Technology_logo.svg.png" width = "100" height = "100">
+<img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/KTH_Royal_Institute_of_Technology_logo.svg/1200px-KTH_Royal_Institute_of_Technology_logo.svg.png" width = "640" height = "250">
 
 # Prep
 The project is mainly built with `python=3.7` version on Windows 10 OS.
