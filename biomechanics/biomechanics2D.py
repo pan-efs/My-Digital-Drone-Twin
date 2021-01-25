@@ -13,7 +13,7 @@ class AngularKinematics:
 
     "Parameters: [joints]: proximal(x1,y1), distal(x2,y2)"
 
-    "Returns: [type]: [angle in degrees]"
+    "Returns: [float]: [angle in degrees]"
 
     def calculate_abs_angle(self, proximal, distal):
         y = proximal[1] - distal[1]
@@ -39,7 +39,7 @@ class AngularKinematics:
     """
     "Parameters: [joints]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
 
-    "Returns: [type]: [angle in degrees]"
+    "Returns: [float]: [angle in degrees]"
 
     def calculate_rel_angle(self, proximal, centre, distal):
         a = math.sqrt(
@@ -71,7 +71,7 @@ class AngularKinematics:
     """
     "Parameters: [absolute angles]: absolute_angle_thigh, absolute_angle_trunk"
 
-    "Returns: [type]: [angle in degrees]"
+    "Returns: [float]: [angle in degrees]"
 
     def calculate_hip_angle(self, abs_thigh, abs_trunk):
         theta = abs_thigh - abs_trunk
@@ -86,7 +86,7 @@ class AngularKinematics:
     """
     "Parameters: [absolute angles]: absolute_angle_thigh, absolute_angle_leg"
 
-    "Returns: [type]: [angle in degrees]"
+    "Returns: [float]: [angle in degrees]"
 
     def calculate_knee_angle(self, abs_thigh, abs_leg):
         theta = abs_thigh - abs_leg
@@ -101,7 +101,7 @@ class AngularKinematics:
     """
     "Parameters: [absolute angles]: absolute_angle_leg, absolute_angle_foot"
 
-    "Returns: [type]: [angle in degrees]"
+    "Returns: [float]: [angle in degrees]"
 
     def calculate_ankle_angle(self, abs_leg, abs_foot):
         theta = abs_leg - abs_foot + 90
