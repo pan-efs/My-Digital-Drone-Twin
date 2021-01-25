@@ -19,12 +19,14 @@ You can follow the install instructions related to `Cubemos Skeleton Tracking` f
 
 Add `.vscode` folder and create a `settings.json` file. Import the below code block:
 
-```{
+```
+{
 
     "python.pythonPath": "C:\\Users\\user\\miniconda3\\envs\\thesis\\python.exe",
     "python.linting.pylintArgs": ["--generate-members"],
-    
-}```
+
+}
+```
 
 `python.pythonPath` may not be the same. Look your directory.
 
