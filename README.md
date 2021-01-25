@@ -1,6 +1,8 @@
 # My Digital Drone Twin
 :walking:   :helicopter:   :running:
 
+![kth photo logo](https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/KTH_Royal_Institute_of_Technology_logo.svg/1200px-KTH_Royal_Institute_of_Technology_logo.svg.png)
+
 # Prep
 The project is mainly built with `python=3.7` version on Windows 10 OS.
 
