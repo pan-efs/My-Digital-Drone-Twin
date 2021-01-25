@@ -10,4 +10,4 @@ class TestLinearKinematics(TestCase):
         df = pd.DataFrame(data = data, columns=['time', 'joint_x', 'joint_y', 'joint_z'])
         speed = k.calculate_speed(df)
         self.assertEqual([11.250475585662238, 5.942944084215331], speed)
-    
+        
