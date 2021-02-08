@@ -92,6 +92,9 @@ dependencies:
   - pip:
     - coverage==5.3.1
     - cubemos-skeletontracking==3.0.0
+    - my-digital-drone-twin==0.0.1
     - opencv-python==4.1.2.30
     - pykalman==0.9.5
     - pyrealsense2==2.41.0.2666
+    - sockets==1.0.0
+    - tqdm==4.56.0
