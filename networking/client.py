@@ -3,20 +3,26 @@ import os
 import tqdm
 
 class Client:
+    
+    def __init__(self):
+        self.host = "127.0.0.1"
+        self.port = 5001
+        self.buffer_size = 4096
+    
     def client(self, filename: str):
+        BUFFER_SIZE = self.buffer_size
         SEPARATOR = "<SEPARATOR>"
-        BUFFER_SIZE = 4096
 
         s = socket.socket()
-        host = "127.0.0.1"
-        port = 5001
+        SERVER_HOST = self.host
+        SERVER_PORT = self.port
 
         "Take one file as example from logs directory"
 
         filesize = os.path.getsize(filename)
 
-        print(f"[+] Connecting to {host}:{port}")
-        s.connect((host, port))
+        print(f"[+] Connecting to {SERVER_HOST}:{SERVER_PORT}")
+        s.connect((SERVER_HOST, SERVER_PORT))
         print("[+] Connected.")
 
         s.send(f"{filename}{SEPARATOR}{filesize}".encode())
