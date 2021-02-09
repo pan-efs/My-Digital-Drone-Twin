@@ -4,7 +4,6 @@ from biomechanics.biomechanics2D import AngularKinematics as angular_kinematics
 from biomechanics.biomechanics2D import LinearKinematics as linear_kinematics
 from biomechanics.biomechanics2D import Energy as energy
 
-
 class TestAngularKinematics(TestCase):
     def test_calculate_abs_angle(self):
         ang = angular_kinematics()
