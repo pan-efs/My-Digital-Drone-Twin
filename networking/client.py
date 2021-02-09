@@ -47,4 +47,5 @@ class Client:
         
 "Call client function of Client class as example"
 client = Client()
+
 client.client('C:/Users/user/Desktop/KTH/Master Thesis/Logs cpp/position_X.txt')
