@@ -1,6 +1,7 @@
 import socket
 import os
 import tqdm
+import sys
 
 class Server:
     
@@ -18,14 +19,34 @@ class Server:
         SERVER_HOST = self.host
         SERVER_PORT = self.port
 
-        s.bind((SERVER_HOST, SERVER_PORT))
-        s.listen(self.listening)
+        try:
+            s.bind((SERVER_HOST, SERVER_PORT))
+        except OSError:
+            print('Error binding.')
+            sys.exit(1)
+        
+        try:
+            s.listen(self.listening)
+        except OSError:
+            print('Error listeing.')
+            sys.exit(1)    
+            
         print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
-
-        c, addr = s.accept()
+        
+        try:
+            c, addr = s.accept()
+        except OSError:
+            print('Error accepting.')
+            sys.exit(1)
+        
         print(f"[+] {addr} is connected.")
-
-        received = c.recv(BUFFER_SIZE).decode()
+        
+        try:
+            received = c.recv(BUFFER_SIZE).decode()
+        except OSError:
+            print('Error receiving data.')
+            sys.exit(1)
+        
         filename, filesize = received.split(SEPARATOR)
 
         filename = os.path.basename(filename)

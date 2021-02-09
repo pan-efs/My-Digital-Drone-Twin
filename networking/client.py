@@ -1,6 +1,7 @@
 import socket
 import os
 import tqdm
+import sys
 
 class Client:
     
@@ -22,7 +23,13 @@ class Client:
         filesize = os.path.getsize(filename)
 
         print(f"[+] Connecting to {SERVER_HOST}:{SERVER_PORT}")
-        s.connect((SERVER_HOST, SERVER_PORT))
+        
+        try:
+            s.connect((SERVER_HOST, SERVER_PORT))
+        except OSError:
+            print('Error connecting to server.')
+            sys.exit(1)
+        
         print("[+] Connected.")
 
         s.send(f"{filename}{SEPARATOR}{filesize}".encode())
