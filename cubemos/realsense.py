@@ -80,6 +80,14 @@ def render_ids_3d(
                         thickness,
                     )
 
+def get_joints_values(skeletons):
+    for skeleton_index in range(len(skeletons)):
+        skeleton = skeletons[skeleton_index]
+        joints = skeleton.joints
+        
+        for joint_index in range(len(joints)):
+            if skeleton.confidences[joint_index] > 0.3:
+                return joint_index, joints[joint_index].x, joints[joint_index].y
 
 # Main content begins
 if __name__ == "__main__":
@@ -105,7 +113,10 @@ if __name__ == "__main__":
         # Initialize the cubemos api with a valid license key in default_license_dir()
         skeletrack = skeletontracker(cloud_tracking_api_key="")
         joint_confidence = 0.2
-
+        
+        # Erase the content of log.txt filesize
+        open('log.txt', 'w').close()
+        
         # Create window for initialisation
         window_name = "cubemos skeleton tracking with realsense D400 series"
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL + cv2.WINDOW_KEEPRATIO)
@@ -125,6 +136,12 @@ if __name__ == "__main__":
 
             # perform inference and update the tracking id
             skeletons = skeletrack.track_skeletons(color_image)
+            
+            log = get_joints_values(skeletons)
+            print(log)
+            file = open('log.txt', 'a')
+            file.writelines(str(log) + '\n')
+            file.close()
 
             # render the skeletons on top of the acquired image and display it
             color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
@@ -135,9 +152,9 @@ if __name__ == "__main__":
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
                 break
-
+        
         pipeline.stop()
         cv2.destroyAllWindows()
-
+        
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))
