@@ -89,6 +89,10 @@ def get_joints_values(skeletons):
             if skeleton.confidences[joint_index] > 0.3:
                 return joint_index, joints[joint_index].x, joints[joint_index].y
 
+def get_time_milliseconds():
+    milliseconds = int(round(time.time() * 1000))
+    return str(milliseconds)
+
 # Main content begins
 if __name__ == "__main__":
     try:
@@ -140,7 +144,7 @@ if __name__ == "__main__":
             log = get_joints_values(skeletons)
             print(log)
             file = open('log.txt', 'a')
-            file.writelines(str(log) + '\n')
+            file.writelines(get_time_milliseconds() + ', ' + str(log) + '\n')
             file.close()
 
             # render the skeletons on top of the acquired image and display it
