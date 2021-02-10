@@ -19,7 +19,7 @@ You can follow the install instructions related to `Cubemos Skeleton Tracking` f
 # VS Code
 `VS Code` is recommended but it's not necessary.
 
-Add `.vscode` folder and create a `settings.json` file. Import the below code block:
+Add `.vscode` folder and create a `settings.json` file. Import the below code block, modify `user` accordingly.
 
 ```
 {
