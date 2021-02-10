@@ -114,7 +114,7 @@ if __name__ == "__main__":
         skeletrack = skeletontracker(cloud_tracking_api_key="")
         joint_confidence = 0.2
         
-        # Erase the content of log.txt filesize
+        # Erase the content of log.txt file
         open('log.txt', 'w').close()
         
         # Create window for initialisation
