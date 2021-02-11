@@ -3,6 +3,7 @@ from collections import namedtuple
 import util as cm
 import cv2
 import time
+import re
 import pyrealsense2 as rs
 import math
 import numpy as np
@@ -79,19 +80,60 @@ def render_ids_3d(
                         text_color,
                         thickness,
                     )
+"""
+Description: [text]:
+A function to get the joints of lower body.
 
-def get_joints_values(skeletons):
+Parameters: [list]: [list of skeletons]
+
+Returns: [tuple]: [size 12] (right hip, right knee, right ankle, left hip, left knee, left ankle) for both x,y coords.
+"""
+def get_lower_body_joints(skeletons):
     for skeleton_index in range(len(skeletons)):
         skeleton = skeletons[skeleton_index]
         joints = skeleton.joints
-        
-        for joint_index in range(len(joints)):
-            if skeleton.confidences[joint_index] > 0.3:
-                return joint_index, joints[joint_index].x, joints[joint_index].y
+        if skeleton.confidences[skeleton_index] > 0.3:
+            return (joints[8].x, joints[8].y, joints[9].x, joints[9].y,
+                    joints[10].x, joints[10].y, joints[11].x, joints[11].y,
+                    joints[12].x, joints[12].y, joints[13].x, joints[13].y)
 
+"""
+Description: [text]:
+A function to get the joints of upper body.
+
+Parameters: [list]: [list of skeletons]
+
+Returns: [tuple]: [size 12] (right shoulder, right elbow, right wrist, left shoulder, left elbow, left wrist) for both x,y coords.
+"""
+def get_upper_body_joints(skeletons):
+    for skeleton_index in range(len(skeletons)):
+        skeleton = skeletons[skeleton_index]
+        joints = skeleton.joints
+        if skeleton.confidences[skeleton_index] > 0.3:
+            return (joints[2].x, joints[2].y, joints[3].x, joints[3].y,
+                    joints[4].x, joints[4].y, joints[5].x, joints[5].y,
+                    joints[6].x, joints[6].y, joints[7].x, joints[7].y)
+
+"""
+Description: [text]:
+Helper function which converts current time to milliseconds.
+
+Returns: [str]: [milliseconds]
+"""
 def get_time_milliseconds():
     milliseconds = int(round(time.time() * 1000))
     return str(milliseconds)
+
+"""
+Description: [text]:
+Helper function which removes parenthesis.
+
+Returns: [str]: [the string without parenthesis]
+"""
+def remove_parenthesis(log: str):
+    log = log.replace('(', '')
+    removed = log.replace(')', '')
+    return removed
 
 # Main content begins
 if __name__ == "__main__":
@@ -119,7 +161,7 @@ if __name__ == "__main__":
         joint_confidence = 0.2
         
         # Erase the content of log.txt file
-        open('log.txt', 'w').close()
+        open('lower_body.txt', 'w').close()
         
         # Create window for initialisation
         window_name = "cubemos skeleton tracking with realsense D400 series"
@@ -141,10 +183,12 @@ if __name__ == "__main__":
             # perform inference and update the tracking id
             skeletons = skeletrack.track_skeletons(color_image)
             
-            log = get_joints_values(skeletons)
+            # Get lower body joints and write them into a file
+            log = get_lower_body_joints(skeletons)
             print(log)
-            file = open('log.txt', 'a')
-            file.writelines(get_time_milliseconds() + ', ' + str(log) + '\n')
+            clean_log = remove_parenthesis(str(log))
+            file = open('lower_body.txt', 'a')
+            file.writelines(get_time_milliseconds() + ', ' + clean_log + '\n')
             file.close()
 
             # render the skeletons on top of the acquired image and display it
