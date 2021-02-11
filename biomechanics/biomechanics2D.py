@@ -231,6 +231,38 @@ class LinearKinematics:
             acc_y.append(y)
 
         return time, acc_x, acc_y
+    
+    """
+    Description: [text]:
+    Calculates speed from 2D coordinates (x, y) using the first central difference method.
+    Speed is calculated between two video frames.
+    """
+
+    "Parameters: [dataframe]: [time, joint_x, joint_y]"
+
+    "Returns: [tuple]: horizontal velocity, vertical velocity,  [units]: m/s"
+
+    def calculate_speed(self, data):
+
+        if data.shape[1] != 3:
+            print("DataFrame should have three columns.")
+            return 1
+        
+        time = []
+        speed = []
+
+        for i in range(1, len(data) - 1):
+            x = (data.at[i + 1, "joint_x"] - data.at[i - 1, "joint_x"]) / (
+                data.at[i + 1, "time"] - data.at[i - 1, "time"]
+            )
+            y = (data.at[i + 1, "joint_y"] - data.at[i - 1, "joint_y"]) / (
+                data.at[i + 1, "time"] - data.at[i - 1, "time"]
+            )
+            vel = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
+            time.append(data.at[i, "time"])
+            speed.append(vel)
+
+        return time, speed
 
 
 class Energy:
