@@ -80,15 +80,13 @@ class kalmanFilter:
     def convert_text_to_array(self, file: str):
         x, y, z = np.loadtxt(file, delimiter = ',', usecols = (1, 2, 3), unpack = True)
         return x, y, z
+    
 
+# TODO: Does not run in 'samples' folder, so I leave it here as well.
+# Example of how we can analyse our data before we feed it to kalman filter.
+# We should filter each joint. However, occlusions prone to errors and performance loss.
+# Revise kalman filter and its implementation. 
 
-"""
-TODO: Transfer this example to another file
-Example of how we can analyse our data before we feed it to kalman filter.
-
-We should filter each joint. However, occlusions prone to errors and performance loss.
-Revise kalman filter and its implementation. 
-"""
 joint_type_path = 'C:/Users/user/Desktop/KTH/Master Thesis/Logs cpp/joint_type.txt'
 position_x_path = 'C:/Users/user/Desktop/KTH/Master Thesis/Logs cpp/position_X.txt'
 position_y_path = 'C:/Users/user/Desktop/KTH/Master Thesis/Logs cpp/position_Y.txt'
