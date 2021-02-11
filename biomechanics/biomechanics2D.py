@@ -5,6 +5,17 @@ import math
 
 class AngularKinematics:
     """
+    Helper function which normalizes 2D coordinates.
+    """
+    def normalize_2d_coordinates(self, arr, img_height, img_width):
+        for i in range(0, len(arr)):
+            arr[i][0] = arr[i][0]/img_height
+            arr[i][1] = arr[i][1]/img_width
+        
+        return arr
+        
+    
+    """
     Description: [text]:
     Calculates the absolute angle of a body segment on 2D saggital plane
     relative to right horizontal.
@@ -40,7 +51,8 @@ class AngularKinematics:
     "Parameters: [joints]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
 
     "Returns: [float]: [angle in degrees]"
-
+    
+    # The below function is preferable
     def calculate_rel_angle(self, proximal, centre, distal):
         a = math.sqrt(
             math.pow((proximal[0] - distal[0]), 2)
@@ -60,6 +72,47 @@ class AngularKinematics:
             )
         )
 
+        return theta
+    
+    """
+    Description: [text]:
+    Calculates the relative angle between longitudinal axes of two segments.
+    It is also reffered to joint angle or intersegmental angle.
+    
+    """
+    "Parameters: [dataframes]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
+
+    "Returns: [array]: [float]: [angle in degrees]"
+    def calculate_relative_angle(self, proximal, centre, distal):
+        length = proximal.shape[0]
+        theta = []
+        
+        for i in range(0, length-1):
+            a = math.sqrt(
+            math.pow((proximal[i][0] - distal[i][0]), 2)
+            + math.pow((proximal[i][1] - distal[i][1]), 2)
+            )
+            
+            b = math.sqrt(
+            math.pow((proximal[i][0] - centre[i][0]), 2)
+            + math.pow((proximal[i][1] - centre[i][1]), 2)
+            )
+            
+            c = math.sqrt(
+            math.pow((centre[i][0] - distal[i][0]), 2) 
+            + math.pow((centre[i][1] - distal[i][1]), 2)
+            )
+            
+            try:
+                th = math.degrees(
+                math.acos(
+                (-((math.pow(a, 2) - math.pow(b, 2) - math.pow(c, 2)) / (2 * b * c)))
+                ))
+                theta.append(th)
+            except ValueError:
+                th = theta[i - 1]
+                theta.append(th)
+        
         return theta
 
     """ 
