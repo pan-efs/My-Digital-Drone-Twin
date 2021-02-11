@@ -6,7 +6,7 @@ from biomechanics.biomechanics2D import AngularKinematics as AngularKinematics
 from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 
 #
-# General: Calculate knee relative angles from a text file.
+# General: Calculate and visualize knee biomechanics parameters. Input is a .txt file.
 #
 
 # Into text file there are the 2D coordinates of lower body.
