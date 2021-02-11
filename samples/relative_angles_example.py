@@ -137,3 +137,15 @@ plt.ylabel('Speed (ms)')
 
 # Fourth figure
 plt.show()
+
+# Calculate displacement of x,y components and resultant
+time_knee_r_dis, knee_dx_r, knee_dy_r, knee_res_r = l.calculate_displacement(vel_knee_right)
+
+# Visualize displacement
+plt.plot(time_knee_r_dis, knee_res_r, color = 'r')
+plt.title('Knee displacement (Right)')
+plt.xlabel('Time (ms)')
+plt.ylabel('Resultant (m)')
+
+# Fifth figure
+plt.show()
