@@ -67,11 +67,11 @@ time1 = time.drop(time.index[60])
 fig, (ax1, ax2) = plt.subplots(1,2)
 ax1.plot(time1, r_theta)
 ax1.set_title('Knee angle (Right)')
-ax1.set(xlabel = 'Time (ms)', ylabel = 'Knee angle (degrees)')
+ax1.set(xlabel = 'Time (s)', ylabel = 'Knee angle (degrees)')
 
 ax2.plot(time1, l_theta)
 ax2.set_title('Knee angle (Left)')
-ax2.set(xlabel = 'Time (ms)', ylabel = 'Knee angle (degrees)')
+ax2.set(xlabel = 'Time (s)', ylabel = 'Knee angle (degrees)')
 
 # First figure
 plt.show()
@@ -107,45 +107,71 @@ plt.show()
 vel_knee_right = pd.concat([time, knee_right], axis = 1)
 vel_knee_right = vel_knee_right.rename({'knee_r_x': 'joint_x', 'knee_r_y': 'joint_y'}, axis = 'columns')
 
+vel_knee_left = pd.concat([time, knee_left], axis = 1)
+vel_knee_left = vel_knee_left.rename({'knee_l_x': 'joint_x', 'knee_l_y': 'joint_y'}, axis = 'columns')
+
 # Create LinearKinematics object
 l = LinearKinematics()
 
 # On screen with open VScode a red line appears as error. It's a bug of the editor.
 # Calculate velocities vectors for x, y
-time_vel_knee_r, velX_knee_r, velY_knee_r= l.calculate_velocity(vel_knee_right)
+time_vel_knee_r, velX_knee_r, velY_knee_r = l.calculate_velocity(vel_knee_right)
+time_vel_knee_l, velX_knee_l, velY_knee_l = l.calculate_velocity(vel_knee_left)
 
 # Calculate speed
 time_speed_knee_r, speed_knee_r = l.calculate_speed(vel_knee_right)
+time_speed_knee_l, speed_knee_l = l.calculate_speed(vel_knee_left)
 
 # Visualisation speed, velocity_X and velocity_Y
 fig2, (ax5, ax6) = plt.subplots(1,2)
 ax5.plot(time_vel_knee_r, velX_knee_r, color = 'b')
 ax5.set_title('Knee velocity_X (Right)')
-ax5.set(xlabel = 'Time (ms)', ylabel = 'Velocity X (m/s)')
+ax5.set(xlabel = 'Time (s)', ylabel = 'Velocity X (m/s)')
 
 ax6.plot(time_vel_knee_r, velY_knee_r, color = 'r')
 ax6.set_title('Knee velocity_Y (Right)')
-ax6.set(xlabel = 'Time (ms)', ylabel = 'Velocity Y (m/s)')
+ax6.set(xlabel = 'Time (s)', ylabel = 'Velocity Y (m/s)')
 
 # Third figure
 plt.show()
 
-plt.plot(time_speed_knee_r, speed_knee_r, color = 'g')
-plt.title('Knee speed (Right)')
-plt.xlabel('Time (ms)')
-plt.ylabel('Speed (ms)')
+fig3, (ax7, ax8) = plt.subplots(1,2)
+ax7.plot(time_vel_knee_l, velX_knee_l, color = 'b')
+ax7.set_title('Knee velocity_X (Left)')
+ax7.set(xlabel = 'Time (s)', ylabel = 'Velocity X (m/s)')
+
+ax8.plot(time_vel_knee_l, velY_knee_l, color = 'r')
+ax8.set_title('Knee velocity_Y (Left)')
+ax8.set(xlabel = 'Time (s)', ylabel = 'Velocity Y (m/s)')
 
 # Fourth figure
 plt.show()
 
-# Calculate displacement of x,y components and resultant
-time_knee_r_dis, knee_dx_r, knee_dy_r, knee_res_r = l.calculate_displacement(vel_knee_right)
+fig4, (ax9, ax10) = plt.subplots(1,2)
+ax9.plot(time_speed_knee_r, speed_knee_r, color = 'b')
+ax9.set_title('Knee speed (Right)')
+ax9.set(xlabel = 'Time (s)', ylabel = 'Speed (m/s)')
 
-# Visualize displacement
-plt.plot(time_knee_r_dis, knee_res_r, color = 'r')
-plt.title('Knee displacement (Right)')
-plt.xlabel('Time (ms)')
-plt.ylabel('Resultant (m)')
+ax10.plot(time_speed_knee_l, speed_knee_l, color = 'r')
+ax10.set_title('Knee speed (Left)')
+ax10.set(xlabel = 'Time (s)', ylabel = 'Speed (m/s)')
 
 # Fifth figure
+plt.show()
+
+# Calculate displacement of x,y components and resultant
+time_knee_r_dis, knee_dx_r, knee_dy_r, knee_res_r = l.calculate_displacement(vel_knee_right)
+time_knee_l_dis, knee_dx_l, knee_dy_l, knee_res_l = l.calculate_displacement(vel_knee_left)
+
+# Visualize displacement
+fig5, (ax11, ax12) = plt.subplots(1,2)
+ax11.plot(time_knee_r_dis, knee_res_r, color = 'b')
+ax11.set_title('Knee displacement (Right)')
+ax11.set(xlabel = 'Time (s)', ylabel = 'Resultant (m)')
+
+ax12.plot(time_knee_l_dis, knee_res_l, color = 'r')
+ax12.set_title('Knee displacement (Left)')
+ax12.set(xlabel = 'Time (s)', ylabel = 'Resultant (m)')
+
+# Sixth figure
 plt.show()
