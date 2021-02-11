@@ -160,13 +160,16 @@ if __name__ == "__main__":
         skeletrack = skeletontracker(cloud_tracking_api_key="")
         joint_confidence = 0.2
         
-        # Erase the content of log.txt file
+        # Erase the content of lower_body.txt file
         open('lower_body.txt', 'w').close()
         
         # Create window for initialisation
         window_name = "cubemos skeleton tracking with realsense D400 series"
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL + cv2.WINDOW_KEEPRATIO)
-
+        
+        # Start timer
+        start_time = time.time()
+        
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
             unaligned_frames = pipeline.wait_for_frames()
@@ -188,7 +191,7 @@ if __name__ == "__main__":
             print(log)
             clean_log = remove_parenthesis(str(log))
             file = open('lower_body.txt', 'a')
-            file.writelines(get_time_milliseconds() + ', ' + clean_log + '\n')
+            file.writelines(str(time.time() - start_time) + ', ' + clean_log + '\n')
             file.close()
 
             # render the skeletons on top of the acquired image and display it
