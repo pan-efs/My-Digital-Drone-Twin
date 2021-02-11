@@ -263,6 +263,37 @@ class LinearKinematics:
             speed.append(vel)
 
         return time, speed
+    
+    """
+    Description: [text]:
+    Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
+    First central defference method.
+    """
+    
+    def calculate_displacement(self, data):
+        
+        if data.shape[1] != 3:
+            print('Dataframe should have three columns.')
+            return 1
+        
+        time = []
+        dx = []
+        dy = []
+        r = []
+        
+        for i in range(0, len(data) - 1):
+            deltaX = (data.at[i + 1, 'joint_x'] - data.at[i, 'joint_x'])
+            
+            deltaY = (data.at[i + 1, 'joint_y'] - data.at[i, 'joint_y'])
+            
+            resultant = math.sqrt(deltaX*deltaX + deltaY*deltaY)
+            
+            time.append(data.at[i, "time"])
+            dx.append(deltaX)
+            dy.append(deltaY)
+            r.append(resultant)
+        
+        return time, dx, dy, r
 
 
 class Energy:
