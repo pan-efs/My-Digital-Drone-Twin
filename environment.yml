@@ -48,8 +48,6 @@ dependencies:
   - mkl_random=1.0.4=py37h343c172_0
   - msys2-conda-epoch=20160418=1
   - mypy_extensions=0.4.3=py37_0
-  - numpy=1.19.1=py37h5510c5b_0
-  - numpy-base=1.19.1=py37ha3acd2a_0
   - olefile=0.46=pyh9f0ad1d_1
   - opencv=4.5.0=py37h03978a9_7
   - openssl=1.1.1h=he774522_0
@@ -90,11 +88,10 @@ dependencies:
   - zlib=1.2.11=vc14h1cdd9ab_1
   - zstd=1.4.8=h4e2f164_1
   - pip:
-    - coverage==5.3.1
-    - cubemos-skeletontracking==3.0.0
+    - cubemos-skeletontracking==3.1.0
     - my-digital-drone-twin==0.0.1
-    - opencv-python==4.1.2.30
+    - numpy==1.18.5
+    - opencv-python==4.5.1.48
     - pykalman==0.9.5
     - pyrealsense2==2.41.0.2666
-    - sockets==1.0.0
     - tqdm==4.56.0
