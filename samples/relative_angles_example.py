@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import argrelextrema
 from biomechanics.biomechanics2D import AngularKinematics as AngularKinematics
 
 #
@@ -34,6 +35,7 @@ knee_right_array = knee_right.to_numpy()
 ankle_right_array = ankle_right.to_numpy()
 
 hip_left_array = hip_left.to_numpy()
+
 knee_left_array = knee_left.to_numpy()
 ankle_left_array = ankle_left.to_numpy()
 
@@ -71,3 +73,31 @@ ax2.set_title('Knee angle (Left)')
 ax2.set(xlabel = 'Time (ms)', ylabel = 'Knee angle (degrees)')
 
 plt.show()
+
+# Find local min and max values
+df1 = pd.DataFrame(r_theta, columns = ['r_knee'])
+df1['min'] = df1.iloc[argrelextrema(df1.r_knee.values, np.less_equal,
+                    order=3)[0]]['r_knee']
+df1['max'] = df1.iloc[argrelextrema(df1.r_knee.values, np.greater_equal,
+                    order=3)[0]]['r_knee']
+
+df2 = pd.DataFrame(l_theta, columns = ['l_knee'])
+df2['min'] = df2.iloc[argrelextrema(df2.l_knee.values, np.less_equal,
+                    order=3)[0]]['l_knee']
+df2['max'] = df2.iloc[argrelextrema(df2.l_knee.values, np.greater_equal,
+                    order=3)[0]]['l_knee']
+
+fig1, (ax1, ax2) = plt.subplots(1,2)
+ax1.scatter(df1.index, df1['min'], c='r')
+ax1.scatter(df1.index, df1['max'], c='g')
+ax1.set_title('Right knee')
+ax1.plot(df1.index, df1['r_knee'])
+
+ax2.scatter(df2.index, df2['min'], c='r')
+ax2.scatter(df2.index, df2['max'], c='g')
+ax2.set_title('Left knee')
+ax2.plot(df2.index, df2['l_knee'])
+
+plt.show()
+
+
