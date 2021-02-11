@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import argrelextrema
 from biomechanics.biomechanics2D import AngularKinematics as AngularKinematics
+from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 
 #
 # General: Calculate knee relative angles from a text file.
@@ -60,18 +61,19 @@ l_theta = k.calculate_relative_angle(hip_left_array, knee_left_array, ankle_left
 #print(l_theta)
 
 # Drop last row of time for equality reasons
-time = time.drop(time.index[60])
+time1 = time.drop(time.index[60])
 
 # Visualisation of knee angles
 fig, (ax1, ax2) = plt.subplots(1,2)
-ax1.plot(time, r_theta)
+ax1.plot(time1, r_theta)
 ax1.set_title('Knee angle (Right)')
 ax1.set(xlabel = 'Time (ms)', ylabel = 'Knee angle (degrees)')
 
-ax2.plot(time, l_theta)
+ax2.plot(time1, l_theta)
 ax2.set_title('Knee angle (Left)')
 ax2.set(xlabel = 'Time (ms)', ylabel = 'Knee angle (degrees)')
 
+# First figure
 plt.show()
 
 # Find local min and max values
@@ -87,17 +89,51 @@ df2['min'] = df2.iloc[argrelextrema(df2.l_knee.values, np.less_equal,
 df2['max'] = df2.iloc[argrelextrema(df2.l_knee.values, np.greater_equal,
                     order=3)[0]]['l_knee']
 
-fig1, (ax1, ax2) = plt.subplots(1,2)
-ax1.scatter(df1.index, df1['min'], c='r')
-ax1.scatter(df1.index, df1['max'], c='g')
-ax1.set_title('Right knee')
-ax1.plot(df1.index, df1['r_knee'])
+fig1, (ax3, ax4) = plt.subplots(1,2)
+ax3.scatter(df1.index, df1['min'], c='r')
+ax3.scatter(df1.index, df1['max'], c='g')
+ax3.set_title('Right knee')
+ax3.plot(df1.index, df1['r_knee'])
 
-ax2.scatter(df2.index, df2['min'], c='r')
-ax2.scatter(df2.index, df2['max'], c='g')
-ax2.set_title('Left knee')
-ax2.plot(df2.index, df2['l_knee'])
+ax4.scatter(df2.index, df2['min'], c='r')
+ax4.scatter(df2.index, df2['max'], c='g')
+ax4.set_title('Left knee')
+ax4.plot(df2.index, df2['l_knee'])
 
+# Second figure
 plt.show()
 
+# Calculate velocity of knee joint
+vel_knee_right = pd.concat([time, knee_right], axis = 1)
+vel_knee_right = vel_knee_right.rename({'knee_r_x': 'joint_x', 'knee_r_y': 'joint_y'}, axis = 'columns')
 
+# Create LinearKinematics object
+l = LinearKinematics()
+
+# On screen with open VScode a red line appears as error. It's a bug of the editor.
+# Calculate velocities vectors for x, y
+time_vel_knee_r, velX_knee_r, velY_knee_r= l.calculate_velocity(vel_knee_right)
+
+# Calculate speed
+time_speed_knee_r, speed_knee_r = l.calculate_speed(vel_knee_right)
+
+# Visualisation speed, velocity_X and velocity_Y
+fig2, (ax5, ax6) = plt.subplots(1,2)
+ax5.plot(time_vel_knee_r, velX_knee_r, color = 'b')
+ax5.set_title('Knee velocity_X (Right)')
+ax5.set(xlabel = 'Time (ms)', ylabel = 'Velocity X (m/s)')
+
+ax6.plot(time_vel_knee_r, velY_knee_r, color = 'r')
+ax6.set_title('Knee velocity_Y (Right)')
+ax6.set(xlabel = 'Time (ms)', ylabel = 'Velocity Y (m/s)')
+
+# Third figure
+plt.show()
+
+plt.plot(time_speed_knee_r, speed_knee_r, color = 'g')
+plt.title('Knee speed (Right)')
+plt.xlabel('Time (ms)')
+plt.ylabel('Speed (ms)')
+
+# Fourth figure
+plt.show()
