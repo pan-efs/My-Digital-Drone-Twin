@@ -97,4 +97,3 @@ dependencies:
     - pykalman==0.9.5
     - pyrealsense2==2.41.0.2666
     - tqdm==4.56.0
-prefix: C:\Users\Drone\miniconda3\envs\thesis
