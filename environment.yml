@@ -13,6 +13,7 @@ dependencies:
   - certifi=2020.6.20=py37_0
   - click=7.1.2=pyhd3eb1b0_0
   - colorama=0.4.4=pyhd3eb1b0_0
+  - coverage=5.3=py37he774522_0
   - cycler=0.10.0=py_2
   - freeglut=3.2.1=h0e60522_0
   - freetype=2.10.4=h546665d_1
@@ -48,6 +49,7 @@ dependencies:
   - mkl_random=1.0.4=py37h343c172_0
   - msys2-conda-epoch=20160418=1
   - mypy_extensions=0.4.3=py37_0
+  - numpy-base=1.19.1=py37ha3acd2a_0
   - olefile=0.46=pyh9f0ad1d_1
   - opencv=4.5.0=py37h03978a9_7
   - openssl=1.1.1h=he774522_0
@@ -95,3 +97,4 @@ dependencies:
     - pykalman==0.9.5
     - pyrealsense2==2.41.0.2666
     - tqdm==4.56.0
+prefix: C:\Users\Drone\miniconda3\envs\thesis
