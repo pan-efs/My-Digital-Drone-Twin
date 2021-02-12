@@ -116,16 +116,6 @@ def get_upper_body_joints(skeletons):
 
 """
 Description: [text]:
-Helper function which converts current time to milliseconds.
-
-Returns: [str]: [milliseconds]
-"""
-def get_time_milliseconds():
-    milliseconds = int(round(time.time() * 1000))
-    return str(milliseconds)
-
-"""
-Description: [text]:
 Helper function which removes parenthesis.
 
 Returns: [str]: [the string without parenthesis]
