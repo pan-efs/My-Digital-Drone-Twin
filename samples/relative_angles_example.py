@@ -20,15 +20,15 @@ df = df.rename({0: 'time', 1: 'hip_r_x', 2: 'hip_r_y', 3: 'knee_r_x', 4: 'knee_r
                 axis = 'columns')
 
 # Split dataframe
-time = df.loc[0:60, 'time']
+time = df.loc[0:103, 'time']
 
-hip_right = df.loc[0:60, 'hip_r_x':'hip_r_y']
-knee_right = df.loc[0:60, 'knee_r_x':'knee_r_y']
-ankle_right = df.loc[0:60, 'ankle_r_x':'ankle_r_y']
+hip_right = df.loc[0:103, 'hip_r_x':'hip_r_y']
+knee_right = df.loc[0:103, 'knee_r_x':'knee_r_y']
+ankle_right = df.loc[0:103, 'ankle_r_x':'ankle_r_y']
 
-hip_left = df.loc[0:60, 'hip_l_x':'hip_l_y']
-knee_left = df.loc[0:60, 'knee_l_x':'knee_l_y']
-ankle_left = df.loc[0:60, 'ankle_l_x':'ankle_l_y']
+hip_left = df.loc[0:103, 'hip_l_x':'hip_l_y']
+knee_left = df.loc[0:103, 'knee_l_x':'knee_l_y']
+ankle_left = df.loc[0:103, 'ankle_l_x':'ankle_l_y']
 
 # Convert dataframe to array
 hip_right_array = hip_right.to_numpy()
@@ -61,7 +61,7 @@ l_theta = k.calculate_relative_angle(hip_left_array, knee_left_array, ankle_left
 #print(l_theta)
 
 # Drop last row of time for equality reasons
-time1 = time.drop(time.index[60])
+time1 = time.drop(time.index[103])
 
 # Visualisation of knee angles
 fig, (ax1, ax2) = plt.subplots(1,2)
@@ -79,15 +79,15 @@ plt.show()
 # Find local min and max values
 df1 = pd.DataFrame(r_theta, columns = ['r_knee'])
 df1['min'] = df1.iloc[argrelextrema(df1.r_knee.values, np.less_equal,
-                    order=3)[0]]['r_knee']
+                    order=5)[0]]['r_knee']
 df1['max'] = df1.iloc[argrelextrema(df1.r_knee.values, np.greater_equal,
-                    order=3)[0]]['r_knee']
+                    order=5)[0]]['r_knee']
 
 df2 = pd.DataFrame(l_theta, columns = ['l_knee'])
 df2['min'] = df2.iloc[argrelextrema(df2.l_knee.values, np.less_equal,
-                    order=3)[0]]['l_knee']
+                    order=5)[0]]['l_knee']
 df2['max'] = df2.iloc[argrelextrema(df2.l_knee.values, np.greater_equal,
-                    order=3)[0]]['l_knee']
+                    order=5)[0]]['l_knee']
 
 fig1, (ax3, ax4) = plt.subplots(1,2)
 ax3.scatter(df1.index, df1['min'], c='r')
