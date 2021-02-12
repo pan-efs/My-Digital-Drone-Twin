@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from kalman_filter.kalmanFilter import kalmanFilter as kalmanFilter
+from filters.kalmanFilter import kalmanFilter as kalmanFilter
 
 # Example of how we can analyse our data before we feed it to kalman filter.
 
