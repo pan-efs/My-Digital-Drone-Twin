@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
 
 class MovingAverage:
     
@@ -62,6 +63,21 @@ mY = p.moving_average(kneeLeftY, 3)
 
 aX = p.moving_average(ankleRightX, 3)
 aY = p.moving_average(ankleRightY, 3)
+
+kneeLeftX = kneeLeftX[:len(kneeLeftX) - 2]
+kneeLeftY = kneeLeftY[:len(kneeLeftY) - 2]
+ankleRightX = ankleRightX[:len(ankleRightX) - 2]
+ankleRightY = ankleRightY[:len(ankleRightY) - 2]
+
+# Mean squared errors
+# Evaluation metric: Mean Per Joint Position Error (MPJPE)
+# We don't have ground truth values e.g. from biomechanics lab.
+error_KLX = mean_squared_error(kneeLeftX, mX)
+error_KLY = mean_squared_error(kneeLeftY, mY)
+error_ARX = mean_squared_error(ankleRightX, aX)
+error_ARY = mean_squared_error(ankleRightY, aY)
+
+print('MSE KLX:', error_KLX, 'MSE KLY:', error_KLY, 'MSE ARX:', error_ARX, 'MSE ARY:',  error_ARY)
 
 # Visualization
 plt.plot(kneeLeftX)
