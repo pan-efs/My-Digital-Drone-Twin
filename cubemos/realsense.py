@@ -9,6 +9,52 @@ import math
 import numpy as np
 from skeletontracker import skeletontracker
 
+def get_3d_joints(render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence):
+    rows, cols, channel = render_image.shape[:3]
+    distance_kernel_size = 5
+    no = []
+    hi = []
+    # calculate 3D keypoints and display them
+    for skeleton_index in range(len(skeletons_2d)):
+        skeleton_2D = skeletons_2d[skeleton_index]
+        joints_2D = skeleton_2D.joints
+        for joint_index in range(len(joints_2D)):
+            if skeleton_2D.confidences[joint_index] > joint_confidence:
+                distance_in_kernel = []
+                low_bound_x = max(
+                    0,
+                    int(
+                        joints_2D[joint_index].x - math.floor(distance_kernel_size / 2)
+                    ),
+                )
+                upper_bound_x = min(
+                    cols - 1,
+                    int(joints_2D[joint_index].x + math.ceil(distance_kernel_size / 2)),
+                )
+                low_bound_y = max(
+                    0,
+                    int(
+                        joints_2D[joint_index].y - math.floor(distance_kernel_size / 2)
+                    ),
+                )
+                upper_bound_y = min(
+                    rows - 1,
+                    int(joints_2D[joint_index].y + math.ceil(distance_kernel_size / 2)),
+                )
+                for x in range(low_bound_x, upper_bound_x):
+                    for y in range(low_bound_y, upper_bound_y):
+                        distance_in_kernel.append(depth_map.get_distance(x, y))
+                median_distance = np.percentile(np.array(distance_in_kernel), 50)
+                depth_pixel = [
+                    int(joints_2D[joint_index].x),
+                    int(joints_2D[joint_index].y),
+                ]
+                if median_distance >= 0.3:
+                    point_3d = rs.rs2_deproject_pixel_to_point(
+                        depth_intrinsic, depth_pixel, median_distance
+                    )
+                    point_3d = np.round([float(i) for i in point_3d], 3)
+                    
 
 def render_ids_3d(
     render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
@@ -80,6 +126,7 @@ def render_ids_3d(
                         text_color,
                         thickness,
                     )
+
 """
 Description: [text]:
 A function to get the joints of lower body.
@@ -159,7 +206,6 @@ if __name__ == "__main__":
         
         # Start timer
         start_time = time.time()
-        
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
             unaligned_frames = pipeline.wait_for_frames()
