@@ -10,7 +10,7 @@ from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 #
 
 # Into text file there are the 2D coordinates of lower body.
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos\\lower_body_example.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\lower_body_example.txt'
 
 # Convert .txt to dataframe
 df = pd.read_csv(file_path, delimiter = ",", header = None)
