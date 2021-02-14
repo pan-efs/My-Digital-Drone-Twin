@@ -327,3 +327,87 @@ ax16.set(xlabel = 'Time (s)', ylabel = 'Acceleration Y (m\s^2)')
 ax16.set_title('Ankle left')
 
 plt.show()
+
+# Estimation of speed
+time_speed_KR, knee_right_speed = l.cal_speed(time, knee_right_filtered)
+time_speed_KL, knee_left_speed = l.cal_speed(time, knee_left_filtered)
+time_speed_HR, hip_right_speed = l.cal_speed(time, hip_right_filtered)
+time_speed_HL, hip_left_speed = l.cal_speed(time, hip_left_filtered)
+time_speed_AR, ankle_right_speed = l.cal_speed(time, ankle_right_filtered)
+time_speed_AL, ankle_left_speed = l.cal_speed(time, ankle_left_filtered)
+
+# Vizualizations of speed
+fig8, (ax17, ax18) = plt.subplots(1,2)
+ax17.plot(time_speed_HR, hip_right_speed, c = 'r')
+ax17.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax17.set_title('Hip right')
+
+ax18.plot(time_speed_HL, hip_left_speed, c = 'b')
+ax18.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax18.set_title('Hip left')
+
+plt.show()
+
+fig9, (ax19, ax20) = plt.subplots(1,2)
+ax19.plot(time_speed_KR, knee_right_speed, c = 'r')
+ax19.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax19.set_title('Knee right')
+
+ax20.plot(time_speed_KL, knee_left_speed, c = 'b')
+ax20.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax20.set_title('Knee left')
+
+plt.show()
+
+fig10, (ax21, ax22) = plt.subplots(1,2)
+ax21.plot(time_speed_AR, ankle_right_speed, c = 'r')
+ax21.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax21.set_title('Ankle right')
+
+ax22.plot(time_speed_AL, ankle_left_speed, c = 'b')
+ax22.set(xlabel = 'Time (s)', ylabel = 'Speed (m\s)')
+ax22.set_title('Ankle left')
+
+plt.show()
+
+# Estimations of displacement
+time_dis_HR, _, _, hip_right_resultant = l.cal_displacement(time, hip_right_filtered)
+time_dis_HL, _, _, hip_left_resultant = l.cal_displacement(time, hip_left_filtered)
+time_dis_KR, _, _, knee_right_resultant = l.cal_displacement(time, knee_right_filtered)
+time_dis_KL, _, _, knee_left_resultant = l.cal_displacement(time, knee_left_filtered)
+time_dis_AR, _, _, ankle_right_resultant = l.cal_displacement(time, ankle_right_filtered)
+time_dis_AL, _, _, ankle_left_resultant = l.cal_displacement(time, ankle_left_filtered)
+
+# Visualizations of displacements
+fig11, (ax23, ax24) = plt.subplots(1,2)
+ax23.plot(time_dis_HR, hip_right_resultant, c = 'r')
+ax23.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax23.set_title('Hip right')
+
+ax24.plot(time_dis_HL, hip_left_resultant, c = 'b')
+ax24.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax24.set_title('Hip left')
+
+plt.show()
+
+fig12, (ax25, ax26) = plt.subplots(1,2)
+ax25.plot(time_dis_KR, knee_right_resultant, c = 'r')
+ax25.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax25.set_title('Knee right')
+
+ax26.plot(time_dis_KL, knee_left_resultant, c = 'b')
+ax26.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax26.set_title('Knee left')
+
+plt.show()
+
+fig13, (ax27, ax28) = plt.subplots(1,2)
+ax27.plot(time_dis_AR, ankle_right_resultant, c = 'r')
+ax27.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax27.set_title('Ankle right')
+
+ax28.plot(time_dis_AL, ankle_left_resultant, c = 'b')
+ax28.set(xlabel = 'Time (s)', ylabel = 'Displacement (m)')
+ax28.set_title('Ankle left')
+
+plt.show()
