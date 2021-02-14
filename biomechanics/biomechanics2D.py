@@ -367,10 +367,10 @@ class Energy:
     
     """
 
-    "Parameters: [float]: [velocity], [units]: m/min"
+    "Parameters: [float]: [speed], [units]: m/min"
 
     "Returns: [float]: [energy expenditure], [units]: cal/meter/kg"
 
-    def energy_expenditure(self, velocity):
-        e = 29 / velocity + 0.0053 * velocity
+    def energy_expenditure(self, speed):
+        e = 29 / speed + 0.0053 * speed
         return e
