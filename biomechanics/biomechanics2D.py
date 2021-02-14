@@ -48,7 +48,7 @@ class AngularKinematics:
     It is also reffered to joint angle or intersegmental angle.
     
     """
-    "Parameters: [joints]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
+    "Parameters: [dataframes]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
 
     "Returns: [float]: [angle in degrees]"
     
@@ -80,7 +80,7 @@ class AngularKinematics:
     It is also reffered to joint angle or intersegmental angle.
     
     """
-    "Parameters: [dataframes]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
+    "Parameters: [array]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
 
     "Returns: [array]: [float]: [angle in degrees]"
     def calculate_relative_angle(self, proximal, centre, distal):
@@ -174,7 +174,8 @@ class LinearKinematics:
     "Parameters: [dataframe]: [time, joint_x, joint_y]"
 
     "Returns: [tuple]: horizontal velocity, vertical velocity,  [units]: m/s"
-
+    
+    # The below function is preferable
     def calculate_velocity(self, data):
 
         if data.shape[1] != 3:
@@ -197,6 +198,36 @@ class LinearKinematics:
             vel_y.append(y)
 
         return time, vel_x, vel_y
+    
+    """
+    Description: [text]:
+    Calculates velocity for horizontal and vertical components using the first central difference method.
+    Velocity is calculated between two video frames.
+    Pre-requisite: analyze a video offline knowing in before fps.
+    
+    """
+
+    "Parameters: [array]: [time, joint(x,y)]"
+
+    "Returns: [tuple]: time, horizontal velocity, vertical velocity,  [units]: m/s"
+    def cal_velocity(self, time, data):
+        
+        new_time = []
+        vel_x = []
+        vel_y = []
+
+        for i in range(1, len(data) - 1):
+            x = (data[i + 1][0] - data[i - 1][0]) / (
+                time[i + 1] - time[i - 1]
+            )
+            y = (data[i + 1][1] - data[i - 1][1]) / (
+                time[i + 1] - time[i - 1]
+            )
+            new_time.append(time[i])
+            vel_x.append(x)
+            vel_y.append(y)
+
+        return new_time, vel_x, vel_y
 
     """
     Description: [text]:
@@ -209,6 +240,7 @@ class LinearKinematics:
 
     "Returns: [tuple]: horizontal acceleration, vertical acceleration,  [units]: m/s^2"
 
+    # The below function is preferable
     def calculate_acceleration(self, data):
 
         if data.shape[1] != 3:
@@ -231,6 +263,36 @@ class LinearKinematics:
             acc_y.append(y)
 
         return time, acc_x, acc_y
+    
+    
+    """
+    Description: [text]:
+    Calculates acceleration for horizontal and vertical components using the first central difference method.
+    Acceleration is calculated between two video frames.
+    Pre-requisite: analyze a video offline knowing in before fps.
+    
+    """
+    "Parameters: [array]: [time, velocity]"
+
+    "Returns: [tuple]:time, horizontal acceleration, vertical acceleration,  [units]: m/s^2"
+    def cal_acceleration(self, time, data):
+        
+        new_time = []
+        acc_x = []
+        acc_y = []
+        
+        for i in range(1, len(data) - 1):
+            x = (data[i + 1][0] - data[i - 1][0]) / (
+                time[i + 1] - time[i - 1]
+            )
+            y = (data[i + 1][1] - data[i - 1][1]) / (
+                time[i + 1] - time[i - 1]
+            )
+            new_time.append(time[i])
+            acc_x.append(x)
+            acc_y.append(y)
+        
+        return new_time, acc_x, acc_y
     
     """
     Description: [text]:
