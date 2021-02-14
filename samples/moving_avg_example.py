@@ -5,6 +5,7 @@ from scipy.signal import argrelextrema
 from sklearn.metrics import mean_squared_error
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics2D import AngularKinematics as AngularKinematics
+from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\LK_flexion_extension.txt'
 
@@ -15,7 +16,7 @@ df = df.rename({0: 'time', 1: 'hip_r_x', 2: 'hip_r_y', 3: 'knee_r_x', 4: 'knee_r
                 7: 'hip_l_x', 8: 'hip_l_y', 9: 'knee_l_x', 10: 'knee_l_y', 11: 'ankle_l_x', 12: 'ankle_l_y'},
                 axis = 'columns')
 
-# Split dataframe # 103
+# Split dataframe
 time = df.loc[0:192, 'time']
 
 hip_right = df.loc[0:192, 'hip_r_x':'hip_r_y']
@@ -91,7 +92,7 @@ kY = p.moving_average(kneeRightY, 3)
 aX = p.moving_average(ankleRightX, 3)
 aY = p.moving_average(ankleRightY, 3)
 
-# Convert two 2D array as before
+# Convert to 2D arrays as before
 hip_left_filtered = np.vstack((hX, hY)).T
 knee_left_filtered = np.vstack((mX, mY)).T
 ankle_left_filtered = np.vstack((eX, eY)).T
@@ -174,17 +175,17 @@ plt.show()
 k = AngularKinematics()
 
 # Normalize coordinates according to image height and width
-hip_right_filtered = k.normalize_2d_coordinates(hip_right_filtered, 1280, 720)
-knee_right_filtered = k.normalize_2d_coordinates(knee_right_filtered, 1280, 720)
-ankle_right_filtered = k.normalize_2d_coordinates(ankle_right_filtered, 1280, 720)
+hip_right_filtered_normalized = k.normalize_2d_coordinates(hip_right_filtered, 1280, 720)
+knee_right_filtered_normalized = k.normalize_2d_coordinates(knee_right_filtered, 1280, 720)
+ankle_right_filtered_normalized = k.normalize_2d_coordinates(ankle_right_filtered, 1280, 720)
 
-hip_left_filtered = k.normalize_2d_coordinates(hip_left_filtered, 1280, 720)
-knee_left_filtered = k.normalize_2d_coordinates(knee_left_filtered, 1280, 720)
-ankle_left_filtered = k.normalize_2d_coordinates(ankle_left_filtered, 1280, 720)
+hip_left_filtered_normalized = k.normalize_2d_coordinates(hip_left_filtered, 1280, 720)
+knee_left_filtered_normalized = k.normalize_2d_coordinates(knee_left_filtered, 1280, 720)
+ankle_left_filtered_normalized = k.normalize_2d_coordinates(ankle_left_filtered, 1280, 720)
 
 # Calculate the angles
-r_theta = k.calculate_relative_angle(hip_right_filtered, knee_right_filtered, ankle_right_filtered)
-l_theta = k.calculate_relative_angle(hip_left_filtered, knee_left_filtered, ankle_left_filtered)
+r_theta = k.calculate_relative_angle(hip_right_filtered_normalized, knee_right_filtered_normalized, ankle_right_filtered_normalized)
+l_theta = k.calculate_relative_angle(hip_left_filtered_normalized, knee_left_filtered_normalized, ankle_left_filtered_normalized)
 
 # Drop last row of time for equality reasons
 time1 = time.loc[0:189]
@@ -227,4 +228,102 @@ ax4.set_title('Left knee')
 ax4.plot(df2.index, df2['l_knee'])
 
 # Show
+plt.show()
+
+# Estimation of velocities
+# Create LinearKinematics object
+l = LinearKinematics()
+
+# Call velocity function for each joint separately
+time_vel_HR, hip_right_velX, hip_right_velY = l.cal_velocity(time, hip_right_filtered)
+time_vel_HL, hip_left_velX, hip_left_velY = l.cal_velocity(time, hip_left_filtered)
+time_vel_KR, knee_right_velX, knee_right_velY = l.cal_velocity(time, knee_right_filtered)
+time_vel_KL, knee_left_velX, knee_left_velY = l.cal_velocity(time, knee_left_filtered)
+time_vel_AR, ankle_right_velX, ankle_right_velY = l.cal_velocity(time, ankle_right_filtered)
+time_vel_AL, ankle_left_velX, ankle_left_velY = l.cal_velocity(time, ankle_left_filtered)
+
+# Visualizations of velocities
+fig2, (ax5, ax6) = plt.subplots(1,2)
+ax5.plot(time_vel_HL, hip_left_velX, c = 'r')
+ax5.set(xlabel = 'Time (s)', ylabel = 'Velocity X (m\s)')
+ax5.set_title('Hip left')
+
+ax6.plot(time_vel_HL, hip_left_velY, c = 'b')
+ax6.set(xlabel = 'Time (s)', ylabel = 'Velocity Y (m\s)')
+ax6.set_title('Hip left')
+
+plt.show()
+
+fig3, (ax7, ax8) = plt.subplots(1,2)
+ax7.plot(time_vel_KL, knee_left_velX, c = 'r')
+ax7.set(xlabel = 'Time (s)', ylabel = 'Velocity X (m\s)')
+ax7.set_title('Knee left')
+
+ax8.plot(time_vel_KL, knee_left_velY, c = 'b')
+ax8.set(xlabel = 'Time (s)', ylabel = 'Velocity Y (m\s)')
+ax8.set_title('Knee left')
+
+plt.show()
+
+fig4, (ax9, ax10) = plt.subplots(1,2)
+ax9.plot(time_vel_AL, ankle_left_velX, c = 'r')
+ax9.set(xlabel = 'Time (s)', ylabel = 'Velocity X (m\s)')
+ax9.set_title('Ankle left')
+
+ax10.plot(time_vel_AL, ankle_left_velY, c = 'b')
+ax10.set(xlabel = 'Time (s)', ylabel = 'Velocity Y (m\s)')
+ax10.set_title('Ankle left')
+
+plt.show()
+
+# Estimation of accelerations
+
+# Convert velocities to 2D arrays
+hip_right_vel = np.vstack((hip_right_velX, hip_right_velY)).T
+hip_left_vel = np.vstack((hip_left_velX, hip_left_velY)).T
+knee_right_vel = np.vstack((knee_right_velX, knee_right_velY)).T
+knee_left_vel = np.vstack((knee_left_velX, knee_left_velY)).T
+ankle_right_vel = np.vstack((ankle_right_velX, ankle_right_velY)).T
+ankle_left_vel = np.vstack((ankle_left_velX, ankle_left_velY)).T
+
+# Call acceleration function for each joint separately
+time_acc_HR, hip_right_accX, hip_right_accY = l.cal_acceleration(time_vel_HR, hip_right_vel)
+time_acc_HL, hip_left_accX, hip_left_accY = l.cal_acceleration(time_vel_HL, hip_left_vel)
+time_acc_KR, knee_right_accX, knee_right_accY = l.cal_acceleration(time_vel_KR, knee_right_vel)
+time_acc_KL, knee_left_accX, knee_left_accY = l.cal_acceleration(time_vel_KL, knee_left_vel)
+time_acc_AR, ankle_right_accX, ankle_right_accY = l.cal_acceleration(time_vel_AR, ankle_right_vel)
+time_acc_AL, ankle_left_accX, ankle_left_accY = l.cal_acceleration(time_vel_AL, ankle_left_vel)
+
+# Visualizations of accelerations
+fig5, (ax11, ax12) = plt.subplots(1,2)
+ax11.plot(time_acc_HL, hip_left_accX, c = 'r')
+ax11.set(xlabel = 'Time (s)', ylabel = 'Acceleration X (m\s^2)')
+ax11.set_title('Hip left')
+
+ax12.plot(time_acc_HL, hip_left_accY, c = 'b')
+ax12.set(xlabel = 'Time (s)', ylabel = 'Acceleration Y (m\s^2)')
+ax12.set_title('Hip left')
+
+plt.show()
+
+fig6, (ax13, ax14) = plt.subplots(1,2)
+ax13.plot(time_acc_KL, knee_left_accX, c = 'r')
+ax13.set(xlabel = 'Time (s)', ylabel = 'Acceleration X (m\s^2)')
+ax13.set_title('Knee left')
+
+ax14.plot(time_acc_KL, knee_left_accY, c = 'b')
+ax14.set(xlabel = 'Time (s)', ylabel = 'Acceleration Y (m\s^2)')
+ax14.set_title('Knee left')
+
+plt.show()
+
+fig7, (ax15, ax16) = plt.subplots(1,2)
+ax15.plot(time_acc_AL, ankle_left_accX, c = 'r')
+ax15.set(xlabel = 'Time (s)', ylabel = 'Acceleration X (m\s^2)')
+ax15.set_title('Ankle left')
+
+ax16.plot(time_acc_AL, ankle_left_accY, c = 'b')
+ax16.set(xlabel = 'Time (s)', ylabel = 'Acceleration Y (m\s^2)')
+ax16.set_title('Ankle left')
+
 plt.show()
