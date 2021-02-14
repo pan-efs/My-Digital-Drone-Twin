@@ -302,7 +302,7 @@ class LinearKinematics:
 
     "Parameters: [dataframe]: [time, joint_x, joint_y]"
 
-    "Returns: [tuple]: horizontal velocity, vertical velocity,  [units]: m/s"
+    "Returns: [tuple]: time, speed  [units]: m/s"
 
     def calculate_speed(self, data):
 
@@ -328,8 +328,39 @@ class LinearKinematics:
     
     """
     Description: [text]:
+    Calculates speed from 2D coordinates (x, y) using the first central difference method.
+    Speed is calculated between two video frames.
+    """
+
+    "Parameters: [array]: [time, joint(x,y)]"
+
+    "Returns: [tuple]: time, speed [units]: m/s"
+    def cal_speed(self, time, data):
+        
+        new_time = []
+        speed = []
+        
+        for i in range(1, len(data) - 1):
+            x = (data[i + 1][0] - data[i - 1][0]) / (
+                time[i + 1] - time[i - 1]
+            )
+            y = (data[i + 1][1] - data[i - 1][1]) / (
+                time[i + 1] - time[i - 1]
+            )
+            s = math.sqrt(x*x + y*y)
+            speed.append(s)
+            new_time.append(time[i])
+        
+        return new_time, speed
+    
+    """
+    Description: [text]:
     Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
     First central defference method.
+    
+    Parameters: [dataframe]: [joint_x, joint_y]
+    
+    Returns: [tuple]: time, dx, dy, r
     """
     
     def calculate_displacement(self, data):
@@ -356,7 +387,36 @@ class LinearKinematics:
             r.append(resultant)
         
         return time, dx, dy, r
-
+    
+    """
+    Description: [text]:
+    Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
+    First central defference method.
+    
+    Parameters: [array]: [time, joints(x,y)]
+    
+    Returns: [tuple]: time, dx, dy, r
+    """
+    def cal_displacement(self, time, data):
+        
+        new_time = []
+        dx = []
+        dy = []
+        r = []
+        
+        for i in range(0, len(data) - 1):
+            deltaX = data[i + 1][0] - data[i][0]
+            
+            deltaY = data[i + 1][1] - data[i][1]
+            
+            resultant = math.sqrt(deltaX*deltaX + deltaY*deltaY)
+            
+            new_time.append(time[i])
+            dx.append(deltaX)
+            dy.append(deltaY)
+            r.append(resultant)
+            
+        return new_time, dx, dy, r
 
 class Energy:
 
