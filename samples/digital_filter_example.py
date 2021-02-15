@@ -87,15 +87,19 @@ f = DigitalFilter()
 # kneeLeftX
 z, z2, y = f.digital_filter(kneeLeftX, 3)
 f.visualization(kneeLeftX, z, z2, y, 'Knee Left X axis')
+f.visualize_local_max_min(y, 'Knee Left X')
 
 # kneeLeftY
 z, z2, y = f.digital_filter(kneeLeftY, 3)
 f.visualization(kneeLeftY, z, z2, y, 'Knee Left Y axis')
+f.visualize_local_max_min(y, 'Knee Left Y')
 
 # ankleLeftX
 z, z2, y = f.digital_filter(ankleLeftX, 3)
 f.visualization(ankleLeftX, z, z2, y, 'Ankle Left X axis')
+f.visualize_local_max_min(y, 'Ankle Left X')
 
 # ankleLeftY
 z, z2, y = f.digital_filter(ankleLeftY, 3)
 f.visualization(ankleLeftY, z, z2, y, 'Ankle Left Y axis')
+f.visualize_local_max_min(y, 'Ankle Left Y')
