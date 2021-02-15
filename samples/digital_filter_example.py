@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 from scipy.signal import *
 from filters.digital_filter import DigitalFilter as DigitalFilter
 
+#
+# This file contains how we can apply digital filter (IIR or FIR) on a sequence of data.
+# Visualizations are included as well. 
+#
+
+
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\LK_flexion_extension.txt'
 
 # Convert .txt to dataframe

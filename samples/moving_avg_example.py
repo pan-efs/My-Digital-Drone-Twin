@@ -7,6 +7,11 @@ from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics2D import AngularKinematics as AngularKinematics
 from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 
+#
+# This file contains a general example how we can calculate different biomechanics parameters
+# after moving average filter
+#
+
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\LK_flexion_extension.txt'
 
 # Convert .txt to dataframe
