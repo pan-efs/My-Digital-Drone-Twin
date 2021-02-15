@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.signal import *
 
 class DigitalFilter:
@@ -38,4 +39,23 @@ class DigitalFilter:
         plt.xlabel('Frames')
         plt.ylabel('coords')
         plt.grid(True)
+        plt.show()
+    
+    """
+    Description: [text]:
+    Visualize filtfilt filtered signal.
+    """
+    def visualize_local_max_min(self, filtfilt: np.ndarray, name: str):
+        df = pd.DataFrame(filtfilt, columns = ['filtfilt'])
+        df['min'] = df.iloc[argrelextrema(df.filtfilt.values, np.less_equal,
+                    order=3)[0]]['filtfilt']
+        df['max'] = df.iloc[argrelextrema(df.filtfilt.values, np.greater_equal,
+                    order=3)[0]]['filtfilt']
+
+        plt.scatter(df.index, df['min'], c='r')
+        plt.scatter(df.index, df['max'], c='g')
+        plt.title('filtfilt: ' + name)
+        plt.xlabel('Frames')
+        plt.ylabel('coords')
+        plt.plot(df.index, df['filtfilt'])
         plt.show()
