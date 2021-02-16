@@ -68,7 +68,7 @@ def render_ids_3d(
                     point_3d = rs.rs2_deproject_pixel_to_point(
                         depth_intrinsic, depth_pixel, median_distance
                     )
-                    file = open('3d_joints.txt', 'a')
+                    file = open('get_3d_joints.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.round([float(i) for i in point_3d], 3)
@@ -135,6 +135,8 @@ if __name__ == "__main__":
         config = rs.config()
         config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
+        # TODO: Save .bag file
+        config.enable_record_to_file("file_new.bag")
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
@@ -155,7 +157,7 @@ if __name__ == "__main__":
         
         # Erase the content of .txt files
         open('lower_body.txt', 'w').close()
-        open('3d_joints.txt', 'w').close()
+        open('get_3d_joints.txt', 'w').close()
         
         # Create window for initialisation
         window_name = "cubemos skeleton tracking with realsense D400 series"
