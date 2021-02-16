@@ -33,7 +33,7 @@ class LinearKinematics:
             z = (data.at[i + 1, "joint_z"] - data.at[i - 1, "joint_z"]) / (
                 data.at[i + 1, "time"] - data.at[i - 1, "time"]
             )
-            vel = math.sqrt(math.pow(x, 2) + math.pow(y, 2) + math.pow(z, 2))
+            vel = math.sqrt(x*x + y*y + z*z)
             speed.append(vel)
             
         return speed
