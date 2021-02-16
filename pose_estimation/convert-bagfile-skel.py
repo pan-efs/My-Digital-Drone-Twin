@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
 from collections import namedtuple
-import util as cm
+from cubemos import util as cm  
 import cv2
 import time
 import pyrealsense2 as rs
 import math
 import numpy as np
-from skeletontracker import skeletontracker
+from cubemos import skeletontracker as skeletontracker
 
 
 def render_ids_3d(
@@ -83,11 +82,12 @@ def render_ids_3d(
 # Main content begins
 if __name__ == "__main__":
     try:
+        #bag = 'C:\\Users\\Drone\\Documents\\DataFromDrone\\file.bag'
         # Configure depth and color streams of the intel realsense
         config = rs.config()
         config.enable_device_from_file("file.bag", False)
-        config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
