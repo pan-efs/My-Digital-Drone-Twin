@@ -358,7 +358,7 @@ class LinearKinematics:
     Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
     First central defference method.
     
-    Parameters: [dataframe]: [joint_x, joint_y]
+    Parameters: [dataframe]: [time, joint_x, joint_y]
     
     Returns: [tuple]: time, dx, dy, r
     """
