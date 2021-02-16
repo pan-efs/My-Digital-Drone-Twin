@@ -2,6 +2,22 @@ import pandas as pd
 import numpy as np
 import math
 
+
+class AngularKinematics:
+    """
+    Description: [text]:
+    Calculates joint angle using three 3D vectors.
+    Before calling this function vectorize should be applied. For example,
+    vec = np.vectorize(k.calculate_3d_angle)
+    """
+
+    "Parameters: [vectors]: [joint_x, joint_y, joint_z]"
+
+    "Returns: [float]: [angle],  [units]: degrees"
+    def calculate_3d_angle(self, A: np.ndarray, B: np.ndarray, C: np.ndarray):
+        theta = math.degrees(math.acos((A - B)*(C - B) / (abs(A - B)*abs(C - B))))
+        return theta
+        
 class LinearKinematics:
     """
     Description: [text]:
