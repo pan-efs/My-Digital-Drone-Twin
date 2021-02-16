@@ -11,8 +11,7 @@ from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 # Visualizations are included as well. 
 #
 
-
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\LK_flexion_extension.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\flex_back_side.txt'
 
 # Convert .txt to dataframe
 df = pd.read_csv(file_path, delimiter = ",", header = None)
@@ -22,15 +21,15 @@ df = df.rename({0: 'time', 1: 'hip_r_x', 2: 'hip_r_y', 3: 'knee_r_x', 4: 'knee_r
                 axis = 'columns')
 
 # Split dataframe
-time = df.loc[0:192, 'time']
+time = df.loc[0:(len(df) - 1), 'time']
 
-hip_right = df.loc[0:192, 'hip_r_x':'hip_r_y']
-knee_right = df.loc[0:192, 'knee_r_x':'knee_r_y']
-ankle_right = df.loc[0:192, 'ankle_r_x':'ankle_r_y']
+hip_right = df.loc[0:(len(df) - 1), 'hip_r_x':'hip_r_y']
+knee_right = df.loc[0:(len(df) - 1), 'knee_r_x':'knee_r_y']
+ankle_right = df.loc[0:(len(df) - 1), 'ankle_r_x':'ankle_r_y']
 
-hip_left = df.loc[0:192, 'hip_l_x':'hip_l_y']
-knee_left = df.loc[0:192, 'knee_l_x':'knee_l_y']
-ankle_left = df.loc[0:192, 'ankle_l_x':'ankle_l_y']
+hip_left = df.loc[0:(len(df) - 1), 'hip_l_x':'hip_l_y']
+knee_left = df.loc[0:(len(df) - 1), 'knee_l_x':'knee_l_y']
+ankle_left = df.loc[0:(len(df) - 1), 'ankle_l_x':'ankle_l_y']
 
 # Convert dataframe to array
 hip_right_array = hip_right.to_numpy()
@@ -176,7 +175,7 @@ r_theta = k.calculate_relative_angle(hip_right_filtered_normalized, knee_right_f
 l_theta = k.calculate_relative_angle(hip_left_filtered_normalized, knee_left_filtered_normalized, ankle_left_filtered_normalized)
 
 # Drop last row of time for equality reasons
-time1 = time.loc[0:191]
+time1 = time.loc[0:(len(df) - 2)]
 
 # Visualisation of knee angles
 fig, (ax1, ax2) = plt.subplots(1,2)
