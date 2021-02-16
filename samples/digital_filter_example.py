@@ -11,7 +11,7 @@ from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 # Visualizations are included as well. 
 #
 
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\flex_back_side.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\flex_right_side.txt'
 
 # Convert .txt to dataframe
 df = pd.read_csv(file_path, delimiter = ",", header = None)
