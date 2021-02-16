@@ -114,19 +114,6 @@ time_nose ,speed_nose = k.calculate_speed(joint_0)
 t10, _, _, _, dis10 = k.calculate_displacement(joint_10)
 t13, _, _, _, dis13 = k.calculate_displacement(joint_13)
 
-print(t10)
-""" plt.plot(t10, dis10)
-plt.title('Time vs AR 3D Displacement')
-plt.xlabel('Time')
-plt.ylabel('Diplacement')
-plt.show()
-
-plt.plot(t13, dis13)
-plt.title('Time vs AL 3D Displacement')
-plt.xlabel('Time')
-plt.ylabel('Diplacement')
-plt.show() """
-
 # Create DigitalFilter object
 f = DigitalFilter()
 
