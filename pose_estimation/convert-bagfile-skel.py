@@ -86,8 +86,8 @@ if __name__ == "__main__":
         # Configure depth and color streams of the intel realsense
         config = rs.config()
         config.enable_device_from_file("file.bag", False)
-        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+        config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
+        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
