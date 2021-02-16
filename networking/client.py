@@ -48,4 +48,4 @@ class Client:
 "Call client function of Client class as example"
 client = Client()
 
-client.client('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\lower_body_example.txt')
+client.client('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\lower_body_example.txt')

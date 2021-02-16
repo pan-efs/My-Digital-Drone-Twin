@@ -12,7 +12,7 @@ from biomechanics.biomechanics2D import LinearKinematics as LinearKinematics
 #
 
 
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\LK_flexion_extension.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\LK_flexion_extension.txt'
 
 # Convert .txt to dataframe
 df = pd.read_csv(file_path, delimiter = ",", header = None)
