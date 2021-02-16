@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
+from filters.digital_filter import DigitalFilter as DigitalFilter
 
 # Define the desired paths here
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos\\3d_joints.txt'
@@ -24,6 +26,7 @@ remove_brackets(file_path)
 df = pd.read_csv(out_path, delimiter = ",", header = None)
 
 # FPS and create time array
+# TODO: This method looks more like a dummy timestamp, yet it works but should be modified in the future.
 dt = 1/30
 time_arr = []
 
@@ -84,7 +87,7 @@ del joint_17['joint_index']
 joint_0 = joint_0.reset_index(drop=True)
 joint_1 = joint_1.reset_index(drop=True)
 joint_2 = joint_2.reset_index(drop=True)
-joint_3 = joint_4.reset_index(drop=True)
+joint_3 = joint_3.reset_index(drop=True)
 joint_4 = joint_4.reset_index(drop=True)
 joint_5 = joint_5.reset_index(drop=True)
 joint_6 = joint_6.reset_index(drop=True)
@@ -104,7 +107,33 @@ joint_17 = joint_17.reset_index(drop=True)
 k = LinearKinematics()
 
 # Calculate speeds 
-speed_re = k.calculate_speed(joint_17)
-speed_nose = k.calculate_speed(joint_0)
-print(speed_nose)
-print(speed_re)
+time_re, speed_re = k.calculate_speed(joint_17)
+time_nose ,speed_nose = k.calculate_speed(joint_0)
+
+# Calculate displacements
+t10, _, _, _, dis10 = k.calculate_displacement(joint_10)
+t13, _, _, _, dis13 = k.calculate_displacement(joint_13)
+
+print(t10)
+""" plt.plot(t10, dis10)
+plt.title('Time vs AR 3D Displacement')
+plt.xlabel('Time')
+plt.ylabel('Diplacement')
+plt.show()
+
+plt.plot(t13, dis13)
+plt.title('Time vs AL 3D Displacement')
+plt.xlabel('Time')
+plt.ylabel('Diplacement')
+plt.show() """
+
+# Create DigitalFilter object
+f = DigitalFilter()
+
+z, z2, y = f.digital_filter(dis10, 3)
+f.visualization(dis10, z, z2, y, 'AL 3D Displacement')
+f.visualize_local_max_min(y, 'Local min-max AL 3D diplacement')
+
+z, z2, y = f.digital_filter(dis13, 3)
+f.visualization(dis10, z, z2, y, 'AR 3D Displacement')
+f.visualize_local_max_min(y, 'Local min-max AR 3D diplacement')
