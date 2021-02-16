@@ -36,7 +36,7 @@ class DigitalFilter:
         plt.legend(('noisy signal', 'lfilter, once', 'lfilter, twice',
             'filtfilt'), loc = 'best')
         plt.title(title)
-        plt.xlabel('Frames')
+        plt.xlabel('Timestamp')
         plt.ylabel('coords')
         plt.grid(True)
         plt.show()
@@ -55,7 +55,7 @@ class DigitalFilter:
         plt.scatter(df.index, df['min'], c='r')
         plt.scatter(df.index, df['max'], c='g')
         plt.title('filtfilt: ' + name)
-        plt.xlabel('Frames')
+        plt.xlabel('Timestamp')
         plt.ylabel('coords')
         plt.plot(df.index, df['filtfilt'])
         plt.show()
