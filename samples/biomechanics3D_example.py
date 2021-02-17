@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
+from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
 
 # Define the desired paths here
@@ -22,6 +23,18 @@ def remove_brackets(text_file_path):
 # Call helper function
 remove_brackets(file_path)
 
+# Helper function returning the same length among arrays
+def get_same_length(arr1, arr2, arr3):
+    len1 = len(arr1)
+    len2 = len(arr2)
+    len3 = len(arr3)
+    min_len = min(len1, len2, len3)
+    
+    arr1 = arr1[:min_len]
+    arr2 = arr2[:min_len]
+    arr3 = arr3[:min_len]
+    return arr1, arr2, arr3
+
 # Convert .txt to dataframe
 df = pd.read_csv(out_path, delimiter = ",", header = None)
 
@@ -34,13 +47,13 @@ for i in range(0, df.shape[0]):
     time_arr.append(dt*i)
 
 # Create time dataframe
-time_df = pd.DataFrame(time_arr, columns = ['time'])
+#time_df = pd.DataFrame(time_arr, columns = ['time'])
 
 # Concat time_df with the rest of data
-df = pd.concat([time_df, df], axis = 1)
+#df = pd.concat([time_df, df], axis = 1)
 
 # Rename columns
-df = df.rename({'time': 'time', 0: 'joint_index', 1: 'joint_x', 2: 'joint_y', 3: 'joint_z'},
+df = df.rename({0: 'joint_index', 1: 'joint_x', 2: 'joint_y', 3: 'joint_z'},
                 axis = 'columns')
 
 # Split dataframe according to joint_index
@@ -103,24 +116,104 @@ joint_15 = joint_15.reset_index(drop=True)
 joint_16 = joint_16.reset_index(drop=True)
 joint_17 = joint_17.reset_index(drop=True)
 
-# Create biomechanics3D object
+# Create biomechanics3D objects
 k = LinearKinematics()
-
-# Calculate speeds 
-time_re, speed_re = k.calculate_speed(joint_17)
-time_nose ,speed_nose = k.calculate_speed(joint_0)
-
-# Calculate displacements
-t10, _, _, _, dis10 = k.calculate_displacement(joint_10)
-t13, _, _, _, dis13 = k.calculate_displacement(joint_13)
+a = AngularKinematics()
 
 # Create DigitalFilter object
 f = DigitalFilter()
 
-z, z2, y = f.digital_filter(dis10, 3)
-f.visualization(dis10, z, z2, y, 'AL 3D Displacement')
-f.visualize_local_max_min(y, 'Local min-max AL 3D diplacement')
+# This technique is repeated for each joint
+# Right hip
+arr_8x = joint_8['joint_x'].to_numpy()
+arr_8y = joint_8['joint_y'].to_numpy()
+arr_8z = joint_8['joint_z'].to_numpy()
 
-z, z2, y = f.digital_filter(dis13, 3)
-f.visualization(dis10, z, z2, y, 'AR 3D Displacement')
-f.visualize_local_max_min(y, 'Local min-max AR 3D diplacement')
+z8x, z2_8x, y8x = f.digital_filter(arr_8x, 3)
+z8y, z2_8y, y8y = f.digital_filter(arr_8y, 3)
+z8z, z2_8z, y8z = f.digital_filter(arr_8z, 3)
+
+# Right knee
+arr_9x = joint_9['joint_x'].to_numpy()
+arr_9y = joint_9['joint_y'].to_numpy()
+arr_9z = joint_9['joint_z'].to_numpy()
+
+z9x, z2_9x, y9x = f.digital_filter(arr_9x, 3)
+z9y, z2_9y, y9y = f.digital_filter(arr_9y, 3)
+z9z, z2_9z, y9z = f.digital_filter(arr_9z, 3)
+
+# Right ankle
+arr_10x = joint_10['joint_x'].to_numpy()
+arr_10y = joint_10['joint_y'].to_numpy()
+arr_10z = joint_10['joint_z'].to_numpy()
+
+z10x, z2_10x, y10x = f.digital_filter(arr_10x, 3)
+z10y, z2_10y, y10y = f.digital_filter(arr_10y, 3)
+z10z, z2_10z, y10z = f.digital_filter(arr_10z, 3)
+
+# Left hip
+arr_11x = joint_11['joint_x'].to_numpy()
+arr_11y = joint_11['joint_y'].to_numpy()
+arr_11z = joint_11['joint_z'].to_numpy()
+
+z11x, z2_11x, y11x = f.digital_filter(arr_11x, 3)
+z11y, z2_11y, y11y = f.digital_filter(arr_11y, 3)
+z11z, z2_11z, y11z = f.digital_filter(arr_11z, 3)
+
+# Left knee
+arr_12x = joint_12['joint_x'].to_numpy()
+arr_12y = joint_12['joint_y'].to_numpy()
+arr_12z = joint_12['joint_z'].to_numpy()
+
+z12x, z2_12x, y12x = f.digital_filter(arr_12x, 3)
+z12y, z2_12y, y12y = f.digital_filter(arr_12y, 3)
+z12z, z2_12z, y12z = f.digital_filter(arr_12z, 3)
+
+# Left ankle
+arr_13x = joint_13['joint_x'].to_numpy()
+arr_13y = joint_13['joint_y'].to_numpy()
+arr_13z = joint_13['joint_z'].to_numpy()
+
+z13x, z2_13x, y13x = f.digital_filter(arr_13x, 3)
+z13y, z2_13y, y13y = f.digital_filter(arr_13y, 3)
+z13z, z2_13z, y13z = f.digital_filter(arr_13z, 3)
+
+# Create lists with x,y,z coords together
+arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
+
+for i in range(0, len(y8x) - 1):
+    a8 = [y8x[i], y8y[i], y8z[i]]
+    arr8.append(a8)
+
+for i in range(0, len(y9x) - 1):   
+    a9 = [y9x[i], y9y[i], y9z[i]]
+    arr9.append(a9)
+
+for i in range(0, len(y10x) - 1):
+    a10 = [y10x[i], y10y[i], y10z[i]]
+    arr10.append(a10)
+
+for i in range(0, len(y11x) - 1):
+    a11 = [y11x[i], y11y[i], y11z[i]]
+    arr11.append(a11)
+
+for i in range(0, len(y12x) - 1):
+    a12 = [y12x[i], y12y[i], y12z[i]]
+    arr12.append(a12)
+
+for i in range(0, len(y13x) - 1):
+    a13 = [y13x[i], y13y[i], y13z[i]]
+    arr13.append(a13)
+
+# Get the same length
+# Can be occured some light differences among arrays 
+r8, r9, r10 = get_same_length(arr8, arr9, arr10)
+r11, r12, r13 = get_same_length(arr11, arr12, arr13)
+
+# Calculate theta
+theta = []
+for i in range(0, len(r8) - 1):
+        th = a.calculate_3d_angle(np.asarray(r8[i]), np.asarray(r9[i]), np.asarray(r10[i]))
+        theta.append(th)
+        
+print(theta)
