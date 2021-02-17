@@ -15,8 +15,15 @@ class AngularKinematics:
 
     "Returns: [float]: [angle],  [units]: degrees"
     def calculate_3d_angle(self, A: np.ndarray, B: np.ndarray, C: np.ndarray):
-        theta = math.degrees(math.acos((A - B)*(C - B) / (abs(A - B)*abs(C - B))))
+        ba = A - B
+        bc = C - B
+
+        cosine = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
+        angle = np.arccos(cosine)
+        theta = np.degrees(angle)
         return theta
+        
+    
         
 class LinearKinematics:
     """
@@ -95,4 +102,3 @@ class LinearKinematics:
             r.append(resultant)
             
         return time, dx, dy, dz, r
-        
