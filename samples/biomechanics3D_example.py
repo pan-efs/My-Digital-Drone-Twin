@@ -6,7 +6,7 @@ from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
 
 # Define the desired paths here
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\3d_joints.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\3d_ifocam_flex_leftleg.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
 
 # Helper function to clean the text file from brackets
@@ -215,5 +215,8 @@ theta = []
 for i in range(0, len(r8) - 1):
         th = a.calculate_3d_angle(np.asarray(r8[i]), np.asarray(r9[i]), np.asarray(r10[i]))
         theta.append(th)
-        
-print(theta)
+
+# Visualize knee angle
+plt.plot(theta, c = 'g')
+plt.title('Knee angle')
+plt.show()
