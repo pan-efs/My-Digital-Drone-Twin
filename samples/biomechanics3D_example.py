@@ -6,7 +6,7 @@ from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
 
 # Define the desired paths here
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\3d_ifocam_flex_leftleg.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_backside.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
 
 # Helper function to clean the text file from brackets
@@ -170,14 +170,14 @@ z12y, z2_12y, y12y = f.digital_filter(arr_12y, 3)
 z12z, z2_12z, y12z = f.digital_filter(arr_12z, 3)
 
 # Left ankle
-arr_13x = joint_13['joint_x'].to_numpy()
+""" arr_13x = joint_13['joint_x'].to_numpy()
 arr_13y = joint_13['joint_y'].to_numpy()
 arr_13z = joint_13['joint_z'].to_numpy()
 
 z13x, z2_13x, y13x = f.digital_filter(arr_13x, 3)
 z13y, z2_13y, y13y = f.digital_filter(arr_13y, 3)
 z13z, z2_13z, y13z = f.digital_filter(arr_13z, 3)
-
+"""
 # Create lists with x,y,z coords together
 arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
 
@@ -201,22 +201,26 @@ for i in range(0, len(y12x) - 1):
     a12 = [y12x[i], y12y[i], y12z[i]]
     arr12.append(a12)
 
-for i in range(0, len(y13x) - 1):
+""" for i in range(0, len(y13x) - 1):
     a13 = [y13x[i], y13y[i], y13z[i]]
-    arr13.append(a13)
+    arr13.append(a13) """
 
 # Get the same length
 # Can be occured some light differences among arrays 
 r8, r9, r10 = get_same_length(arr8, arr9, arr10)
 r11, r12, r13 = get_same_length(arr11, arr12, arr13)
 
-# Calculate theta
+# Calculate theta angle for right knee
 theta = []
 for i in range(0, len(r8) - 1):
         th = a.calculate_3d_angle(np.asarray(r8[i]), np.asarray(r9[i]), np.asarray(r10[i]))
         theta.append(th)
 
-# Visualize knee angle
-plt.plot(theta, c = 'g')
-plt.title('Knee angle')
+# Visualize right knee angle
+plt.plot(theta, c = 'peru')
+plt.title('Estimation of right knee angle during cycling. Camera is behind subject.')
+plt.legend('R')
+plt.text(450, 152, r'Subject: pef', fontsize=10)
+plt.ylabel('Degrees')
+plt.xlabel('Frames')
 plt.show()
