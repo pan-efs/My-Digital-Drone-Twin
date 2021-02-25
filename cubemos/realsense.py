@@ -135,7 +135,9 @@ if __name__ == "__main__":
         config = rs.config()
         config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
+        
         # TODO: Save .bag file
+        # Video can be saved from SDK of RealSense
         config.enable_record_to_file("file_new.bag")
 
         # Start the realsense pipeline
