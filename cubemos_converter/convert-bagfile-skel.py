@@ -20,7 +20,7 @@ def render_ids_3d(
         skeleton_2D = skeletons_2d[skeleton_index]
         joints_2D = skeleton_2D.joints
         did_once = False
-        for joint_index in range(len(joints_2D)-5):
+        for joint_index in range(len(joints_2D)-4):
             if did_once == False:
                 cv2.putText(
                     render_image,
