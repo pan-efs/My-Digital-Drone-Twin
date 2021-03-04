@@ -16,11 +16,11 @@ def render_ids_3d(
     rows, cols, channel = render_image.shape[:3]
     distance_kernel_size = 5
     # calculate 3D keypoints and display them
-    for skeleton_index in range(len(skeletons_2d)):
+    for skeleton_index in range(len(skeletons_2d)): 
         skeleton_2D = skeletons_2d[skeleton_index]
         joints_2D = skeleton_2D.joints
         did_once = False
-        for joint_index in range(len(joints_2D)-4):
+        for joint_index in range(len(joints_2D)): # all joints, *use e.g. -x in order to remove not desired joints
             if did_once == False:
                 cv2.putText(
                     render_image,
@@ -87,9 +87,9 @@ if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_device_from_file("C:\\Users\\Drone\\Desktop\\Panagiotis\\Cycling data\\20210218_113953.bag", False)
+        config.enable_device_from_file("C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\20210304_102205.bag", False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 60)
+        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         #config.enable_stream(rs.stream.infrared, 1024, 768, rs.format.y8, 30)
         #config.enable_stream(rs.stream.confidence, 1024, 768, rs.format.raw8, 30)
 
