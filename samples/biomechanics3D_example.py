@@ -6,7 +6,7 @@ from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
 
 # Define the desired paths here
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_mj.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_pef.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
 
 # Helper function to clean the text file from brackets
@@ -178,7 +178,34 @@ z13x, z2_13x, y13x = f.digital_filter(arr_13x, 3)
 z13y, z2_13y, y13y = f.digital_filter(arr_13y, 3)
 z13z, z2_13z, y13z = f.digital_filter(arr_13z, 3)
 
-# Create lists with x,y,z coords together
+# Create list with x,y,z coords together (unfiltered coordinates)
+uarr8, uarr9, uarr10, uarr11, uarr12, uarr13 = ([] for i in range(6))
+
+for i in range(0, len(y8x) - 1):
+    ua8 = [arr_8x[i], arr_8y[i], arr_8z[i]]
+    uarr8.append(ua8)
+
+for i in range(0, len(y9x) - 1):   
+    ua9 = [arr_9x[i], arr_9y[i], arr_9z[i]]
+    uarr9.append(ua9)
+
+for i in range(0, len(y10x) - 1):
+    ua10 = [arr_10x[i], arr_10y[i], arr_10z[i]]
+    uarr10.append(ua10)
+
+for i in range(0, len(y11x) - 1):
+    ua11 = [arr_11x[i], arr_11y[i], arr_11z[i]]
+    uarr11.append(ua11)
+
+for i in range(0, len(y12x) - 1):
+    ua12 = [arr_12x[i], arr_12y[i], arr_12z[i]]
+    uarr12.append(ua12)
+
+for i in range(0, len(y13x) - 1):
+    ua13 = [arr_13x[i], arr_13y[i], arr_13z[i]]
+    uarr13.append(ua13)
+
+# Create lists with x,y,z coords together (filtered coordinates)
 arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
 
 for i in range(0, len(y8x) - 1):
@@ -205,29 +232,58 @@ for i in range(0, len(y13x) - 1):
     a13 = [y13x[i], y13y[i], y13z[i]]
     arr13.append(a13)
 
-# Get the same length
+# Get the same length (unfiltered coordinates)
+# Can be occured some light differences among arrays 
+ur8, ur9, ur10 = get_same_length(uarr8, uarr9, uarr10)
+ur11, ur12, ur13 = get_same_length(uarr11, uarr12, uarr13)
+
+# Get the same length (filtered coordinates)
 # Can be occured some light differences among arrays 
 r8, r9, r10 = get_same_length(arr8, arr9, arr10)
 r11, r12, r13 = get_same_length(arr11, arr12, arr13)
 
-# Calculate theta angle for right knee
+# Calculate theta angle for right knee (unfiltered coordinates)
+un_theta_right, un_theta_left = ([] for i in range(2))
+for i in range(0, len(ur8) - 1):
+    un_th_right = a.calculate_3d_angle(np.asarray(ur8[i]), np.asarray(ur9[i]), np.asarray(ur10[i]))
+    un_theta_right.append(un_th_right)
+
+# Calculate theta angle for left knee (unfiltered coordinates)
+for i in range(0, len(ur11) - 1):
+    un_th_left = a.calculate_3d_angle(np.asarray(ur11[i]), np.asarray(ur12[i]), np.asarray(ur13[i]))
+    un_theta_left.append(un_th_left)
+
+# Calculate theta angle for right knee (filtered coordinates)
 theta_right, theta_left = ([] for i in range(2))
 for i in range(0, len(r8) - 1):
     th_right = a.calculate_3d_angle(np.asarray(r8[i]), np.asarray(r9[i]), np.asarray(r10[i]))
     theta_right.append(th_right)
 
+# Calculate theta angle for left knee (filtered coordinates)
 for i in range(0, len(r11) - 1):
     th_left = a.calculate_3d_angle(np.asarray(r11[i]), np.asarray(r12[i]), np.asarray(r13[i]))
     theta_left.append(th_left)
 
-# Visualize right knee angle
+# Visualize right and left knee angle (filtered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
-ax1.plot(theta_right)
-ax1.set_title('Knee Right')
+ax1.plot(un_theta_right)
+ax1.set_title('Knee Right (unfiltered)')
 ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 
-ax2.plot(theta_left)
-ax2.set_title('Knee Left')
+ax2.plot(un_theta_left)
+ax2.set_title('Knee Left (unfiltered)')
 ax2.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+
+plt.show()
+
+# Visualize right and left knee angle (filtered data)
+fig, (ax3,ax4) = plt.subplots(1,2)
+ax3.plot(theta_right)
+ax3.set_title('Knee Right (filtered)')
+ax3.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+
+ax4.plot(theta_left)
+ax4.set_title('Knee Left (filtered)')
+ax4.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 
 plt.show()
