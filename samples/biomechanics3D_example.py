@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
 from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
+from stats.utils_stats import Stats_utils as stats_utils
 
 # Define the desired paths here
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_pef.txt'
@@ -264,7 +265,15 @@ for i in range(0, len(r11) - 1):
     th_left = a.calculate_3d_angle(np.asarray(r11[i]), np.asarray(r12[i]), np.asarray(r13[i]))
     theta_left.append(th_left)
 
-# Visualize right and left knee angle (filtered data)
+# Calculate std_dev and variance for unfiltered and filtered coordinates
+stats = stats_utils()
+
+stats_log_theta_right = stats.stats_log(theta_right)
+stats_log_theta_left = stats.stats_log(theta_left)
+stats_log_un_theta_right = stats.stats_log(un_theta_right)
+stats_log_un_theta_left = stats.stats_log(un_theta_left)
+
+# Visualize right and left knee angle (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
 ax1.plot(un_theta_right)
 ax1.set_title('Knee Right (unfiltered)')
@@ -273,6 +282,18 @@ ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 ax2.plot(un_theta_left)
 ax2.set_title('Knee Left (unfiltered)')
 ax2.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+
+plt.show()
+
+# Visualize log stats for knee angle (unfiltered data)
+fig, (ax0, ax5) = plt.subplots(1,2)
+ax0.bar(*zip(*stats_log_un_theta_right.items()))
+ax0.set_title('Knee Right (unfiltered)')
+ax0.set(ylabel = 'degrees')
+
+ax5.bar(*zip(*stats_log_un_theta_left.items()))
+ax5.set_title('Knee Left (unfiltered)')
+ax5.set(ylabel = 'degrees')
 
 plt.show()
 
@@ -285,5 +306,17 @@ ax3.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 ax4.plot(theta_left)
 ax4.set_title('Knee Left (filtered)')
 ax4.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+
+plt.show()
+
+# Visualize log stats for knee angle (filtered data)
+fig, (ax6, ax7) = plt.subplots(1,2)
+ax6.bar(*zip(*stats_log_theta_right.items()))
+ax6.set_title('Knee Right (filtered)')
+ax6.set(ylabel = 'degrees')
+
+ax7.bar(*zip(*stats_log_theta_left.items()))
+ax7.set_title('Knee Left (filtered)')
+ax7.set(ylabel = 'degrees')
 
 plt.show()
