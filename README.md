@@ -24,7 +24,7 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 ```
 {
 
-    "python.pythonPath": "C:\\Users\\user\\miniconda3\\envs\\thesis\\python.exe",
+    "python.pythonPath": "C:\\Users\\<user name>\\miniconda3\\envs\\thesis\\python.exe",
     "python.linting.pylintArgs": ["--generate-members"],
 
 }
