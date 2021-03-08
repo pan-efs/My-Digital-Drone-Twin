@@ -10,10 +10,11 @@ setup(
     license="Creative Commons Zero v1.0 Universal",
     packages=[
         "biomechanics",
-        "pose_estimation",
+        "cubemos_converter",
         "filters",
         "cubemos",
-        "networking"      
+        "networking",
+        "stats",      
     ],
     install_requires=[
         "pandas", 
