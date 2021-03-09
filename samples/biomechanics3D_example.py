@@ -268,10 +268,10 @@ for i in range(0, len(r11) - 1):
 # Calculate std_dev and variance for unfiltered and filtered coordinates
 stats = stats_utils()
 
-stats_log_theta_right = stats.stats_log(theta_right)
-stats_log_theta_left = stats.stats_log(theta_left)
-stats_log_un_theta_right = stats.stats_log(un_theta_right)
-stats_log_un_theta_left = stats.stats_log(un_theta_left)
+stats_log_theta_right, per_theta_right = stats.stats_log(theta_right)
+stats_log_theta_left, per_theta_left = stats.stats_log(theta_left)
+stats_log_un_theta_right, per_un_theta_right = stats.stats_log(un_theta_right)
+stats_log_un_theta_left, per_un_theta_left = stats.stats_log(un_theta_left)
 
 # Visualize right and left knee angle (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
@@ -320,3 +320,13 @@ ax7.set_title('Knee Left (filtered)')
 ax7.set(ylabel = 'degrees')
 
 plt.show()
+
+# Print percentiles as DataFrames
+per_list = [per_un_theta_right, per_un_theta_left, per_theta_right, per_theta_left]
+per_names = ['Knee Right Unfiltered:', 'Knee Left Unfiltered:', 'Knee Right Filtered:', 'Knee Left Filtered:']
+
+for i in range(0, len(per_list)):
+    df = pd.DataFrame(per_list[i], columns = [per_names[i]])
+    df = df.T
+    df.rename(columns = {0: '5th', 1: '25th', 2: '50th', 3: '75th', 4: '90th', 5: '99th'}, inplace = True)
+    print(df)
