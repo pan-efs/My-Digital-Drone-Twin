@@ -37,13 +37,20 @@ class Stats_utils:
         
         return avg
     
+    def percentile(self, ls: list):
+        arr = np.array(ls)
+        per = np.percentile(arr, [5, 25, 50, 75, 90, 99])
+        
+        return per
+    
     def stats_log(self, ls: list):
         std_dev = self.standard_deviation(ls)
         var = self.variance(ls)
         minim = self.minimum(ls)
         mean = self.mean(ls)
         maxim = self.maximum(ls)
+        per = self.percentile(ls)
         
         log = {'min': minim, 'mean': mean, 'max': maxim, 'std_dev': std_dev, 'variance': var}
         
-        return log
+        return log, per
