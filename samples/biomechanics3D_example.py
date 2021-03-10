@@ -4,11 +4,18 @@ import matplotlib.pyplot as plt
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
 from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
+from filters.kalmanFilter import Kalman_filters as Kalman_filters
 from stats.utils_stats import Stats_utils as stats_utils
+
+#--------START FILE--------#
 
 # Define the desired paths here
 file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_pef.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
+
+#--------END FILE--------#
+
+#--------START HELPER FUNCTIONS--------#
 
 # Helper function to clean the text file from brackets
 def remove_brackets(text_file_path):
@@ -36,22 +43,12 @@ def get_same_length(arr1, arr2, arr3):
     arr3 = arr3[:min_len]
     return arr1, arr2, arr3
 
+#--------END HELPER FUNCTIONS--------#
+
+#--------START DATAFRAME PROCESSING--------#
+
 # Convert .txt to dataframe
 df = pd.read_csv(out_path, delimiter = ",", header = None)
-
-# FPS and create time array
-# TODO: This method looks more like a dummy timestamp, yet it works but should be modified in the future.
-#dt = 1/30
-#time_arr = []
-
-#for i in range(0, df.shape[0]):
-#    time_arr.append(dt*i)
-
-# Create time dataframe
-#time_df = pd.DataFrame(time_arr, columns = ['time'])
-
-# Concat time_df with the rest of data
-#df = pd.concat([time_df, df], axis = 1)
 
 # Rename columns
 df = df.rename({0: 'joint_index', 1: 'joint_x', 2: 'joint_y', 3: 'joint_z'},
@@ -117,12 +114,24 @@ joint_15 = joint_15.reset_index(drop=True)
 joint_16 = joint_16.reset_index(drop=True)
 joint_17 = joint_17.reset_index(drop=True)
 
+#--------END DATAFRAME PROCESSING--------#
+
+#--------START CREATE OBJECTS--------#
+
 # Create biomechanics3D objects
 k = LinearKinematics()
 a = AngularKinematics()
 
-# Create DigitalFilter object
+# Create filters objects
 f = DigitalFilter()
+fil = Kalman_filters()
+
+# Statistics
+stats = stats_utils()
+
+#--------END CREATE OBJECTS--------#
+
+#--------START FILTERING--------#
 
 # This technique is repeated for each joint
 # Right hip
@@ -130,54 +139,84 @@ arr_8x = joint_8['joint_x'].to_numpy()
 arr_8y = joint_8['joint_y'].to_numpy()
 arr_8z = joint_8['joint_z'].to_numpy()
 
+# BW
 z8x, z2_8x, y8x = f.digital_filter(arr_8x, 3)
 z8y, z2_8y, y8y = f.digital_filter(arr_8y, 3)
 z8z, z2_8z, y8z = f.digital_filter(arr_8z, 3)
+# KF, RTS
+M8x, mu8x = fil.smoothing_filter(arr_8x)
+M8y, mu8y = fil.smoothing_filter(arr_8y)
+M8z, mu8z = fil.smoothing_filter(arr_8z) 
 
 # Right knee
 arr_9x = joint_9['joint_x'].to_numpy()
 arr_9y = joint_9['joint_y'].to_numpy()
 arr_9z = joint_9['joint_z'].to_numpy()
 
+# BW
 z9x, z2_9x, y9x = f.digital_filter(arr_9x, 3)
 z9y, z2_9y, y9y = f.digital_filter(arr_9y, 3)
 z9z, z2_9z, y9z = f.digital_filter(arr_9z, 3)
+# KF, RTS
+M9x, mu9x = fil.smoothing_filter(arr_9x)
+M9y, mu9y = fil.smoothing_filter(arr_9y)
+M9z, mu9z = fil.smoothing_filter(arr_9z)
 
 # Right ankle
 arr_10x = joint_10['joint_x'].to_numpy()
 arr_10y = joint_10['joint_y'].to_numpy()
 arr_10z = joint_10['joint_z'].to_numpy()
 
+# BW
 z10x, z2_10x, y10x = f.digital_filter(arr_10x, 3)
 z10y, z2_10y, y10y = f.digital_filter(arr_10y, 3)
 z10z, z2_10z, y10z = f.digital_filter(arr_10z, 3)
+# KF, RTS
+M10x, mu10x = fil.smoothing_filter(arr_10x)
+M10y, mu10y = fil.smoothing_filter(arr_10y)
+M10z, mu10z = fil.smoothing_filter(arr_10z)
 
 # Left hip
 arr_11x = joint_11['joint_x'].to_numpy()
 arr_11y = joint_11['joint_y'].to_numpy()
 arr_11z = joint_11['joint_z'].to_numpy()
 
+#BW
 z11x, z2_11x, y11x = f.digital_filter(arr_11x, 3)
 z11y, z2_11y, y11y = f.digital_filter(arr_11y, 3)
 z11z, z2_11z, y11z = f.digital_filter(arr_11z, 3)
+# KF, RTS
+M11x, mu11x = fil.smoothing_filter(arr_11x)
+M11y, mu11y = fil.smoothing_filter(arr_11y)
+M11z, mu11z = fil.smoothing_filter(arr_11z)
 
 # Left knee
 arr_12x = joint_12['joint_x'].to_numpy()
 arr_12y = joint_12['joint_y'].to_numpy()
 arr_12z = joint_12['joint_z'].to_numpy()
 
+# BW
 z12x, z2_12x, y12x = f.digital_filter(arr_12x, 3)
 z12y, z2_12y, y12y = f.digital_filter(arr_12y, 3)
 z12z, z2_12z, y12z = f.digital_filter(arr_12z, 3)
+# KF, RTS
+M12x, mu12x = fil.smoothing_filter(arr_12x)
+M12y, mu12y = fil.smoothing_filter(arr_12y)
+M12z, mu12z = fil.smoothing_filter(arr_12z)
 
 # Left ankle
 arr_13x = joint_13['joint_x'].to_numpy()
 arr_13y = joint_13['joint_y'].to_numpy()
 arr_13z = joint_13['joint_z'].to_numpy()
 
+# BW
 z13x, z2_13x, y13x = f.digital_filter(arr_13x, 3)
 z13y, z2_13y, y13y = f.digital_filter(arr_13y, 3)
 z13z, z2_13z, y13z = f.digital_filter(arr_13z, 3)
+# KF, RTS
+M13x, mu13x = fil.smoothing_filter(arr_13x)
+M13y, mu13y = fil.smoothing_filter(arr_13y)
+M13z, mu13z = fil.smoothing_filter(arr_13z)
 
 # Create list with x,y,z coords together (unfiltered coordinates)
 uarr8, uarr9, uarr10, uarr11, uarr12, uarr13 = ([] for i in range(6))
@@ -206,7 +245,7 @@ for i in range(0, len(y13x) - 1):
     ua13 = [arr_13x[i], arr_13y[i], arr_13z[i]]
     uarr13.append(ua13)
 
-# Create lists with x,y,z coords together (filtered coordinates)
+# Create lists with x,y,z coords together (filtered BW coordinates)
 arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
 
 for i in range(0, len(y8x) - 1):
@@ -233,15 +272,67 @@ for i in range(0, len(y13x) - 1):
     a13 = [y13x[i], y13y[i], y13z[i]]
     arr13.append(a13)
 
+# Create lists with x,y,z coords together (filtered KF, RTS coordinates)
+karr8, karr9, karr10, karr11, karr12, karr13 = ([] for i in range(6))
+rarr8, rarr9, rarr10, rarr11, rarr12, rarr13 = ([] for i in range(6))
+
+for i in range(0, len(mu8x) - 1):
+    ka8 = [mu8x[i][0], mu8y[i][0], mu8z[i][0]]
+    karr8.append(ka8)
+    ra8 = [M8x[i][0], M8y[i][0], M8z[i][0]]
+    rarr8.append(ra8)
+
+for i in range(0, len(mu9x) - 1):
+    ka9 = [mu9x[i][0], mu9y[i][0], mu9z[i][0]]
+    karr9.append(ka9)
+    ra9 = [M9x[i][0], M9y[i][0], M9z[i][0]]
+    rarr9.append(ra9)
+
+for i in range(0, len(mu10x) - 1):
+    ka10 = [mu10x[i][0], mu10y[i][0], mu10z[i][0]]
+    karr10.append(ka10)
+    ra10 = [M10x[i][0], M10y[i][0], M10z[i][0]]
+    rarr10.append(ra10)
+
+for i in range(0, len(mu11x) - 1):
+    ka11 = [mu11x[i][0], mu11y[i][0], mu11z[i][0]]
+    karr11.append(ka11)
+    ra11 = [M11x[i][0], M11y[i][0], M11z[i][0]]
+    rarr11.append(ra11)
+
+for i in range(0, len(mu12x) - 1):
+    ka12 = [mu12x[i][0], mu12y[i][0], mu12z[i][0]]
+    karr12.append(ka12)
+    ra12 = [M12x[i][0], M12y[i][0], M12z[i][0]]
+    rarr12.append(ra12)
+
+for i in range(0, len(mu13x) - 1):
+    ka13 = [mu13x[i][0], mu13y[i][0], mu13z[i][0]]
+    karr13.append(ka13)
+    ra13 = [M13x[i][0], M13y[i][0], M13z[i][0]]
+    rarr13.append(ra13)
+
+#--------END FILTERING--------#
+
+#--------START FIX SIZE--------#
+
 # Get the same length (unfiltered coordinates)
-# Can be occured some light differences among arrays 
 ur8, ur9, ur10 = get_same_length(uarr8, uarr9, uarr10)
 ur11, ur12, ur13 = get_same_length(uarr11, uarr12, uarr13)
 
-# Get the same length (filtered coordinates)
-# Can be occured some light differences among arrays 
+# Get the same length (filtered BW coordinates) 
 r8, r9, r10 = get_same_length(arr8, arr9, arr10)
 r11, r12, r13 = get_same_length(arr11, arr12, arr13)
+
+# Get the same length (filtered KF, RTS coordinates) 
+kr8, kr9, kr10 = get_same_length(karr8, karr9, karr10)
+kr11, kr12, kr13 = get_same_length(karr11, karr12, karr13)
+rr8, rr9, rr10 = get_same_length(rarr8, rarr9, rarr10)
+rr11, rr12, rr13 = get_same_length(rarr11, rarr12, rarr13)
+
+#--------END FIX SIZE--------#
+
+#--------START 3D ANGLE CALCULATIONS--------#
 
 # Calculate theta angle for right knee (unfiltered coordinates)
 un_theta_right, un_theta_left = ([] for i in range(2))
@@ -254,24 +345,50 @@ for i in range(0, len(ur11) - 1):
     un_th_left = a.calculate_3d_angle(np.asarray(ur11[i]), np.asarray(ur12[i]), np.asarray(ur13[i]))
     un_theta_left.append(un_th_left)
 
-# Calculate theta angle for right knee (filtered coordinates)
+# Calculate theta angle for right knee (filtered BW coordinates)
 theta_right, theta_left = ([] for i in range(2))
 for i in range(0, len(r8) - 1):
     th_right = a.calculate_3d_angle(np.asarray(r8[i]), np.asarray(r9[i]), np.asarray(r10[i]))
     theta_right.append(th_right)
 
-# Calculate theta angle for left knee (filtered coordinates)
+# Calculate theta angle for left knee (filtered BW coordinates)
 for i in range(0, len(r11) - 1):
     th_left = a.calculate_3d_angle(np.asarray(r11[i]), np.asarray(r12[i]), np.asarray(r13[i]))
     theta_left.append(th_left)
 
+# Calculate theta angle for right knee (filtered KF, RTS coordinates)
+kf_theta_right, kf_theta_left, rts_theta_right, rts_theta_left= ([] for i in range(4))
+for i in range(0, len(kr8) - 1):
+    kf_th_right = a.calculate_3d_angle(np.asarray(kr8[i]), np.asarray(kr9[i]), np.asarray(kr10[i]))
+    kf_theta_right.append(kf_th_right)
+    rts_th_right = a.calculate_3d_angle(np.asarray(rr8[i]), np.asarray(rr9[i]), np.asarray(rr10[i]))
+    rts_theta_right.append(rts_th_right)
+
+# Calculate theta angle for left knee (filtered KF, RTS coordinates)
+for i in range(0, len(kr11) - 1):
+    kf_th_left = a.calculate_3d_angle(np.asarray(kr11[i]), np.asarray(kr12[i]), np.asarray(kr13[i]))
+    kf_theta_left.append(kf_th_left)
+    rts_th_left = a.calculate_3d_angle(np.asarray(rr11[i]), np.asarray(rr12[i]), np.asarray(rr13[i]))
+    rts_theta_left.append(rts_th_left)
+
+#--------END 3D ANGLE CALCULATIONS--------#
+
+#--------START STATISTICS--------#
+
 # Calculate std_dev and variance for unfiltered and filtered coordinates
-stats = stats_utils()
 
 stats_log_theta_right, per_theta_right = stats.stats_log(theta_right)
 stats_log_theta_left, per_theta_left = stats.stats_log(theta_left)
 stats_log_un_theta_right, per_un_theta_right = stats.stats_log(un_theta_right)
 stats_log_un_theta_left, per_un_theta_left = stats.stats_log(un_theta_left)
+stats_log_theta_right_KF, per_theta_right_KF = stats.stats_log(kf_theta_right)
+stats_log_theta_left_KF, per_theta_left_KF = stats.stats_log(kf_theta_left)
+stats_log_theta_right_RTS, per_theta_right_RTS = stats.stats_log(rts_theta_right)
+stats_log_theta_left_RTS, per_theta_left_RTS = stats.stats_log(rts_theta_left)
+
+#--------END STATISTICS--------#
+
+#--------START VISUALIZATION--------#
 
 # Visualize right and left knee angle (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
@@ -286,47 +403,66 @@ ax2.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 plt.show()
 
 # Visualize log stats for knee angle (unfiltered data)
-fig, (ax0, ax5) = plt.subplots(1,2)
-ax0.bar(*zip(*stats_log_un_theta_right.items()))
-ax0.set_title('Knee Right (unfiltered)')
-ax0.set(ylabel = 'degrees')
-
-ax5.bar(*zip(*stats_log_un_theta_left.items()))
-ax5.set_title('Knee Left (unfiltered)')
-ax5.set(ylabel = 'degrees')
-
-plt.show()
+stats.visualization(stats_log_un_theta_right, stats_log_un_theta_left, 'Knee right Unfiltered', 'Knee left Unfiltered')
 
 # Visualize right and left knee angle (filtered data)
 fig, (ax3,ax4) = plt.subplots(1,2)
 ax3.plot(theta_right)
-ax3.set_title('Knee Right (filtered)')
+ax3.set_title('Knee Right BW')
 ax3.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 
 ax4.plot(theta_left)
-ax4.set_title('Knee Left (filtered)')
+ax4.set_title('Knee Left BW')
 ax4.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 
 plt.show()
 
-# Visualize log stats for knee angle (filtered data)
-fig, (ax6, ax7) = plt.subplots(1,2)
-ax6.bar(*zip(*stats_log_theta_right.items()))
-ax6.set_title('Knee Right (filtered)')
-ax6.set(ylabel = 'degrees')
+# Visualize log stats for knee angle (filtered  BW data)
+stats.visualization(stats_log_theta_right, stats_log_theta_left, 'Knee right BW', 'Knee left BW')
 
-ax7.bar(*zip(*stats_log_theta_left.items()))
-ax7.set_title('Knee Left (filtered)')
-ax7.set(ylabel = 'degrees')
+# Visualization of RTS 
+fil.double_visualization(kf_theta_right, rts_theta_right, kf_theta_left, rts_theta_left,
+                        'Knee Right', 'Knee Left')
 
+# Visualisation stats log of KF and RTS
+stats.visualization(stats_log_theta_right_KF, stats_log_theta_left_KF, 'Knee right KF', 'Knee left KF')
+stats.visualization(stats_log_theta_right_RTS, stats_log_theta_left_RTS, 'Knee right RTS', 'Knee left RTS')
+
+# Plot all together (from unfiltered to filtered angles)
+fig, (ax1, ax2) = plt.subplots(1,2)
+ax1.plot(un_theta_right, c = 'black', label = 'Unfiltered', alpha = 0.5)
+ax1.plot(theta_right, c = 'cyan', label = 'BW')
+ax1.plot(kf_theta_right, c = 'yellow', label = 'KF')
+ax1.plot(rts_theta_right, c = 'r', label = 'RTS')
+ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+ax1.set_title('Knee Right')
+ax1.set_facecolor('grey')
+
+ax2.plot(un_theta_left, c = 'black', label = 'Unfiltered', alpha = 0.5)
+ax2.plot(theta_left, c = 'cyan', label = 'BW')
+ax2.plot(kf_theta_left, c = 'yellow', label = 'KF')
+ax2.plot(rts_theta_left, c = 'r', label = 'RTS')
+ax2.set(xlabel = 'Frames')
+ax2.set_title('Knee Left')
+ax2.set_facecolor('grey')
+
+plt.legend(loc = 4)
 plt.show()
 
+#--------END VISUALIZATION--------#
+
+#--------START PERCENTILES--------#
+
 # Print percentiles as DataFrames
-per_list = [per_un_theta_right, per_un_theta_left, per_theta_right, per_theta_left]
-per_names = ['Knee Right Unfiltered:', 'Knee Left Unfiltered:', 'Knee Right Filtered:', 'Knee Left Filtered:']
+per_list = [per_un_theta_right, per_un_theta_left, per_theta_right, per_theta_left, per_theta_right_KF, per_theta_left_KF,
+            per_theta_right_RTS, per_theta_left_RTS]
+per_names = ['Knee Right Unfiltered:', 'Knee Left Unfiltered:', 'Knee Right BW:', 'Knee Left BW:', 
+            'Knee Right KF:', 'Knee Left KF:', 'Knee Right RTS:', 'Knee Left RTS:']
 
 for i in range(0, len(per_list)):
     df = pd.DataFrame(per_list[i], columns = [per_names[i]])
     df = df.T
     df.rename(columns = {0: '5th', 1: '25th', 2: '50th', 3: '75th', 4: '90th', 5: '99th'}, inplace = True)
     print(df)
+
+#--------END PERCENTILES--------#
