@@ -1,82 +1,51 @@
-from pykalman import KalmanFilter
+from filterpy.kalman import KalmanFilter
+from filterpy.common import Q_discrete_white_noise
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-class kalmanFilter:
+class Kalman_filters:
+    def __init__(self):
+        pass
     
-    """
-    Description: [text]:
-    Kalman filter and Kalman smoother in order to "denoise" our skeleton data for each joint.
-    
-    Parameters: [array]: [an array of observations]
-    """
-    def kalman_filter(self, measurements: np.array):
-        "μ"
-        initial_state_mean = [0,0,0]
+    def smoothing_filter(self, data: np.ndarray):
+        fk = KalmanFilter(dim_x=2, dim_z=1)
+        fk.x = np.array([0., 1.])      # state (x and dx)
+        fk.F = np.array([[1., 1.],
+                        [0., 1.]])    # state transition matrix
+        fk.H = np.array([[1., 0.]])    # Measurement function
+        fk.P*= 10.                     # covariance matrix
+        fk.R = 25                   # state uncertainty
+        fk.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.001)  # process uncertainty
         
-        "A"
-        transition_matrix = [[1, 0, 0],
-                            [0, 1, 0],
-                            [0, 0, 1]]
+        mu, cov, _, _ = fk.batch_filter(data)
+        M, P, C, _ = fk.rts_smoother(mu, cov)
         
-        "Η"
-        observation_matrix = [[1, 0, 0],
-                            [0, 1, 0],
-                            [0, 0, 1]]
-        
-        "filter"
-        kf = KalmanFilter(transition_matrices = transition_matrix,
-                        observation_matrices = observation_matrix,
-                        initial_state_mean = initial_state_mean)
-        
-        "smooth"
-        kf = kf.em(measurements, n_iter = 5)
-        (smoothed_state_means, smoothed_state_covariances) = kf.smooth(measurements)
-        
-        kf1 = KalmanFilter(transition_matrices = transition_matrix,
-                        observation_matrices = observation_matrix,
-                        initial_state_mean = initial_state_mean,
-                        observation_covariance = 10*kf.observation_covariance,
-                        em_vars = ['transition_covariance', 'initial_state_covariance'])
-        "smooth"
-        kf1 = kf1.em(measurements, n_iter = 5)
-        (smoothed_state_means, smoothed_state_covariances) = kf1.smooth(measurements)
-        
-        return smoothed_state_means
-    
-    """
-    Description: [text]:
-    Plot real observation data against filtered data.
-    
-    Parameters: [array]: [an array of observations]
-    
-    Returns: [figure]: [plot data] 
-    """
-    def visualisation(self, measurements: np.array):
-        smoothed_state_means = self.kalman_filter(measurements)
-        
-        plt.figure(1)
-        
-        times = range(measurements.shape[0])
-        
-        plt.plot(times, measurements[:, 0], 'bo',
-                times, measurements[:, 1], 'ro',
-                times, measurements[:, 2], 'go',
-                times, smoothed_state_means[:, 0], 'b--',
-                times, smoothed_state_means[:, 1], 'r--',
-                times, smoothed_state_means[:, 2], 'g--')
-        
+        return M, mu
+
+    def visualization(self, data: np.ndarray, M, mu, title: str):
+        plt.plot(data, c = 'r', label = 'Measurements')
+        plt.plot(M[:, 0], c = 'b', label = 'RTS')
+        plt.plot(mu[:, 0], c = 'g', ls = '--', label = 'KF Output')
+        plt.title(title)
+        plt.xlabel('Frames')
+        plt.ylabel('Degrees')
+        plt.legend(loc = 3)
         plt.show()
     
-    """
-    Description: [text]:
-    Convert a text file into array.
-    
-    Parameters: [file]: [.txt]
-    
-    Returns: [array]: [numpy array]
-    """
-    def convert_text_to_array(self, file: str):
-        x, y, z = np.loadtxt(file, delimiter = ',', usecols = (1, 2, 3), unpack = True)
-        return x, y, z
+    def double_visualization(self, r_kf_data: np.ndarray, r_rts_data: np.ndarray,
+                            l_kf_data: np.ndarray, l_rts_data: np.ndarray,
+                            r_title: str, l_title: str):
+        fig, (ax1, ax2) = plt.subplots(1,2)
+        ax1.plot(r_kf_data, c = 'g', ls = '--', label = 'KF Output')
+        ax1.plot(r_rts_data, c = 'b', label = 'RTS')
+        ax1.set_title(r_title)
+        ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+        
+        ax2.plot(l_kf_data, c = 'g', ls = '--', label = 'KF Output')
+        ax2.plot(l_rts_data, c = 'b', label = 'RTS')
+        ax2.set_title(l_title)
+        ax2.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+        
+        plt.legend(loc = 4)
+        plt.show()
