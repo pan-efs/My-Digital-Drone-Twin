@@ -19,6 +19,7 @@ setup(
     install_requires=[
         "pandas", 
         "numpy", 
-        "pyrealsense2"],
+        "pyrealsense2",
+        "filterpy",],
     zip_safe=False,
 )
