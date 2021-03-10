@@ -1,4 +1,5 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
 class Stats_utils:
     def __init__(self):
@@ -41,6 +42,9 @@ class Stats_utils:
         arr = np.array(ls)
         per = np.percentile(arr, [5, 25, 50, 75, 90, 99])
         
+        for i in range(0, len(per)):
+            per[i] = int(per[i]*100)/100
+        
         return per
     
     def stats_log(self, ls: list):
@@ -54,3 +58,15 @@ class Stats_utils:
         log = {'min': minim, 'mean': mean, 'max': maxim, 'std_dev': std_dev, 'variance': var}
         
         return log, per
+    
+    def visualization(self, r_log: dict, l_log: dict,
+                    r_title: str, l_title: str):
+        fig, (ax0, ax1) = plt.subplots(1,2)
+        ax0.bar(*zip(*r_log.items()))
+        ax0.set_title(r_title)
+        ax0.set(ylabel = 'Degrees')
+
+        ax1.bar(*zip(*l_log.items()))
+        ax1.set_title(l_title)
+
+        plt.show()
