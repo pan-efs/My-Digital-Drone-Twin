@@ -1,6 +1,4 @@
 import numpy as np
-import math
-from scipy.stats import norm
 from matplotlib import pyplot as plt
 
 class Stats_utils:
