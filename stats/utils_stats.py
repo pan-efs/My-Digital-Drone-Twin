@@ -1,4 +1,6 @@
 import numpy as np
+import math
+from scipy.stats import norm
 from matplotlib import pyplot as plt
 
 class Stats_utils:
@@ -46,6 +48,16 @@ class Stats_utils:
             per[i] = int(per[i]*100)/100
         
         return per
+    
+    def cdf(self, ls:list):
+        "It works the same as 'percentile' function. Yet, it returns the probability for each value."
+        x = np.array(ls)
+        std_dev = self.standard_deviation(ls)
+        mean = self.mean(ls)
+        
+        cdf = norm.cdf(x, mean, std_dev)
+        
+        return cdf
     
     def stats_log(self, ls: list):
         std_dev = self.standard_deviation(ls)
