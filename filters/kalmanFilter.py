@@ -9,7 +9,7 @@ class Kalman_filters:
         pass
     
     def smoothing_filter(self, data: np.ndarray):
-        fk = KalmanFilter(dim_x=2, dim_z=1)
+        fk = KalmanFilter(dim_x = 2, dim_z = 1)
         fk.x = np.array([0., 1.])      # state (x and dx)
         fk.F = np.array([[1., 1.],
                         [0., 1.]])    # state transition matrix
