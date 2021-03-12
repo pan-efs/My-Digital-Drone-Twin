@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import norm
 from matplotlib import pyplot as plt
 
 class Stats_utils:
@@ -56,6 +57,15 @@ class Stats_utils:
         cdf = norm.cdf(x, mean, std_dev)
         
         return cdf
+    
+    def pdf(self, ls:list):
+        x = np.array(ls)
+        std_dev = self.standard_deviation(ls)
+        mean = self.mean(ls)
+        
+        pdf = norm.pdf(x, mean, std_dev)
+        
+        return pdf
     
     def stats_log(self, ls: list):
         std_dev = self.standard_deviation(ls)
