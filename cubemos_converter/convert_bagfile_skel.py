@@ -1,11 +1,17 @@
 from collections import namedtuple
-import util as cm  
+#import util as cm  
 import cv2
 import time
 import pyrealsense2 as rs
 import math
 import numpy as np
-from skeletontracker import skeletontracker
+import os
+#from skeletontracker import skeletontracker
+
+import sys
+sys.path.append('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin')
+from cubemos_converter import util as cm
+from cubemos_converter.skeletontracker import skeletontracker
 
 
 def render_ids_3d(
@@ -87,7 +93,7 @@ if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_device_from_file("C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\20210304_102205.bag", False)
+        config.enable_device_from_file(path, False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         #config.enable_stream(rs.stream.infrared, 1024, 768, rs.format.y8, 30)
