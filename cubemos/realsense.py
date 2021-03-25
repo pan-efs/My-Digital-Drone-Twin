@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 from collections import namedtuple
-import util as cm
+#import util as cm
 import cv2
 import time
 import re
 import pyrealsense2 as rs
 import math
 import numpy as np
-from skeletontracker import skeletontracker
+#from skeletontracker import skeletontracker
+
+import sys
+sys.path.append('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin')
+from cubemos import util as cm
+from cubemos.skeletontracker import skeletontracker
 
 def render_ids_3d(
     render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
