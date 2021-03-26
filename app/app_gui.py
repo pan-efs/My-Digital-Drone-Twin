@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -16,27 +17,22 @@ import os
 # Set-up the window
 Window.clearcolor = (1, 1, 1, 1)
 
-
 class myButton(Button):
     def __init__(self):
         super (myButton, self).__init__()
     
     def disable(self, instance, *args):
         instance.disabled = True
-
-    def update_offline(self, instance, *args):
-        instance.text = "Analysis has started..."
     
-    def update_online(self, instance, *args):
-        instance.text = "Recording..."
-    
-    def update_play(self, instance, *args):
-        instance.text = "Playing..."
-    
-    def update_skeletal_tracking(self, instance, *args):
-        instance.text = "Video is being converted..."
+    def enable(self, instance, *args):
+        instance.enabled = True
     
     def recording(self, instance, *args):
+        try:
+            os.startfile('C:\\Users\\Public\\Desktop\\Intel RealSense Viewer.lnk')
+        except OSError:
+            print('Provided directory cannot be found.')
+        
         from cubemos import realsense
         os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos')
         os.system('python realsense.py')
@@ -52,9 +48,6 @@ class myButton(Button):
                         pos_hint = {'center_x': 0.5},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
-        mybtn.bind(on_press = partial(self.disable, mybtn))
-        mybtn.bind(on_press = partial(self.update_offline, mybtn))
-        
         return mybtn
     
     def online(self):
@@ -65,8 +58,6 @@ class myButton(Button):
                         pos_hint = {'center_x': 0.5},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
-        mybtn.bind(on_press = partial(self.disable, mybtn))
-        mybtn.bind(on_press = partial(self.update_online, mybtn))
         mybtn.bind(on_press = partial(self.recording, mybtn))
         
         return mybtn
@@ -79,8 +70,6 @@ class myButton(Button):
                         pos_hint = {'center_x': 0.50},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
-        mybtn.bind(on_press = partial(self.disable, mybtn))
-        mybtn.bind(on_press = partial(self.update_play, mybtn))
         mybtn.bind(on_press = partial(self.converted_video, mybtn))
         
         return mybtn
@@ -93,8 +82,17 @@ class myButton(Button):
                         pos_hint = {'center_x': 0.50},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
-        mybtn.bind(on_press = partial(self.disable, mybtn))
-        mybtn.bind(on_press = partial(self.update_skeletal_tracking, mybtn))
+        return mybtn
+    
+    def back_button(self):
+        mybtn = Button(text = " ", 
+                        size_hint = (None, None),
+                        width = 150,
+                        height = 75,
+                        pos_hint = {'center_x': 0.10},
+                        background_normal = 'back_arrow.png',
+                        background_down = 'back_arrow.png',
+                        background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         return mybtn
 
@@ -160,28 +158,11 @@ class screenOne(Screen):
         boxlayout.add_widget(off_btn)
         boxlayout.add_widget(play_btn)
         
-        on_btn.bind(on_press = partial(self.disable_buttons, off_btn))
-        on_btn.bind(on_press = partial(self.disable_buttons, play_btn))
-        on_btn.bind(on_press = partial(self.disable_buttons, skel_btn))
-        
-        off_btn.bind(on_press = partial(self.disable_buttons, on_btn))
-        off_btn.bind(on_press = partial(self.disable_buttons, play_btn))
-        off_btn.bind(on_press = partial(self.disable_buttons, skel_btn))
         off_btn.bind(on_press = self.change_to_offline_analysis)
         
-        play_btn.bind(on_press = partial(self.disable_buttons, off_btn))
-        play_btn.bind(on_press = partial(self.disable_buttons, on_btn))
-        play_btn.bind(on_press = partial(self.disable_buttons, skel_btn))
-        
-        skel_btn.bind(on_press = partial(self.disable_buttons, on_btn))
-        skel_btn.bind(on_press = partial(self.disable_buttons, off_btn))
-        skel_btn.bind(on_press = partial(self.disable_buttons, play_btn))
         skel_btn.bind(on_press = self.change_to_skeletal)
         
         self.add_widget(boxlayout)
-        
-    def disable_buttons(self, instance, *args):
-        instance.disabled = True
     
     def change_to_skeletal(self, *args):
         self.manager.current = 'skeletal'
@@ -196,6 +177,9 @@ class skeletal_screen(Screen):
         self.t = myTextInput()
         self.txt = self.t.text_input()
         
+        b = myButton()
+        back_arrow = b.back_button()
+        
         l = myLabel()
         skel_lbl = l.skeletal_label()
         
@@ -207,6 +191,9 @@ class skeletal_screen(Screen):
         boxlayout.add_widget(skel_lbl)
         boxlayout.add_widget(self.txt)
         boxlayout.add_widget(self.skeletal_submit())
+        boxlayout.add_widget(back_arrow)
+        
+        back_arrow.bind(on_press = self.change_to_main)
         
         self.add_widget(boxlayout)
     
@@ -230,15 +217,20 @@ class skeletal_screen(Screen):
         
         return mybtn
     
+    def change_to_main(self, *args):
+        self.manager.current = 'screen1'
+    
     def converter(self, instance, *args):
         from cubemos_converter import convert_bagfile_skel
         os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos_converter')
         os.system('python convert_bagfile_skel.py')
 
 class offline_analysis_screen(Screen):
-    
     def __init__(self, **kwargs):
         super (offline_analysis_screen, self).__init__(**kwargs)
+        
+        b = myButton()
+        back_arrow = b.back_button()
         
         t = myTextInput()
         txt = t.text_input()
@@ -249,11 +241,14 @@ class offline_analysis_screen(Screen):
         i = myImage()
         kth_logo = i.logo()
         
-        boxlayout = BoxLayout(orientation = 'vertical', spacing = 40, padding = 60)
+        boxlayout = BoxLayout(orientation = 'vertical', spacing = 20, padding = 50)
         boxlayout.add_widget(kth_logo)
         boxlayout.add_widget(offline_lbl)
         boxlayout.add_widget(txt)
         boxlayout.add_widget(self.offline_analysis_submit())
+        boxlayout.add_widget(back_arrow)
+        
+        back_arrow.bind(on_press = self.change_to_main)
         
         self.add_widget(boxlayout)
     
@@ -266,8 +261,20 @@ class offline_analysis_screen(Screen):
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         #mybtn.bind(on_press = lambda *a: self.save_path(self.txt.text))
+        mybtn.bind(on_press = self.biomechanics_analysis)
+        mybtn.bind(on_press = self.video_analysis)
         
         return mybtn
+    
+    def change_to_main(self, *args):
+        self.manager.current = 'screen1'
+    
+    def biomechanics_analysis(self, instance, *args):
+        os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples')
+        os.system('python biomechanics3D_example.py')
+    
+    def video_analysis(self, instance, *args):
+        os.startfile('C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi')
 
 
 class myDigitalDroneTwin(App):
