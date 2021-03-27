@@ -63,14 +63,14 @@ class myButton(Button):
         return mybtn
     
     def play(self):
-        mybtn = Button(text = "Play a Video", 
+        mybtn = Button(text = "Load Video", 
                         size_hint = (None, None),
                         width = 200,
                         height = 75,
                         pos_hint = {'center_x': 0.50},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
-        mybtn.bind(on_press = partial(self.converted_video, mybtn))
+        #mybtn.bind(on_press = partial(self.converted_video, mybtn))
         
         return mybtn
     
@@ -87,11 +87,11 @@ class myButton(Button):
     def back_button(self):
         mybtn = Button(text = " ", 
                         size_hint = (None, None),
-                        width = 150,
+                        width = 125,
                         height = 75,
                         pos_hint = {'center_x': 0.10},
-                        background_normal = 'back_arrow.png',
-                        background_down = 'back_arrow.png',
+                        background_normal = 'images\\back_arrow.png',
+                        background_down = 'images\\back_arrow.png',
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         return mybtn
@@ -104,12 +104,12 @@ class myLabel(Label):
         return Label(text = "[color=ff0066][b]Welcome to My Digital Drone Twin![/b][/color]", markup = True)
     
     def skeletal_label(self):
-        return Label(text = "[color=0080ff][b]Copy the local path of your desired video \n and provide it as input in the box below.[/b][/color]", 
+        return Label(text = "[color=0080ff][b]Copy the local path of your desired video.\nFile must be .bag.[/b][/color]", 
                     markup = True,
                     font_size = 20)
     
     def offline_analysis_label(self):
-        return Label(text = "[color=0080ff][b]Copy the local path of your desired text file \n and provide it as input in the box below.[/b][/color]", 
+        return Label(text = "[color=0080ff][b]Copy the local path of your desired text file.\nFile must be .txt.[/b][/color]", 
                     markup = True, 
                     font_size = 20)
 
@@ -118,7 +118,7 @@ class myImage(Image):
         super (myImage, self).__init__()
     
     def logo(self):
-        return Image(source = 'kth_logo.png')
+        return Image(source = 'images\\kth_logo.png')
 
 class myTextInput(TextInput):
     def __init__(self):
@@ -159,7 +159,7 @@ class screenOne(Screen):
         boxlayout.add_widget(play_btn)
         
         off_btn.bind(on_press = self.change_to_offline_analysis)
-        
+        play_btn.bind(on_press = self.change_to_filechooser)
         skel_btn.bind(on_press = self.change_to_skeletal)
         
         self.add_widget(boxlayout)
@@ -169,6 +169,9 @@ class screenOne(Screen):
     
     def change_to_offline_analysis(self, *args):
         self.manager.current = 'offline_analysis'
+    
+    def change_to_filechooser(self, *args):
+        self.manager.current = 'filechooser'
 
 class skeletal_screen(Screen):
     def __init__(self, **kwargs):
@@ -200,7 +203,7 @@ class skeletal_screen(Screen):
     def save_path(self, path: str):
         open('converter_path.txt', 'w').close()
         file = open('converter_path.txt', 'a')
-        file.writelines(path)
+        file.write(path)
         file.close()
         print("GOT PATH:" + path)
     
@@ -213,7 +216,7 @@ class skeletal_screen(Screen):
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         mybtn.bind(on_press = lambda *a: self.save_path(self.txt.text))
-        #mybtn.bind(on_press = self.converter)
+        mybtn.bind(on_press = self.converter)
         
         return mybtn
     
@@ -276,6 +279,41 @@ class offline_analysis_screen(Screen):
     def video_analysis(self, instance, *args):
         os.startfile('C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi')
 
+class Filechooser(BoxLayout):
+    def select(self, *args):
+        try: 
+            self.label.text = args[1][0]
+        except: 
+            pass
+
+class Navigation(Filechooser):
+    def __init__(self):
+        super (Navigation, self).__init__()
+    
+    def choose_file(self):
+        nav = Filechooser()
+        return nav
+    
+class filechooser_screen(Screen):
+    def __init__(self, **kwargs):
+        super (filechooser_screen, self).__init__(**kwargs)
+        
+        b = myButton()
+        back_btn = b.back_button()
+        
+        n = Navigation()
+        files = n.choose_file()
+        
+        boxlayout = BoxLayout(orientation = 'vertical')
+        boxlayout.add_widget(files)
+        boxlayout.add_widget(back_btn)
+        
+        back_btn.bind(on_press = self.change_to_main)
+        
+        self.add_widget(boxlayout)
+    
+    def change_to_main(self, *args):
+        self.manager.current = 'screen1'
 
 class myDigitalDroneTwin(App):
     
@@ -284,11 +322,13 @@ class myDigitalDroneTwin(App):
         screen1 = screenOne(name = 'screen1')
         skeletal = skeletal_screen(name = 'skeletal')
         offline_analysis = offline_analysis_screen(name = 'offline_analysis')
+        filechooser = filechooser_screen(name = 'filechooser')
         
         
         screen_manager.add_widget(screen1)
         screen_manager.add_widget(skeletal)
         screen_manager.add_widget(offline_analysis)
+        screen_manager.add_widget(filechooser)
         
         return screen_manager
 
