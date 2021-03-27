@@ -87,10 +87,20 @@ def render_ids_3d(
                         thickness,
                     )
 
+def get_bag_path():
+    os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\app')
+    file = open('converter_path.txt', 'r')
+    path = file.read()
+    file.close()
+    
+    return path
 
 # Main content begins
 if __name__ == "__main__":
     try:
+        # Get the desired path of .bag file
+        path = get_bag_path()
+        
         # Configure depth and color streams of the intel realsense
         config = rs.config()
         config.enable_device_from_file(path, False)
