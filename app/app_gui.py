@@ -8,6 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
 from kivy.uix.image import Image
+from kivy.uix.videoplayer import VideoPlayer
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty 
 from functools import partial
@@ -120,6 +121,22 @@ class myImage(Image):
     def logo(self):
         return Image(source = 'images\\kth_logo.png')
 
+class myVideo(VideoPlayer):
+    def __init__(self):
+        super (myVideo, self).__init__()
+    
+    def play_video(self):
+        return VideoPlayer(source = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi',
+                    state = 'play', 
+                    options={'eos': 'loop'})
+    
+    def play_mp4(self):
+        main_path = Configuration()._get_dir('main')
+        return VideoPlayer(source = main_path + 'animations\\videos\\animation.mp4',
+                    state = 'play', 
+                    options={'eos': 'loop'})
+        
+
 class myTextInput(TextInput):
     def __init__(self):
         super (myTextInput, self).__init__()
@@ -189,7 +206,9 @@ class skeletal_screen(Screen):
         i = myImage()
         kth_logo = i.logo()
         
-        boxlayout = BoxLayout(orientation = 'vertical', spacing = 40, padding = 60)
+        boxlayout = BoxLayout(orientation = 'vertical', 
+                            spacing = 40, 
+                            padding = 60)
         boxlayout.add_widget(kth_logo)
         boxlayout.add_widget(skel_lbl)
         boxlayout.add_widget(self.txt)
@@ -268,13 +287,52 @@ class offline_analysis_screen(Screen):
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         #mybtn.bind(on_press = lambda *a: self.save_path(self.txt.text))
-        mybtn.bind(on_press = self.biomechanics_analysis)
-        mybtn.bind(on_press = self.video_analysis)
+        mybtn.bind(on_press = self.change_to_videovisualization)
         
         return mybtn
     
     def change_to_main(self, *args):
         self.manager.current = 'screen1'
+    
+    def change_to_videovisualization(self, *args):
+        self.manager.current = 'video_visualization'
+
+class video_visualization_screen(Screen):
+    def __init__(self, **kwargs):
+        super (video_visualization_screen, self).__init__(**kwargs)
+        
+        v = myVideo()
+        video = v.play_video()
+        animation = v.play_mp4()
+        
+        b = myButton()
+        back_btn = b.back_button()
+        
+        i = myImage()
+        kth_logo = i.logo()
+        
+        start_btn = self.video_visualization_submit()
+        
+        boxlayout = BoxLayout(orientation = 'vertical', spacing = 20, padding = 40)
+        boxlayout.add_widget(animation)
+        boxlayout.add_widget(video)
+        boxlayout.add_widget(back_btn)
+        #boxlayout.add_widget(start_btn)
+        
+        back_btn.bind(on_press = self.change_to_main)
+        start_btn.bind(on_press = self.biomechanics_analysis)
+        
+        self.add_widget(boxlayout)
+    
+    def video_visualization_submit(self):
+        mybtn = Button(text = "Start", 
+                        size_hint = (None, None),
+                        width = 200,
+                        height = 75,
+                        pos_hint = {'center_x': 0.50},
+                        background_color = (119/255.0, 167/255.0, 255/255.0, 1))
+        
+        return mybtn
     
     def biomechanics_analysis(self, instance, *args):
         try:
@@ -284,12 +342,8 @@ class offline_analysis_screen(Screen):
         except OSError:
             print('Provided directory cannot be found.')
     
-    def video_analysis(self, instance, *args):
-        try:
-            offline_path = Configuration()._get_dir('offline_analysis')
-            os.startfile(offline_path)
-        except OSError:
-            print('Provided directory cannot be found.')
+    def change_to_main(self, *args):
+        self.manager.current = 'screen1'
 
 class Filechooser(BoxLayout):
     def select(self, *args):
@@ -335,12 +389,14 @@ class myDigitalDroneTwin(App):
         skeletal = skeletal_screen(name = 'skeletal')
         offline_analysis = offline_analysis_screen(name = 'offline_analysis')
         filechooser = filechooser_screen(name = 'filechooser')
+        video_visualization = video_visualization_screen(name = 'video_visualization')
         
         
         screen_manager.add_widget(screen1)
         screen_manager.add_widget(skeletal)
         screen_manager.add_widget(offline_analysis)
         screen_manager.add_widget(filechooser)
+        screen_manager.add_widget(video_visualization)
         
         return screen_manager
 
