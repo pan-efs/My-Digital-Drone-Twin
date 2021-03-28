@@ -15,7 +15,8 @@ setup(
         "cubemos",
         "networking",
         "stats",
-        "animations",      
+        "animations",
+        "configs",      
     ],
     install_requires=[
         "pandas", 
