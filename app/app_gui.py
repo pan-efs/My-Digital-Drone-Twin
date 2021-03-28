@@ -11,8 +11,11 @@ from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty 
 from functools import partial
+from configs.configuration import Configuration
 import sys
 import os
+
+
 
 # Set-up the window
 Window.clearcolor = (1, 1, 1, 1)
@@ -29,16 +32,15 @@ class myButton(Button):
     
     def recording(self, instance, *args):
         try:
-            os.startfile('C:\\Users\\Public\\Desktop\\Intel RealSense Viewer.lnk')
+            realsense_viewer = Configuration()._get_dir('realsense_viewer')
+            main_path = Configuration()._get_dir('main')
+            os.startfile(realsense_viewer)
         except OSError:
             print('Provided directory cannot be found.')
         
         from cubemos import realsense
-        os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos')
+        os.chdir(main_path + 'cubemos')
         os.system('python realsense.py')
-    
-    def converted_video(self, instance, *args):
-        os.startfile('C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill-panagiotis.avi')
     
     def offline(self):
         mybtn = Button(text = "Offline Analysis", 
@@ -69,8 +71,6 @@ class myButton(Button):
                         height = 75,
                         pos_hint = {'center_x': 0.50},
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
-        
-        #mybtn.bind(on_press = partial(self.converted_video, mybtn))
         
         return mybtn
     
@@ -225,8 +225,12 @@ class skeletal_screen(Screen):
     
     def converter(self, instance, *args):
         from cubemos_converter import convert_bagfile_skel
-        os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos_converter')
-        os.system('python convert_bagfile_skel.py')
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'cubemos_converter')
+            os.system('python convert_bagfile_skel.py')
+        except OSError:
+            print('Provided directory cannot be found.')
 
 class offline_analysis_screen(Screen):
     def __init__(self, **kwargs):
@@ -273,11 +277,19 @@ class offline_analysis_screen(Screen):
         self.manager.current = 'screen1'
     
     def biomechanics_analysis(self, instance, *args):
-        os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples')
-        os.system('python biomechanics3D_example.py')
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'samples')
+            os.system('python biomechanics3D_example.py')
+        except OSError:
+            print('Provided directory cannot be found.')
     
     def video_analysis(self, instance, *args):
-        os.startfile('C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi')
+        try:
+            offline_path = Configuration()._get_dir('offline_analysis')
+            os.startfile(offline_path)
+        except OSError:
+            print('Provided directory cannot be found.')
 
 class Filechooser(BoxLayout):
     def select(self, *args):

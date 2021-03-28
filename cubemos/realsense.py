@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 from collections import namedtuple
-#import util as cm
 import cv2
 import time
 import re
 import pyrealsense2 as rs
 import math
 import numpy as np
-#from skeletontracker import skeletontracker
-
 import sys
-sys.path.append('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin')
+from configs.configuration import Configuration
+
+config_path = Configuration()._get_dir('main')
+sys.path.append(config_path)
 from cubemos import util as cm
 from cubemos.skeletontracker import skeletontracker
 

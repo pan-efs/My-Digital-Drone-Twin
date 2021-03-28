@@ -1,15 +1,15 @@
-from collections import namedtuple
-#import util as cm  
+from collections import namedtuple 
 import cv2
 import time
 import pyrealsense2 as rs
 import math
 import numpy as np
 import os
-#from skeletontracker import skeletontracker
-
 import sys
-sys.path.append('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin')
+from configs.configuration import Configuration
+
+config_path = Configuration()._get_dir('main')
+sys.path.append(config_path)
 from cubemos_converter import util as cm
 from cubemos_converter.skeletontracker import skeletontracker
 
@@ -88,10 +88,13 @@ def render_ids_3d(
                     )
 
 def get_bag_path():
-    os.chdir('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\app')
-    file = open('converter_path.txt', 'r')
-    path = file.read()
-    file.close()
+    try:
+        os.chdir(config_path + 'app')
+        file = open('converter_path.txt', 'r')
+        path = file.read()
+        file.close()
+    except OSError:
+        print('Provided path does not exist!')
     
     return path
 
