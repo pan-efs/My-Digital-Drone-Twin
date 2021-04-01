@@ -3,6 +3,7 @@ import os
 import tqdm
 import sys
 
+from exceptions.network import BindToClientError, ListeningToClientError, AcceptToClientError, ReceivingFileError
 class Server:
     
     def __init__(self):
@@ -21,31 +22,27 @@ class Server:
 
         try:
             s.bind((SERVER_HOST, SERVER_PORT))
-        except OSError:
-            print('Error binding.')
-            sys.exit(1)
+        except:
+            raise BindToClientError(SERVER_HOST, SERVER_PORT)
         
         try:
             s.listen(self.listening)
-        except OSError:
-            print('Error listeing.')
-            sys.exit(1)    
+        except:
+            raise ListeningToClientError(listening_time = self.listening)
             
         print(f"[*] Listening as {SERVER_HOST}:{SERVER_PORT}")
         
         try:
             c, addr = s.accept()
-        except OSError:
-            print('Error accepting.')
-            sys.exit(1)
+        except:
+            raise AcceptToClientError()
         
         print(f"[+] {addr} is connected.")
         
         try:
             received = c.recv(BUFFER_SIZE).decode()
-        except OSError:
-            print('Error receiving data.')
-            sys.exit(1)
+        except:
+            raise ReceivingFileError()
         
         filename, filesize = received.split(SEPARATOR)
 

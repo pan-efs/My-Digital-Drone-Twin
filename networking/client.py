@@ -3,6 +3,7 @@ import os
 import tqdm
 import sys
 
+from exceptions.network import ConnectToServerError, SendingFileError
 class Client:
     
     def __init__(self):
@@ -26,13 +27,15 @@ class Client:
         
         try:
             s.connect((SERVER_HOST, SERVER_PORT))
-        except OSError:
-            print('Error connecting to server.')
-            sys.exit(1)
+        except:
+            raise ConnectToServerError(SERVER_HOST, SERVER_PORT)
         
         print("[+] Connected.")
-
-        s.send(f"{filename}{SEPARATOR}{filesize}".encode())
+        
+        try:
+            s.send(f"{filename}{SEPARATOR}{filesize}".encode())
+        except:
+            raise SendingFileError(filename, int(filesize))
 
         progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit='B', unit_scale=True, unit_divisor=1024)
         with open(filename, 'rb') as f:
@@ -44,8 +47,8 @@ class Client:
                 progress.update(len(bytes_read))
                 
         s.close()
-        
+
+
 "Call client function of Client class as example"
 client = Client()
-
 client.client('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\lower_body_example.txt')
