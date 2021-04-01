@@ -1,6 +1,23 @@
 import pandas as pd
 import numpy as np
 import math
+from exceptions.movement_analysis import ShapeDataFrame2DError, ColNamesDataFrame2DError
+
+def __errors__(data: pd.DataFrame):
+    """
+    A helper function in order to catch errors relevant to DataFrame features.
+    
+    :type data: pd.DataFrame
+    
+    :raises ShapeDataFrame2DError: See exceptions.movement_analysis.py
+    :raises ColNamesDataFrame2DError: See exceptions.movement_analysis.py
+    """
+    if data.shape[1] != 3:
+            raise ShapeDataFrame2DError
+        
+    cols = data.columns
+    if cols[0] != 'time' or cols[1] != 'joint_x' or cols[2] != 'joint_y':
+        raise ColNamesDataFrame2DError
 
 
 class AngularKinematics:
@@ -177,10 +194,7 @@ class LinearKinematics:
     
     # The below function is preferable
     def calculate_velocity(self, data):
-
-        if data.shape[1] != 3:
-            print("DataFrame should have three columns.")
-            return 1
+        __errors__(data)
         
         time = []
         vel_x = []
@@ -242,10 +256,7 @@ class LinearKinematics:
 
     # The below function is preferable
     def calculate_acceleration(self, data):
-
-        if data.shape[1] != 3:
-            print("DataFrame should have three columns.")
-            return 1
+        __errors__(data)
         
         time = []
         acc_x = []
@@ -305,10 +316,7 @@ class LinearKinematics:
     "Returns: [tuple]: time, speed  [units]: m/s"
 
     def calculate_speed(self, data):
-
-        if data.shape[1] != 3:
-            print("DataFrame should have three columns.")
-            return 1
+        __errors__(data)
         
         time = []
         speed = []
@@ -364,10 +372,7 @@ class LinearKinematics:
     """
     
     def calculate_displacement(self, data):
-        
-        if data.shape[1] != 3:
-            print('Dataframe should have three columns.')
-            return 1
+        __errors__(data)
         
         time = []
         dx = []
@@ -434,3 +439,10 @@ class Energy:
     def energy_expenditure(self, speed):
         e = 29 / speed + 0.0053 * speed
         return e
+
+
+k = LinearKinematics()
+data = [[0.0000, 0.00, 0.00], [0.0167, 0.10, 0.15], [0.0334, 0.12, 0.22], [0.0501, 0.15, 0.27], [0.0668, 0.15, 0.30], [0.0835, 0.18, 0.20]]
+df = pd.DataFrame(data, columns = ['time', 'joint_x', 'joint_y'])
+time, vel_x, vel_y = k.calculate_velocity(df)
+print(time)

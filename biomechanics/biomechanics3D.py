@@ -1,6 +1,23 @@
 import pandas as pd
 import numpy as np
 import math
+from exceptions.movement_analysis import ShapeDataFrame3DError, ColNamesDataFrame3DError
+
+def __errors__(data: pd.DataFrame):
+    """
+    A helper function in order to catch errors relevant to DataFrame features.
+    
+    :type data: pd.DataFrame
+    
+    :raises ShapeDataFrame2DError: See exceptions.movement_analysis.py
+    :raises ColNamesDataFrame2DError: See exceptions.movement_analysis.py
+    """
+    if data.shape[1] != 3:
+            raise ShapeDataFrame3DError
+        
+    cols = data.columns
+    if cols[0] != 'time' or cols[1] != 'joint_x' or cols[2] != 'joint_y' or cols[3] != 'joint_z':
+        raise ColNamesDataFrame3DError
 
 
 class AngularKinematics:
@@ -39,10 +56,7 @@ class LinearKinematics:
     "Returns: [list]: [speed],  [units]: m/s"
 
     def calculate_speed(self, data):
-
-        if data.shape[1] != 4:
-            print("DataFrame should have four columns.")
-            return 1
+        __errors__(data)
         
         time = []
         speed = []
@@ -74,10 +88,7 @@ class LinearKinematics:
     Returns: [tuple]: time, dx, dy, dz, r
     """
     def calculate_displacement(self, data):
-        
-        if data.shape[1] != 4:
-            print('Dataframe should have four columns.')
-            return 1
+        __errors__(data)
         
         time = []
         r = []
