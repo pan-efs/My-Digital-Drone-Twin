@@ -3,7 +3,7 @@ import os
 import moviepy.editor as mp
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
-from configs.configuration import Configuration 
+from app.configuration import Configuration 
 
 class Animations:
     def __init__(self, angle_list: list, title: str):
