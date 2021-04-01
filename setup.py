@@ -16,7 +16,8 @@ setup(
         "networking",
         "stats",
         "animations",
-        "configs",      
+        "exceptions",
+        "app",      
     ],
     install_requires=[
         "pandas", 
