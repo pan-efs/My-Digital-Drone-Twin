@@ -6,7 +6,7 @@ import math
 import numpy as np
 import os
 import sys
-from configs.configuration import Configuration
+from app.configuration import Configuration
 
 config_path = Configuration()._get_dir('main')
 sys.path.append(config_path)
