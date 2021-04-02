@@ -215,15 +215,18 @@ class SettingsScreen(Screen):
         super (SettingsScreen, self).__init__(**kwargs)
         
         open('settings.txt', 'w').close()
+        f = open('settings.txt', 'w')
+        f.write('Not provided\nNot provided\nNot provided\n')
+        f.close()
         
         b = myButton()
         back_btn = b.back_button()
         settings_submit_btn = b.settings_submit()
         
         t = myTextInput()
-        main_btn = t.text_input(h_text = 'Main path here...')
-        realsense_viewer_btn = t.text_input(h_text = 'RealSense Viewer here...')
-        offline_analysis_btn = t.text_input(h_text = 'Offline analysis here...')
+        main_btn = t.text_input(wid = 500, hgt = 100, 
+                                h_text = 'Main path here...\n' + 'RealSense Viewer here...\n' +
+                                        'Offline analysis here...')
         
         l = myLabel()
         settings_lbl = l.settings_label()
@@ -231,14 +234,10 @@ class SettingsScreen(Screen):
         boxlayout = BoxLayout(orientation = 'vertical', spacing = 25, padding = 50)
         boxlayout.add_widget(settings_lbl)
         boxlayout.add_widget(main_btn)
-        boxlayout.add_widget(realsense_viewer_btn)
-        boxlayout.add_widget(offline_analysis_btn)
         boxlayout.add_widget(settings_submit_btn)
         boxlayout.add_widget(back_btn)
         
         settings_submit_btn.bind(on_press = lambda *a:self.save_path(main_btn.text))
-        settings_submit_btn.bind(on_press = lambda *a:self.save_path(realsense_viewer_btn.text))
-        settings_submit_btn.bind(on_press = lambda *a:self.save_path(offline_analysis_btn.text))
 
         back_btn.bind(on_press = self.change_to_main)
         

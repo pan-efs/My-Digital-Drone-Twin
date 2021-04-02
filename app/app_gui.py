@@ -196,12 +196,12 @@ class myTextInput(TextInput):
     def __init__(self):
         super (myTextInput, self).__init__()
     
-    def text_input(self, h_text = 'Provide the directory here...'):
+    def text_input(self, wid = 450, hgt = 50, h_text = 'Provide the directory here...'):
         txt = TextInput(hint_text = h_text, 
-                        multiline = False,
+                        multiline = True,
                         size_hint = (None, None),
-                        width = 450,
-                        height = 50,
+                        width = wid,
+                        height = hgt,
                         pos_hint = {'center_x': 0.50},
                         background_color = (255/255.0, 255/255.0, 255/255.0, 1))
         

@@ -12,13 +12,13 @@ class Configuration:
     
     # This function should replace self.config in the future.
     def _read_settings(self):
-        self.config_list = ['Not provided', 'Not provided', 'Not provided']
+        self.config_list = []
         
         try:
             with open("settings.txt", "r") as f:
                 path = f.readlines()
                 for i in range(0, len(path)):
-                    path[i] = path[i][:-2]
+                    path[i] = path[i][:-1]
                     self.config_list.append(path[i])
             return self.config_list
         
@@ -28,9 +28,9 @@ class Configuration:
     def _config_json(self, config_list: list):
         try:
             self._json = {
-                'main': config_list[5],
+                'main': config_list[3],
                 'realsense_viewer': config_list[4],
-                'offline_analysis': config_list[3]
+                'offline_analysis': config_list[5]
             }
         except Exception as ex:
             raise IndexConfigurationError(ex)
