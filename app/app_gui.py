@@ -146,6 +146,16 @@ class myButton(Button):
                         background_color = (119/255.0, 167/255.0, 255/255.0, 1))
         
         return mybtn
+    
+    def yes_or_no(self, txt = 'yes_or_no'):
+        mybtn = Button(text = txt,
+                        size_hint = (None, None),
+                        width = 250,
+                        height = 50,
+                        pos_hint = {'center_x': 0.50},
+                        background_color = (119/255.0, 167/255.0, 255/255.0, 1))
+        
+        return mybtn
 
 class myLabel(Label):
     def __init__(self):
@@ -166,6 +176,11 @@ class myLabel(Label):
     
     def settings_label(self):
         return Label(text = "[color=0080ff][b]Provide all directories and then press the button.\nOtherwise an error will be raised later. [/b][/color]", 
+                    markup = True, 
+                    font_size = 20)
+    
+    def settings_security_label(self):
+        return Label(text = "[color=0080ff][b]Are you sure that you want to continue?\nIf you press YES, the settings will be lost and you should provide them again.\nPress NO to return to main screen.[/b][/color]", 
                     markup = True, 
                     font_size = 20)
 

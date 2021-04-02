@@ -35,7 +35,7 @@ class ScreenOne(Screen):
         off_btn.bind(on_press = self.change_to_offline_analysis)
         play_btn.bind(on_press = self.change_to_filechooser)
         skel_btn.bind(on_press = self.change_to_skeletal)
-        settings_btn.bind(on_press = self.change_to_settings)
+        settings_btn.bind(on_press = self.change_to_security_settings)
         
         self.add_widget(boxlayout)
     
@@ -48,8 +48,8 @@ class ScreenOne(Screen):
     def change_to_filechooser(self, *args):
         self.manager.current = 'filechooser'
     
-    def change_to_settings(self, *args):
-        self.manager.current = 'settings'
+    def change_to_security_settings(self, *args):
+        self.manager.current = 'settings_security'
 
 class SkeletalScreen(Screen):
     def __init__(self, **kwargs):
@@ -257,3 +257,30 @@ class SettingsScreen(Screen):
     
     def change_to_main(self, *args):
         self.manager.current = 'screen1'
+
+class SettingsSecurityScreen(Screen):
+    def __init__(self, **kwargs):
+        super (SettingsSecurityScreen, self).__init__(**kwargs)
+        
+        b = myButton()
+        yes_btn = b.yes_or_no(txt = 'YES')
+        no_btn = b.yes_or_no(txt = 'NO')
+        
+        l = myLabel()
+        security_lbl = l.settings_security_label()
+        
+        boxlayout = BoxLayout(orientation = 'vertical', spacing = 40, padding = 70)
+        boxlayout.add_widget(security_lbl)
+        boxlayout.add_widget(yes_btn)
+        boxlayout.add_widget(no_btn)
+        
+        yes_btn.bind(on_press = self.change_to_settings)
+        no_btn.bind(on_press = self.change_to_main)
+        
+        self.add_widget(boxlayout)
+    
+    def change_to_main(self, *args):
+        self.manager.current = 'screen1'
+    
+    def change_to_settings(self, *args):
+        self.manager.current = 'settings'
