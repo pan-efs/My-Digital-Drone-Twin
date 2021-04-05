@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-class Kalman_filters:
+class KalmanFilters:
     def __init__(self):
         pass
     
