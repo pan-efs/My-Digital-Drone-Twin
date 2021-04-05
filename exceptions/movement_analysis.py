@@ -35,3 +35,14 @@ class ColNamesDataFrame2DError(Exception):
     
     def __str__(self):
         return f'{self.message}'
+
+#                            #
+#----------Analysis----------#
+#                            #
+class LengthArraysError(Exception):
+    def __init__(self, message = 'Arrays of x, y, z coordinates do not have the same length.'):
+        self.message = message
+        super().__init__(self.message)
+    
+    def __str__(self):
+        return f'{self.message}'
