@@ -15,7 +15,7 @@ class Configuration:
         self.config_list = []
         
         try:
-            with open("settings.txt", "r") as f:
+            with open("logging\\settings.txt", "r") as f:
                 path = f.readlines()
                 for i in range(0, len(path)):
                     path[i] = path[i][:-1]
