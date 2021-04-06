@@ -214,8 +214,8 @@ class SettingsScreen(Screen):
     def __init__(self, **kwargs):
         super (SettingsScreen, self).__init__(**kwargs)
         
-        open('settings.txt', 'w').close()
-        f = open('settings.txt', 'w')
+        open('logging\\settings.txt', 'w').close()
+        f = open('logging\\settings.txt', 'w')
         f.write('Not provided\nNot provided\nNot provided\n')
         f.close()
         
@@ -246,7 +246,7 @@ class SettingsScreen(Screen):
     def save_path(self, path: str):
         if path != '':
             try:
-                file = open('settings.txt', 'a')
+                file = open('logging\\settings.txt', 'a')
                 file.writelines(path + '\n')
                 file.close()
                 print("GOT PATH:" + path)
