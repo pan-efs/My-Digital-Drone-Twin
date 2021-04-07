@@ -6,6 +6,7 @@ import math
 import numpy as np
 import os
 import sys
+from timeit import default_timer as timer
 from app.configuration import Configuration
 
 config_path = Configuration()._get_dir('main')
@@ -126,6 +127,7 @@ if __name__ == "__main__":
         open('get_3d_joints_from_video.txt', 'w').close()
         
         i=0
+        start_time = timer()
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
             unaligned_frames = pipeline.wait_for_frames(100)
@@ -158,7 +160,10 @@ if __name__ == "__main__":
 
             i += 1
             if i % 60 == 0:
-                print("frames", i)
+                end_time = timer()
+                performance_time = end_time - start_time
+                print('frames: {}'.format(i), 'start: {}'.format(start_time), 'end: {}'.format(end_time),
+                    'performance: {}'.format(performance_time))
                 
         pipeline.stop()
         videoout.release()
