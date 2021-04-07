@@ -18,7 +18,8 @@ setup(
         "animations",
         "exceptions",
         "app",
-        "datatypes",      
+        "datatypes",
+        "computer_info",      
     ],
     install_requires=[
         "pandas", 

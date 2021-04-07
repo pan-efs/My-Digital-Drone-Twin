@@ -7,6 +7,7 @@ import numpy as np
 import os
 import sys
 from timeit import default_timer as timer
+from computer_info.information import ComputerInfo
 from app.configuration import Configuration
 
 config_path = Configuration()._get_dir('main')
@@ -88,6 +89,8 @@ def render_ids_3d(
                         thickness,
                     )
 
+info = ComputerInfo()
+
 # Main content begins
 if __name__ == "__main__":
     try:
@@ -162,8 +165,11 @@ if __name__ == "__main__":
             if i % 60 == 0:
                 end_time = timer()
                 performance_time = end_time - start_time
-                print('frames: {}'.format(i), 'start: {}'.format(start_time), 'end: {}'.format(end_time),
-                    'performance: {}'.format(performance_time))
+                print(f'frames: {i:.2f}', f'start: {start_time:.2f}', f'end: {end_time:.2f}',
+                    f'performance: {performance_time:.2f}')
+                # Calculate the CPU utilization
+                info.cpu_percent_utilization() # 0.1 by default
+                
                 
         pipeline.stop()
         videoout.release()
