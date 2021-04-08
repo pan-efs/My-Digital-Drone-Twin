@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 import math
-from exceptions.movement_analysis import ShapeDataFrame3DError, ColNamesDataFrame3DError
+from scipy.signal import *
+from matplotlib import pyplot as plt
+from exceptions.movement_analysis import ShapeDataFrame3DError, ColNamesDataFrame3DError, FpsError
 
 def __errors__(data: pd.DataFrame):
     """
@@ -113,3 +115,88 @@ class LinearKinematics:
             r.append(resultant)
             
         return time, dx, dy, dz, r
+    
+class Magnitude:
+    def __init__(self, data: list):
+        self.data = data
+        self.mag_ls = []
+        self.maximum = 0
+        self.minimum = 0
+    
+    def calculate_magnitude(self):
+        """
+        Calculate the 3D magnitude of each list in a list.
+
+        :type data: lists of list
+        
+        :return: Magnitude for each x-y-z pair.
+        :rtype: list
+        """
+        
+        for i in range(0, len(self.data)):
+            mag = self.data[i][0]*self.data[i][0] + self.data[i][1]*self.data[i][1] + self.data[i][2]*self.data[i][2]
+            self.mag_ls.append(mag)
+    
+        return self.mag_ls
+    
+    def find_visualize_local_max_min(self, name: str = 'Title', show: bool = False):
+        """
+        Visualizes local maximums and minimums of a line plot.
+        Useful in order to estimate the cadence of repetitive movements, such as cycling.
+
+        :type fil_ls: list, array (filtered is recommended)
+        :type name: name of the plot
+        :type show: If True, then it plots. Otherwise, no.
+        
+        """
+        df = pd.DataFrame(self.mag_ls, columns = ['fil_ls'])
+        df['min'] = df.iloc[argrelextrema(df.fil_ls.values, np.less_equal,
+                    order=3)[0]]['fil_ls']
+        df['max'] = df.iloc[argrelextrema(df.fil_ls.values, np.greater_equal,
+                    order=3)[0]]['fil_ls']
+        
+        self.maximum = len(df['max']) - df['max'].isnull().sum()
+        self.minimum = len(df['min']) - df['min'].isnull().sum()
+        
+        fig, ax = plt.subplots()
+        ax.scatter(df.index, df['min'], c='r', label = str(self.minimum))
+        ax.scatter(df.index, df['max'], c='g', label = str(self.maximum))
+        plt.title(name)
+        plt.xlabel('Frames')
+        plt.ylabel('Magnitude')
+        ax.plot(df.index, df['fil_ls'])
+        
+        if show == True:
+            plt.show()
+        
+        return self.maximum, self.minimum
+    
+class Cadence:
+    
+    def __init__(self, magnitude_data):
+        self.threshold = [1800, 2400, 7200, 10800, 14400, 18000]
+        self.magnitude = magnitude_data
+        self.length_data_per_min = 0 # according to fps
+        
+    def calculate_cadence(self, maximum, fps: int = 30):
+        
+        if fps == 30:
+            self.length_data_per_min = self.threshold[0]
+        elif fps == 60:
+            self.length_data_per_min = self.threshold[1]
+        elif fps == 120:
+            self.length_data_per_min = self.threshold[2]
+        elif fps == 180:
+            self.length_data_per_min = self.threshold[3]
+        elif fps == 240:
+            self.length_data_per_min = self.threshold[4]
+        elif fps == 300:
+            self.length_data_per_min = self.threshold[5]
+        else:
+            raise FpsError
+        
+        duration = int(len(self.magnitude)/fps)
+        
+        cadence = maximum * (60 / (duration))
+        
+        return int(np.ceil(cadence)), duration
