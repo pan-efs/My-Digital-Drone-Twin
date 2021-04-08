@@ -2,7 +2,7 @@ from joints_dataframe import JointsDataframe
 from joints_numpys import JointsNumpys
 from joints_list import JointsList
 from filters.digital_filter import DigitalFilter
-from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
+from biomechanics.biomechanics3D import AngularKinematics, Magnitude, Cadence
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -69,9 +69,9 @@ z12x, z2_12x, y12x = f.digital_filter(jLs[36], 3)
 z12y, z2_12y, y12y = f.digital_filter(jLs[37], 3)
 z12z, z2_12z, y12z = f.digital_filter(jLs[38], 3)
 
-z13x, z2_13x, y13x = f.digital_filter(jLs[39], 3)
+""" z13x, z2_13x, y13x = f.digital_filter(jLs[39], 3)
 z13y, z2_13y, y13y = f.digital_filter(jLs[40], 3)
-z13z, z2_13z, y13z = f.digital_filter(jLs[41], 3)
+z13z, z2_13z, y13z = f.digital_filter(jLs[41], 3) """
 
 # Create lists with x,y,z coords together (filtered BW coordinates)
 arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
@@ -96,13 +96,13 @@ for i in range(0, len(y12x) - 1):
     a12 = [y12x[i], y12y[i], y12z[i]]
     arr12.append(a12)
 
-for i in range(0, len(y13x) - 1):
+""" for i in range(0, len(y13x) - 1):
     a13 = [y13x[i], y13y[i], y13z[i]]
-    arr13.append(a13)
+    arr13.append(a13) """
 
 # Get the same length (filtered BW coordinates) 
 r8, r9, r10 = jl._get_same_length(arr8, arr9, arr10)
-r11, r12, r13 = jl._get_same_length(arr11, arr12, arr13)
+#r11, r12, r13 = jl._get_same_length(arr11, arr12, arr13)
 
 # Calculate theta angle for right knee (filtered BW coordinates)
 theta_right, theta_left = ([] for i in range(2))
@@ -111,10 +111,10 @@ for i in range(0, len(r8)):
     theta_right.append(th_right)
 
 # Calculate theta angle for left knee (filtered BW coordinates)
-for i in range(0, len(r11)):
+""" for i in range(0, len(r11)):
     th_left = a.calculate_3d_angle(np.asarray(r11[i]), np.asarray(r12[i]), np.asarray(r13[i]))
-    theta_left.append(th_left)
-
+    theta_left.append(th_left) """
+    
 # Visualize right and left knee angle (filtered data)
 fig, (ax3,ax4) = plt.subplots(1,2)
 ax3.plot(theta_right)
@@ -126,3 +126,38 @@ ax4.set_title('Knee Left BW')
 ax4.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
 
 plt.show()
+
+####################################
+### Calculate cadence of cycling ###
+####################################
+m_rk = Magnitude(arr9)
+m_ak = Magnitude(arr12)
+
+# Knees are more reliable instead of ankle
+mg_rk = m_rk.calculate_magnitude()
+mg_ak = m_ak.calculate_magnitude()
+
+c_rk = Cadence(mg_rk)
+c_ak = Cadence(mg_ak)
+
+plt.plot(arr9)
+plt.plot(arr12)
+plt.show()
+
+max_rk, min_rk = m_rk.find_visualize_local_max_min('KR, BW, Cycling', True)
+cadence_rk, duration_rk = c_rk.calculate_cadence(max_rk)
+
+max_ak, min_ak = m_ak.find_visualize_local_max_min('KL, BW, Cycling', True)
+cadence_ak, duration_ak = c_ak.calculate_cadence(max_ak)
+
+print("="*40, 'Local max-min of right knee', "="*40)
+print('.'*10, "="*30, 'max: ', max_rk, '='*30, '.'*10)
+print('.'*10, "="*30, 'min: ', min_rk, '='*30, '.'*10)
+print('.'*10, "="*30, 'time: ', duration_rk, 'sec', '='*30, '.'*10)
+print('.'*10, "="*30, 'RPM: ', cadence_rk, '='*30, '.'*10)
+
+print("="*40, 'Local max-min of left knee', "="*40)
+print('.'*10, "="*30, 'max: ', max_ak, '='*30, '.'*10)
+print('.'*10, "="*30, 'min: ', min_ak, '='*30, '.'*10)
+print('.'*10, "="*30, 'time: ', duration_ak, 'sec', '='*30, '.'*10)
+print('.'*10, "="*30, 'RPM: ', cadence_ak,'='*30, '.'*10)
