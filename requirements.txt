@@ -1,0 +1,77 @@
+appdirs==1.4.4
+astroid @ file:///C:/ci/astroid_1592481955828/work
+attrs @ file:///tmp/build/80754af9/attrs_1604765588209/work
+black==19.10b0
+certifi==2020.6.20
+chardet==4.0.0
+click @ file:///home/linux1/recipes/ci/click_1610990599742/work
+colorama @ file:///tmp/build/80754af9/colorama_1607707115595/work
+coverage==5.3
+cubemos.skeletontracking==3.1.0
+cycler==0.10.0
+dataclasses==0.6
+decorator==4.4.2
+docutils==0.16
+ffmpeg-python==0.2.0
+filterpy==1.4.5
+future==0.18.2
+idna==2.10
+imageio==2.9.0
+imageio-ffmpeg==0.4.3
+isort @ file:///home/conda/feedstock_root/build_artifacts/isort_1602591728846/work
+joblib @ file:///tmp/build/80754af9/joblib_1601912903842/work
+Kivy==2.0.0
+kivy-deps.angle==0.3.0
+kivy-deps.glew==0.3.0
+kivy-deps.gstreamer==0.3.1
+kivy-deps.sdl2==0.3.1
+Kivy-Garden==0.1.4
+kiwisolver @ file:///D:/bld/kiwisolver_1610099949969/work
+lazy-object-proxy @ file:///C:/b/work
+matplotlib @ file:///D:/bld/matplotlib-suite_1611858873832/work
+mccabe==0.6.1
+mkl-fft==1.2.0
+mkl-random==1.0.4
+mkl-service==2.3.0
+moviepy==1.0.3
+my-digital-drone-twin @ file:///C:/Users/Drone/Desktop/Panagiotis/My-Digital-Drone-Twin
+mypy-extensions==0.4.3
+numpy @ file:///C:/ci/numpy_and_numpy_base_1596233945180/work
+olefile @ file:///home/conda/feedstock_root/build_artifacts/olefile_1602866521163/work
+opencv-python==4.5.1.48
+pandas @ file:///C:/ci/pandas_1602088205210/work
+pathspec==0.7.0
+Pillow @ file:///D:/bld/pillow_1610407628862/work
+proglog==0.1.9
+psutil==5.8.0
+pycallgraph==1.0.1
+Pygments==2.8.1
+pykalman==0.9.5
+pylint @ file:///C:/ci/pylint_1598605958085/work
+pyparsing==2.4.7
+pypiwin32==223
+PyQt5==5.12.3
+PyQt5-sip==4.19.18
+PyQtChart==5.12
+PyQtWebEngine==5.12.1
+pyrealsense2==2.41.0.2666
+python-dateutil==2.8.1
+python-utils @ file:///home/conda/feedstock_root/build_artifacts/python-utils_1610715096358/work
+pytz==2020.1
+pywin32==300
+regex @ file:///C:/ci/regex_1606691216163/work
+requests==2.25.1
+scikit-learn @ file:///C:/ci/scikit-learn_1598376983131/work
+scipy @ file:///C:/ci/scipy_1597686737426/work
+six==1.15.0
+statistics==1.0.3.5
+stats==0.1.2a0
+threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
+toml @ file:///tmp/build/80754af9/toml_1592853716807/work
+tornado @ file:///D:/bld/tornado_1610094878337/work
+tqdm==4.56.0
+typed-ast @ file:///C:/ci/typed-ast_1610484654578/work
+typing-extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1602702424206/work
+urllib3==1.26.4
+wincertstore==0.2
+wrapt==1.11.2
