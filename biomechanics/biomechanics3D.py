@@ -180,6 +180,7 @@ class Cadence:
         
     def calculate_cadence(self, maximum, fps: int = 30):
         
+        # if statement is not necessary, but could be helpful in future
         if fps == 30:
             self.length_data_per_min = self.threshold[0]
         elif fps == 60:

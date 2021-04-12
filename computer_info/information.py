@@ -36,3 +36,17 @@ class ComputerInfo:
     def cpu_percent_utilization(self, interval = 0.1):
         print(f"Total CPU Usage: {psutil.cpu_percent(interval)}%")
     
+    def _print_all_processes(self):
+        for proc in psutil.process_iter(['pid', 'name', 'username']):
+            print(proc.info)
+    
+    def get_cpu_percent_by_pid(self, pid, interval = 0.1):
+        try:
+            proc = psutil.Process(pid)
+            tmp_val = proc.cpu_percent(interval)
+        except psutil.NoSuchProcess:
+            tmp_val = 0
+        
+        print(f'Total Process CPU Usage: {tmp_val}%')
+        return tmp_val
+

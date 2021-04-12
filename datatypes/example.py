@@ -69,9 +69,9 @@ z12x, z2_12x, y12x = f.digital_filter(jLs[36], 3)
 z12y, z2_12y, y12y = f.digital_filter(jLs[37], 3)
 z12z, z2_12z, y12z = f.digital_filter(jLs[38], 3)
 
-""" z13x, z2_13x, y13x = f.digital_filter(jLs[39], 3)
+z13x, z2_13x, y13x = f.digital_filter(jLs[39], 3)
 z13y, z2_13y, y13y = f.digital_filter(jLs[40], 3)
-z13z, z2_13z, y13z = f.digital_filter(jLs[41], 3) """
+z13z, z2_13z, y13z = f.digital_filter(jLs[41], 3)
 
 # Create lists with x,y,z coords together (filtered BW coordinates)
 arr8, arr9, arr10, arr11, arr12, arr13 = ([] for i in range(6))
@@ -96,13 +96,13 @@ for i in range(0, len(y12x) - 1):
     a12 = [y12x[i], y12y[i], y12z[i]]
     arr12.append(a12)
 
-""" for i in range(0, len(y13x) - 1):
+for i in range(0, len(y13x) - 1):
     a13 = [y13x[i], y13y[i], y13z[i]]
-    arr13.append(a13) """
+    arr13.append(a13)
 
 # Get the same length (filtered BW coordinates) 
 r8, r9, r10 = jl._get_same_length(arr8, arr9, arr10)
-#r11, r12, r13 = jl._get_same_length(arr11, arr12, arr13)
+r11, r12, r13 = jl._get_same_length(arr11, arr12, arr13)
 
 # Calculate theta angle for right knee (filtered BW coordinates)
 theta_right, theta_left = ([] for i in range(2))
@@ -111,9 +111,9 @@ for i in range(0, len(r8)):
     theta_right.append(th_right)
 
 # Calculate theta angle for left knee (filtered BW coordinates)
-""" for i in range(0, len(r11)):
+for i in range(0, len(r11)):
     th_left = a.calculate_3d_angle(np.asarray(r11[i]), np.asarray(r12[i]), np.asarray(r13[i]))
-    theta_left.append(th_left) """
+    theta_left.append(th_left)
     
 # Visualize right and left knee angle (filtered data)
 fig, (ax3,ax4) = plt.subplots(1,2)
