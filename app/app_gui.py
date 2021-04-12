@@ -190,13 +190,17 @@ class myImage(Image):
     
     def logo(self):
         return Image(source = 'images\\kth_logo.png')
+    
+    def plot_cycling(self):
+        return Image(source = 'images\\rpm_info.png')
 
 class myVideo(VideoPlayer):
     def __init__(self):
         super (myVideo, self).__init__()
     
     def play_video(self):
-        return VideoPlayer(source = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi',
+        offline_video = Configuration()._get_dir('offline_analysis')
+        return VideoPlayer(source = offline_video,
                     state = 'play', 
                     options={'eos': 'loop'})
     

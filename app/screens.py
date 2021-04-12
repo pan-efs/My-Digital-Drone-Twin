@@ -143,7 +143,7 @@ class VideosVisualizationScreen(Screen):
         
         v = myVideo()
         video = v.play_video()
-        animation = v.play_mp4()
+        #animation = v.play_mp4()
         
         b = myButton()
         back_btn = b.back_button()
@@ -151,12 +151,14 @@ class VideosVisualizationScreen(Screen):
         
         i = myImage()
         kth_logo = i.logo()
+        plt_cycling = i.plot_cycling()
         
         boxlayout = BoxLayout(orientation = 'vertical', spacing = 20, padding = 40)
-        boxlayout.add_widget(animation)
+        #boxlayout.add_widget(animation)
+        boxlayout.add_widget(plt_cycling)
         boxlayout.add_widget(video)
+        boxlayout.add_widget(start_btn)
         boxlayout.add_widget(back_btn)
-        #boxlayout.add_widget(start_btn)
         
         back_btn.bind(on_press = self.change_to_offline_analysis)
         start_btn.bind(on_press = self.biomechanics_analysis)
@@ -166,8 +168,8 @@ class VideosVisualizationScreen(Screen):
     def biomechanics_analysis(self, instance, *args):
         try:
             main_path = Configuration()._get_dir('main')
-            os.chdir(main_path + 'samples')
-            os.system('python biomechanics3D_example.py')
+            os.chdir(main_path + 'datatypes')
+            os.system('python example.py')
         except OSError:
             print('Provided directory cannot be found.')
     
@@ -226,6 +228,7 @@ class SettingsScreen(Screen):
         t = myTextInput()
         main_btn = t.text_input(wid = 500, hgt = 100, 
                                 h_text = 'Main path here...\n' + 'RealSense Viewer here...\n' +
+                                        'Skeletal tracking here...\n' +
                                         'Offline analysis here...')
         
         l = myLabel()

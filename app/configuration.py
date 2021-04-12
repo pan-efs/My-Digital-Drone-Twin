@@ -1,5 +1,4 @@
 import json
-
 from exceptions.application import ReadingConfigurationError, IndexConfigurationError
 
 class Configuration:
@@ -7,7 +6,8 @@ class Configuration:
         self.config = {
             "main": "C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\",
             "realsense_viewer": "C:\\Users\\Public\\Desktop\\Intel RealSense Viewer.lnk",
-            "offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\standstill_martin.avi"
+            "skeletal_tracking": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Cycling data\\20210218_113139.bag",
+            "offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Cycling data\\20210218_113139both.avi"
         }
     
     # This function should replace self.config in the future.
@@ -30,7 +30,8 @@ class Configuration:
             self._json = {
                 'main': config_list[3],
                 'realsense_viewer': config_list[4],
-                'offline_analysis': config_list[5]
+                'skeletal_tracking': config_list[5],
+                'offline_analysis': config_list[6]
             }
         except Exception as ex:
             raise IndexConfigurationError(ex)
