@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class JointsText:
     #TODO: text_path should be derived from a config file. Then, delete the file from the folder.
-    text_path: str = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_mj.txt'
+    text_path: str = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt'
     out_path: str = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt'
     
 class JointsDataframe(JointsText):
