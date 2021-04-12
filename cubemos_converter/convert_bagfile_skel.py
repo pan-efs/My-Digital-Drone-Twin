@@ -89,16 +89,17 @@ def render_ids_3d(
                         thickness,
                     )
 
-info = ComputerInfo()
+#info = ComputerInfo()
+bag_file = Configuration()._get_dir('skeletal_tracking')
 
 # Main content begins
 if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_device_from_file("C:\\Users\\Drone\\Desktop\\Panagiotis\\Moving camera\\20210304_094611.bag", False)
+        config.enable_device_from_file(bag_file, False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
+        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 60) # change to 30 if necessary
         #config.enable_stream(rs.stream.infrared, 1024, 768, rs.format.y8, 30)
         #config.enable_stream(rs.stream.confidence, 1024, 768, rs.format.raw8, 30)
 
@@ -168,7 +169,7 @@ if __name__ == "__main__":
                 print(f'frames: {i:.2f}', f'start: {start_time:.2f}', f'end: {end_time:.2f}',
                     f'performance: {performance_time:.2f}')
                 # Calculate the CPU utilization
-                info.cpu_percent_utilization() # 0.1 by default
+                #info.cpu_percent_utilization()
                 
                 
         pipeline.stop()
