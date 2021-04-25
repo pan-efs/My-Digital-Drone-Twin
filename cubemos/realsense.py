@@ -138,7 +138,7 @@ if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)
+        config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         
         # TODO: Save .bag file
