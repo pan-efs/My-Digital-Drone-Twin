@@ -79,6 +79,35 @@ class LinearKinematics:
             
         return time, speed
     
+    def cal_speed(self, time, data):
+        """
+        Description: [text]:
+        Calculates speed from 3D coordinates (x, y, z) using the first central difference method.
+        Speed is calculated between two video frames.
+        """
+
+        "Parameters: [array]: [time, joint(x,y,z)]"
+
+        "Returns: [tuple]: time, speed [units]: m/s"
+        new_time = []
+        speed = []
+        
+        for i in range(1, len(data) - 1):
+            x = (data[i + 1][0] - data[i - 1][0]) / (
+                time[i + 1] - time[i - 1]
+            )
+            y = (data[i + 1][1] - data[i - 1][1]) / (
+                time[i + 1] - time[i - 1]
+            )
+            z = (data[i + 1][2] - data[i - 1][2]) / (
+                time[i + 1] - time[i - 1]
+            )
+            s = math.sqrt(x*x + y*y + z*z)
+            speed.append(s)
+            new_time.append(time[i])
+        
+        return new_time, speed
+    
     
     """
     Description: [text]:
@@ -181,6 +210,7 @@ class Cadence:
     def calculate_cadence(self, maximum, fps: int = 30):
         
         # if statement is not necessary, but could be helpful in future
+        # if-else can be converted to dictionary
         if fps == 30:
             self.length_data_per_min = self.threshold[0]
         elif fps == 60:
@@ -201,3 +231,28 @@ class Cadence:
         cadence = maximum * (60 / (duration))
         
         return int(np.ceil(cadence)), duration
+
+class Slope:
+    def __init__(self):
+        pass
+    
+    def three_dim_slopes(self, fp:list, sp:list):
+        """
+        Calculate the three slopes between two points in 3D space.
+
+        :param fp: A list with 3D points, e.g. [x, y, z].
+        :type fp: list
+        :param sp: A list with 3D points, e.g. [x, y, z].
+        :type sp: list
+        :return: The slopes of xy-, xz-, yz- and distance (length).
+        :rtype: float
+        """
+        length = math.sqrt((sp[0] - fp[0])*(sp[0] - fp[0]) + 
+                (sp[1] - fp[1])*(sp[1] - fp[1]) + 
+                (sp[2] - fp[2])*(sp[2] - fp[2]))
+    
+        xy = (sp[2] - fp[2]) / length
+        xz = (sp[1] - fp[1]) / length
+        yz = (sp[0] - fp[0]) / length
+    
+        return xy, xz, yz, length
