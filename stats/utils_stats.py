@@ -1,45 +1,60 @@
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, stats
 from matplotlib import pyplot as plt
 
 class Stats_utils:
     def __init__(self):
         return
     
-    def standard_deviation(self, ls: list):
+    def _standard_deviation(self, ls: list):
         arr = np.array(ls)
         std_dev = np.std(arr)
         std_dev = int(std_dev*100)/100
         
         return std_dev
     
-    def variance(self, ls: list):
+    def _variance(self, ls: list):
         arr = np.array(ls)
         var = np.var(arr)
-        var = int(var*100)/100
+        #var = int(var*100)/100
         
         return var
     
-    def maximum(self, ls: list):
+    def _maximum(self, ls: list):
         maxim = max(ls)
         maxim = int(maxim*100)/100
         
         return maxim
     
-    def minimum(self, ls: list):
+    def _minimum(self, ls: list):
         minim = min(ls)
         minim = int(minim*100)/100
         
         return minim
     
-    def mean(self, ls: list):
+    def _mean(self, ls: list):
         arr = np.array(ls)
         avg = np.mean(arr)
         avg = int(avg*100)/100
         
         return avg
     
-    def percentile(self, ls: list):
+    def _median(self, ls: list):
+        arr = np.array(ls)
+        med = np.median(arr)
+        med = int(med*100)/100
+        
+        return med
+    
+    def _mode(self, ls: list):
+        arr = np.array(ls)
+        mode_result = stats.mode(arr)
+        _mode = int(mode_result.mode[0]*100)/100
+        _count = int(mode_result.count[0]*100)/100
+        
+        return _mode, _count
+    
+    def _percentile(self, ls: list):
         arr = np.array(ls)
         per = np.percentile(arr, [5, 25, 50, 75, 90, 99])
         
@@ -48,34 +63,44 @@ class Stats_utils:
         
         return per
     
-    def cdf(self, ls:list):
+    def _cdf(self, ls:list):
         "It works the same as 'percentile' function. Yet, it returns the probability for each value."
         x = np.array(ls)
-        std_dev = self.standard_deviation(ls)
-        mean = self.mean(ls)
+        std_dev = self._standard_deviation(ls)
+        mean = self._mean(ls)
         
         cdf = norm.cdf(x, mean, std_dev)
         
         return cdf
     
-    def pdf(self, ls:list):
+    def _pdf(self, ls:list):
         x = np.array(ls)
-        std_dev = self.standard_deviation(ls)
-        mean = self.mean(ls)
+        std_dev = self._standard_deviation(ls)
+        mean = self._mean(ls)
         
         pdf = norm.pdf(x, mean, std_dev)
         
         return pdf
     
     def stats_log(self, ls: list):
-        std_dev = self.standard_deviation(ls)
-        var = self.variance(ls)
-        minim = self.minimum(ls)
-        mean = self.mean(ls)
-        maxim = self.maximum(ls)
-        per = self.percentile(ls)
+        std_dev = self._standard_deviation(ls)
+        var = self._variance(ls)
+        minim = self._minimum(ls)
+        mean = self._mean(ls)
+        median = self._median(ls)
+        mode, count = self._mode(ls)
+        maxim = self._maximum(ls)
+        per = self._percentile(ls)
         
-        log = {'min': minim, 'mean': mean, 'max': maxim, 'std_dev': std_dev, 'variance': var}
+        log = {
+            'min': minim, 
+            'mean': mean,
+            'median': median,
+            'max': maxim, 
+            'mode': mode,
+            'std_dev': std_dev, 
+            'variance': var
+            }
         
         return log, per
     
