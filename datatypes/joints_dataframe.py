@@ -1,17 +1,12 @@
 import pandas as pd
-from dataclasses import dataclass
 
-@dataclass
-class JointsText:
-    #TODO: text_path should be derived from a config file. Then, delete the file from the folder.
-    text_path: str = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt'
-    out_path: str = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt'
-    
-class JointsDataframe(JointsText):
-    def __init__(self):
+class JointsDataframe:
+    def __init__(self, text_path: str, out_path: str):
+        self.text_path = text_path
+        self.out_path = out_path
         self.remove_brackets()
     
-    def __repr__(self):
+    def __return__(self):
         return self._transformer()
     
     def _standarize(self):

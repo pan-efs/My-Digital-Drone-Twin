@@ -7,11 +7,9 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 # Starting point
-jDF = JointsDataframe().__repr__()
-jNps = JointsNumpys().__repr__()
-
-jl = JointsList()
-jLs = jl.__repr__()
+jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt', 
+                'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
+jLs = jl.__return__()
 
 joints = []
 

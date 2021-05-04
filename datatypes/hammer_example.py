@@ -11,11 +11,19 @@ from biomechanics.biomechanics3D import Slope
 from stats.utils_stats import Stats_utils
 
 # Data pre-processing
-jDF = JointsDataframe().__repr__()
-jNps = JointsNumpys().__repr__()
+# We can use the desired format calling the respective class. I have commented the jDF and jNps as examples.
+# clean_3d.txt works like dummy file in order to clean a text file from unnecessary characters.
+# That means that clean_3d.txt file is overwritten. To avoid overwriting, you can define a distinct path.
+""" jDF = JointsDataframe('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
+                    'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt').__return__()
 
-jl = JointsList()
-jLs = jl.__repr__()
+jNps = JointsNumpys('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
+                    'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt').__return__() """
+
+
+jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
+                'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
+jLs = jl.__return__()
 
 joints = []
 
@@ -95,8 +103,8 @@ for i in range(0, len(mvg_right_ankle[:405])):
 
 # Statistics
 st = Stats_utils()
-log_ankle, _ = st.stats_log(ankle_length)
-log_knee, _ = st.stats_log(knee_length)
+log_ankle, per_ankle = st.stats_log(ankle_length)
+log_knee, per_knee = st.stats_log(knee_length)
 
 # Visualize right and left ankle's coords (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
