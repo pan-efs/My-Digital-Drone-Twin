@@ -89,8 +89,8 @@ def render_ids_3d(
                         thickness,
                     )
 
-#info = ComputerInfo()
-bag_file = Configuration()._get_dir('skeletal_tracking')
+info = ComputerInfo()
+bag_file = Configuration()._get_dir('offline_analysis')
 
 # Main content begins
 if __name__ == "__main__":
