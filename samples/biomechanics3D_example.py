@@ -6,7 +6,7 @@ from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
 from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
 from filters.kalmanFilter import KalmanFilters as KalmanFilters
-from stats.utils_stats import Stats_utils as stats_utils
+from stats.utils_stats import StatsUtils
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 import os
 
@@ -130,7 +130,7 @@ f = DigitalFilter()
 fil = KalmanFilters()
 
 # Statistics
-stats = stats_utils()
+stats = StatsUtils()
 
 #--------END CREATE OBJECTS--------#
 

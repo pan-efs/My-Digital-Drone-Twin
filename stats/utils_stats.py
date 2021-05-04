@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import norm, stats
 from matplotlib import pyplot as plt
 
-class Stats_utils:
+class StatsUtils:
     def __init__(self):
         return
     

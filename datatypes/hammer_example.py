@@ -8,7 +8,7 @@ from filters.digital_filter import DigitalFilter
 from filters.kalmanFilter import KalmanFilters as KalmanFilters
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
-from stats.utils_stats import Stats_utils
+from stats.utils_stats import StatsUtils
 
 # Data pre-processing
 # We can use the desired format calling the respective class. I have commented the jDF and jNps as examples.
@@ -102,7 +102,7 @@ for i in range(0, len(mvg_right_ankle[:405])):
     knee_length.append(_length)
 
 # Statistics
-st = Stats_utils()
+st = StatsUtils()
 log_ankle, per_ankle = st.stats_log(ankle_length)
 log_knee, per_knee = st.stats_log(knee_length)
 
