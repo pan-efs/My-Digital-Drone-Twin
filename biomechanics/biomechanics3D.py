@@ -190,9 +190,9 @@ class Magnitude:
         fig, ax = plt.subplots()
         ax.scatter(df.index, df['min'], c='r', label = str(self.minimum))
         ax.scatter(df.index, df['max'], c='g', label = str(self.maximum))
-        plt.title(name)
-        plt.xlabel('Frames')
-        plt.ylabel('Magnitude')
+        plt.title(name, weight = 'bold', pad = 15)
+        plt.xlabel('Frames', fontsize = 12, fontweight = 'bold')
+        plt.ylabel('Magnitude', fontsize = 12, fontweight = 'bold')
         ax.plot(df.index, df['fil_ls'])
         
         if show == True:
