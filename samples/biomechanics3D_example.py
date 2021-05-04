@@ -1,16 +1,19 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from animations.anime import Animations
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
 from biomechanics.biomechanics3D import AngularKinematics as AngularKinematics
 from filters.digital_filter import DigitalFilter as DigitalFilter
-from filters.kalmanFilter import Kalman_filters as Kalman_filters
+from filters.kalmanFilter import KalmanFilters as KalmanFilters
 from stats.utils_stats import Stats_utils as stats_utils
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+import os
 
 #--------START FILE--------#
 
 # Define the desired paths here
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\standstill_pef.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
 
 #--------END FILE--------#
@@ -23,7 +26,7 @@ def remove_brackets(text_file_path):
     fout = open(out_path, "wt")
     
     for ln in fin:
-	    fout.write(ln.replace('[', '').replace(']', ''))
+        fout.write(ln.replace('[', '').replace(']', ''))
     
     fin.close()
     fout.close()
@@ -124,7 +127,7 @@ a = AngularKinematics()
 
 # Create filters objects
 f = DigitalFilter()
-fil = Kalman_filters()
+fil = KalmanFilters()
 
 # Statistics
 stats = stats_utils()
@@ -425,8 +428,10 @@ fil.double_visualization(kf_theta_right, rts_theta_right, kf_theta_left, rts_the
                         'Knee Right', 'Knee Left')
 
 # Visualisation stats log of KF and RTS
-stats.visualization(stats_log_theta_right_KF, stats_log_theta_left_KF, 'Knee right KF', 'Knee left KF')
-stats.visualization(stats_log_theta_right_RTS, stats_log_theta_left_RTS, 'Knee right RTS', 'Knee left RTS')
+stats.visualization(stats_log_theta_left_KF, stats_log_theta_right_KF, 'Left knee KF', 'Right knee KF')
+#stats.visualization(stats_log_theta_right_RTS, stats_log_theta_left_RTS, 'Knee right RTS', 'Knee left RTS')
+#stats.visualization(stats_log_theta_right_KF, stats_log_theta_right_RTS, 'Knee right KF', 'Knee right RTS')
+#stats.visualization(stats_log_un_theta_right, stats_log_theta_right_KF, 'Knee right (unfiltered)', 'Knee right (KL)')
 
 # Plot all together (from unfiltered to filtered angles)
 fig, (ax1, ax2) = plt.subplots(1,2)
@@ -454,7 +459,7 @@ plt.show()
 #--------START PERCENTILES--------#
 
 # Print percentiles as DataFrames
-per_list = [per_un_theta_right, per_un_theta_left, per_theta_right, per_theta_left, per_theta_right_KF, per_theta_left_KF,
+""" per_list = [per_un_theta_right, per_un_theta_left, per_theta_right, per_theta_left, per_theta_right_KF, per_theta_left_KF,
             per_theta_right_RTS, per_theta_left_RTS]
 per_names = ['Knee Right Unfiltered:', 'Knee Left Unfiltered:', 'Knee Right BW:', 'Knee Left BW:', 
             'Knee Right KF:', 'Knee Left KF:', 'Knee Right RTS:', 'Knee Left RTS:']
@@ -463,6 +468,106 @@ for i in range(0, len(per_list)):
     df = pd.DataFrame(per_list[i], columns = [per_names[i]])
     df = df.T
     df.rename(columns = {0: '5th', 1: '25th', 2: '50th', 3: '75th', 4: '90th', 5: '99th'}, inplace = True)
-    print(df)
+    print(df) """
 
 #--------END PERCENTILES--------#
+
+
+######
+##
+### Delete it after FOI presentation
+##
+######
+ground_truth_right = [180] * len(rts_theta_right)
+ground_truth_left = [180] * len(rts_theta_left)
+
+mse_right = mean_squared_error(ground_truth_right, rts_theta_right)
+mse_left = mean_squared_error(ground_truth_left, rts_theta_left)
+
+mae_right = mean_absolute_error(ground_truth_right, rts_theta_right)
+mae_left = mean_absolute_error(ground_truth_left, rts_theta_left)
+
+mae_right = int(mae_right*100)/100
+mae_left = int(mae_left*100)/100
+
+
+font = {'family': 'serif',
+        'color':  'black',
+        'weight': 'bold',
+        'size': 12,
+        }
+
+plt.plot(ground_truth_right, c = 'black', alpha = 0.5, label = 'Theoritical GT', linewidth = 2.5)
+plt.plot(rts_theta_right, c = 'darkcyan', label = 'Right knee', linewidth = 2)
+plt.plot(rts_theta_left, c = 'darkred', label = 'Left knee', linewidth = 2)
+plt.title('Standstill subject/Non-static camera', weight = 'bold', pad = 15)
+plt.ylabel('Degrees', fontsize = 14, fontweight = 'bold')
+plt.xlabel('Frames', fontsize = 14, fontweight = 'bold')
+plt.text(1100, 147, 'MAE right:' + str(mae_right), fontdict = font)
+plt.text(1100, 144, 'MAE left:' + str(mae_left), fontdict = font)
+
+ax = plt.gca()
+ax.set_axisbelow(True)
+ax.yaxis.grid(True, color='#EEEEEE')
+ax.xaxis.grid(False)
+
+plt.legend()
+plt.show()
+
+# Bar chart plots of stats logging
+fig, (ax0, ax1) = plt.subplots(1,2)
+bars0 = ax0.bar(*zip(*stats_log_theta_left_KF.items()), color = 'darkcyan')
+ax0.spines['top'].set_visible(False)
+ax0.spines['right'].set_visible(False)
+ax0.spines['left'].set_visible(False)
+ax0.spines['bottom'].set_color('#DDDDDD')
+ax0.set_title('Left knee after KF', weight = 'bold', pad = 15, c = 'peru')
+ax0.set_ylabel('[min,mean,median,max,mode,std_dev] = deg, [variance] = deg^2', fontsize = 12, fontweight = 'bold', color = 'peru')
+ax0.set_axisbelow(True)
+ax0.yaxis.grid(True, color='#EEEEEE')
+ax0.xaxis.grid(False)
+
+bar_color_0 = bars0[0].get_facecolor()
+for bar in bars0:
+    ax0.text(
+        bar.get_x() + bar.get_width() / 2,
+        bar.get_height() + 1,
+        round(bar.get_height(), 2),
+        horizontalalignment = 'center',
+        color = bar_color_0,
+        weight='bold'
+    )
+
+bars1 = ax1.bar(*zip(*stats_log_theta_right_KF.items()), color = 'darkcyan')
+ax1.spines['top'].set_visible(False)
+ax1.spines['right'].set_visible(False)
+ax1.spines['left'].set_visible(False)
+ax1.spines['bottom'].set_color('#DDDDDD')
+ax1.set_title('Right knee after KF', weight = 'bold', pad = 15, c = 'peru')
+ax1.set_axisbelow(True)
+ax1.yaxis.grid(True, color='#EEEEEE')
+ax1.xaxis.grid(False)
+
+bar_color_1 = bars1[0].get_facecolor()
+for bar in bars1:
+    ax1.text(
+        bar.get_x() + bar.get_width() / 2,
+        bar.get_height() + 1,
+        round(bar.get_height(), 2),
+        horizontalalignment = 'center',
+        color = bar_color_1,
+        weight='bold'
+    )
+
+plt.show()
+
+
+# Animation
+""" a = Animations(rts_theta_left, 'animation')
+a.anime_plot(30)
+a.save_as_gif()
+a.gif_to_mp4()
+q = Animations(rts_theta_right, 'animation_r')
+q.anime_plot(30)
+q.save_as_gif()
+q.gif_to_mp4() """
