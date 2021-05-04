@@ -27,7 +27,7 @@ class ScreenOne(Screen):
         
         boxlayout.add_widget(img)
         boxlayout.add_widget(on_btn)
-        boxlayout.add_widget(skel_btn)
+        #boxlayout.add_widget(skel_btn)
         boxlayout.add_widget(off_btn)
         boxlayout.add_widget(play_btn)
         boxlayout.add_widget(settings_btn)
@@ -35,7 +35,7 @@ class ScreenOne(Screen):
         off_btn.bind(on_press = self.change_to_offline_analysis)
         play_btn.bind(on_press = self.change_to_filechooser)
         skel_btn.bind(on_press = self.change_to_skeletal)
-        settings_btn.bind(on_press = self.change_to_security_settings)
+        settings_btn.bind(on_press = self.change_to_settings)
         
         self.add_widget(boxlayout)
     
@@ -48,8 +48,8 @@ class ScreenOne(Screen):
     def change_to_filechooser(self, *args):
         self.manager.current = 'filechooser'
     
-    def change_to_security_settings(self, *args):
-        self.manager.current = 'settings_security'
+    def change_to_settings(self, *args):
+        self.manager.current = 'settings'
 
 class SkeletalScreen(Screen):
     def __init__(self, **kwargs):
@@ -108,26 +108,23 @@ class OfflineAnalysisScreen(Screen):
         
         b = myButton()
         back_arrow = b.back_button()
+        start_btn = b.video_visualization_submit()
+        skl_submit = b.skeletal_submit()
         offline_analysis_submit = b.offline_analysis_submit()
-        
-        t = myTextInput()
-        txt = t.text_input()
-        
-        l = myLabel()
-        offline_lbl = l.offline_analysis_label()
         
         i = myImage()
         kth_logo = i.logo()
         
         boxlayout = BoxLayout(orientation = 'vertical', spacing = 20, padding = 50)
         boxlayout.add_widget(kth_logo)
-        boxlayout.add_widget(offline_lbl)
-        boxlayout.add_widget(txt)
-        boxlayout.add_widget(offline_analysis_submit)
+        boxlayout.add_widget(skl_submit)
+        boxlayout.add_widget(start_btn)
         boxlayout.add_widget(back_arrow)
         
         back_arrow.bind(on_press = self.change_to_main)
-        offline_analysis_submit.bind(on_press = self.change_to_videovisualization)
+        skl_submit.bind(on_press = self.converter)
+        start_btn.bind(on_press = self.biomechanics_analysis)
+        start_btn.bind(on_press = self.play_converted_video)
         
         self.add_widget(boxlayout)
     
@@ -136,6 +133,31 @@ class OfflineAnalysisScreen(Screen):
     
     def change_to_videovisualization(self, *args):
         self.manager.current = 'video_visualization'
+    
+    def biomechanics_analysis(self, instance, *args):
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'datatypes')
+            os.system('python hammer_example.py')
+        except OSError:
+            print('Provided directory cannot be found.')
+    
+    def converter(self, instance, *args):
+        from cubemos_converter import convert_bagfile_skel
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'cubemos_converter')
+            os.system('python convert_bagfile_skel.py')
+        except OSError:
+            print('Provided directory cannot be found.')
+    
+    def play_converted_video(self, instance, *args):
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'cubemos_converter')
+            os.system('output-skeleton.avi')
+        except OSError:
+            print('Provided directory cannot be found.')
 
 class VideosVisualizationScreen(Screen):
     def __init__(self, **kwargs):
@@ -169,7 +191,7 @@ class VideosVisualizationScreen(Screen):
         try:
             main_path = Configuration()._get_dir('main')
             os.chdir(main_path + 'datatypes')
-            os.system('python example.py')
+            os.system('python cadence_example.py')
         except OSError:
             print('Provided directory cannot be found.')
     
@@ -228,7 +250,6 @@ class SettingsScreen(Screen):
         t = myTextInput()
         main_btn = t.text_input(wid = 500, hgt = 100, 
                                 h_text = 'Main path here...\n' + 'RealSense Viewer here...\n' +
-                                        'Skeletal tracking here...\n' +
                                         'Offline analysis here...')
         
         l = myLabel()

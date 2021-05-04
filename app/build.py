@@ -19,7 +19,7 @@ class MyDigitalDroneTwin(App):
         screen_manager.add_widget(skeletal)
         screen_manager.add_widget(offline_analysis)
         screen_manager.add_widget(filechooser)
-        screen_manager.add_widget(video_visualization)
+        #screen_manager.add_widget(video_visualization)
         screen_manager.add_widget(settings)
         screen_manager.add_widget(settings_security)
         

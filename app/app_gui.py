@@ -86,7 +86,7 @@ class myButton(Button):
         return mybtn
     
     def skeletal_submit(self):
-        mybtn = Button(text = "Submit", 
+        mybtn = Button(text = "Convert video", 
                         size_hint = (None, None),
                         width = 200,
                         height = 75,
@@ -96,7 +96,7 @@ class myButton(Button):
         return mybtn
     
     def video_visualization_submit(self):
-        mybtn = Button(text = "Start", 
+        mybtn = Button(text = "Start analysis", 
                         size_hint = (None, None),
                         width = 200,
                         height = 75,

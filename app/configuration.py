@@ -6,8 +6,8 @@ class Configuration:
         self.config = {
             "main": "C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\",
             "realsense_viewer": "C:\\Users\\Public\\Desktop\\Intel RealSense Viewer.lnk",
-            "skeletal_tracking": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Field\\20210416_135052.bag",
-            "offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Field\\20210416_133148.avi"
+            #"offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Field\\20210416_133148.avi",
+            "offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Field\\20210416_135052.bag"
         }
     
     # This function should replace self.config in the future.
