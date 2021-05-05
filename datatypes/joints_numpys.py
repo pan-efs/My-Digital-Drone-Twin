@@ -4,11 +4,20 @@ from joints_dataframe import JointsDataframe
 
 class JointsNumpys:
     def __init__(self, text_path: str, out_path: str):
+        self.text_path = text_path
+        self.out_path = out_path
+        
         [self._joint0, self._joint1, self._joint2, self._joint3, 
         self._joint4, self._joint5, self._joint6, self._joint7,
         self._joint8, self._joint9, self._joint10, self._joint11,
         self._joint12, self._joint13, self._joint14, self._joint15,
-        self._joint16, self._joint17]                                = JointsDataframe(text_path, out_path).__return__() 
+        self._joint16, self._joint17]                                = JointsDataframe(self.text_path, self.out_path).__return__()
+    
+    def __str__(self):
+        return f'The input text path is: {self.text_path} AND the output path is: {self.out_path}'
+    
+    def __repr__(self):
+        return f'JointsNumpys(text_path={self.text_path}, out_path={self.out_path})'
     
     def __return__(self):
         return self.__return_nps__()

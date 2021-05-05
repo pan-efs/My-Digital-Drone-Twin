@@ -21,10 +21,19 @@ jNps = JointsNumpys('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twi
                     'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt').__return__() """
 
 
+# If we want the app to run totally automatically, we can get the directory directly after converter.
+#jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos_converter\\get_3d_joints_from_video.txt',
+#                'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
+
 jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
                 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
 jLs = jl.__return__()
 
+# Print details
+print(jl.__str__())
+print(jl.__repr__())
+
+# Get all body joints
 joints = []
 
 for i in range(0, len(jLs), 3):

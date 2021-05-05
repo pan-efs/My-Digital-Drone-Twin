@@ -6,6 +6,12 @@ class JointsDataframe:
         self.out_path = out_path
         self.remove_brackets()
     
+    def __str__(self):
+        return f'The input text path is: {self.text_path} AND the output path is: {self.out_path}'
+    
+    def __repr__(self):
+        return f'JointsDataframe(text_path={self.text_path}, out_path={self.out_path})'
+    
     def __return__(self):
         return self._transformer()
     

@@ -6,6 +6,9 @@ from joints_numpys import JointsNumpys
 
 class JointsList:
     def __init__(self, text_path: str, out_path: str):
+        self.text_path = text_path
+        self.out_path = out_path
+        
         [self.arr_0x, self.arr_0y, self.arr_0z,
         self.arr_1x, self.arr_1y, self.arr_1z,
         self.arr_2x, self.arr_2y, self.arr_2z,
@@ -23,7 +26,13 @@ class JointsList:
         self.arr_14x, self.arr_14y, self.arr_14z,
         self.arr_15x, self.arr_15y, self.arr_15z,
         self.arr_16x, self.arr_16y, self.arr_16z,
-        self.arr_17x, self.arr_17y, self.arr_17z] = JointsNumpys(text_path, out_path).__return__()
+        self.arr_17x, self.arr_17y, self.arr_17z] = JointsNumpys(self.text_path, self.out_path).__return__()
+    
+    def __str__(self):
+        return f'The input text path is: {self.text_path} AND the output path is: {self.out_path}'
+    
+    def __repr__(self):
+        return f'JointsList(text_path={self.text_path}, out_path={self.out_path})'
     
     def __return__(self):
         return self.__return_all__()
