@@ -199,7 +199,13 @@ class myVideo(VideoPlayer):
         super (myVideo, self).__init__()
     
     def play_video(self):
-        offline_video = Configuration()._get_dir('offline_analysis')
+        try:
+            main_path = Configuration()._get_dir('main')
+            os.chdir(main_path + 'cubemos_converter')
+            os.system('output-skeleton.avi')
+        except OSError:
+            print('Provided directory cannot be found.')
+        
         return VideoPlayer(source = offline_video,
                     state = 'play', 
                     options={'eos': 'loop'})

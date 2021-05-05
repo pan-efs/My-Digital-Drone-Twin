@@ -183,17 +183,8 @@ class VideosVisualizationScreen(Screen):
         boxlayout.add_widget(back_btn)
         
         back_btn.bind(on_press = self.change_to_offline_analysis)
-        start_btn.bind(on_press = self.biomechanics_analysis)
         
         self.add_widget(boxlayout)
-    
-    def biomechanics_analysis(self, instance, *args):
-        try:
-            main_path = Configuration()._get_dir('main')
-            os.chdir(main_path + 'datatypes')
-            os.system('python cadence_example.py')
-        except OSError:
-            print('Provided directory cannot be found.')
     
     def change_to_offline_analysis(self, *args):
         self.manager.current = 'offline_analysis'
