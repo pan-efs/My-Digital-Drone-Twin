@@ -8,7 +8,7 @@ from filters.digital_filter import DigitalFilter
 from filters.kalmanFilter import KalmanFilters as KalmanFilters
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
-from stats.utils_stats import StatsUtils
+from stats.utils_stats import StatsUtils, UniformDistribution, QQplot
 
 # Data pre-processing
 # We can use the desired format calling the respective class. I have commented the jDF and jNps as examples.
@@ -25,7 +25,7 @@ jNps = JointsNumpys('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twi
 #jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos_converter\\get_3d_joints_from_video.txt',
 #                'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
 
-jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
+jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer1.txt',
                 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
 jLs = jl.__return__()
 
@@ -97,7 +97,7 @@ sl = Slope()
 
 ankle_xy, ankle_xz, ankle_yz, ankle_length, knee_xy, knee_xz, knee_yz, knee_length = ([] for i in range(8))
 
-for i in range(0, len(mvg_right_ankle[:405])):
+for i in range(0, len(mvg_right_ankle[:316])):
     xy, xz, yz, length = sl.three_dim_slopes(mvg_right_ankle[i], mvg_left_ankle[i])
     ankle_xy.append(xy)
     ankle_xz.append(xz)
@@ -109,11 +109,6 @@ for i in range(0, len(mvg_right_ankle[:405])):
     knee_xz.append(_xz)
     knee_yz.append(_yz)
     knee_length.append(_length)
-
-# Statistics
-st = StatsUtils()
-log_ankle, per_ankle = st.stats_log(ankle_length)
-log_knee, per_knee = st.stats_log(knee_length)
 
 # Visualize right and left ankle's coords (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
@@ -132,11 +127,20 @@ ax2.set(xlabel = 'Frames')
 plt.legend()
 plt.show()
 
+# Statistics classes
+st = StatsUtils()
+uni_st = UniformDistribution()
+qq = QQplot()
+
+""" # Warning: Hypothesis as normal distribution
+log_ankle, per_ankle = st.stats_log(ankle_length[240:316])
+log_knee, per_knee = st.stats_log(knee_length[240:316])
+
 # 3D plots of ankle and knee positions
 fig = plt.figure()
 ax = fig.gca(projection='3d')
-ax.scatter(mvg_ra_x[:405], mvg_ra_y[:405], mvg_ra_z[:405], label = 'Right ankle', alpha = 0.8)
-ax.scatter(mvg_la_x[:405], mvg_la_y[:405], mvg_la_z[:405], label = 'Left ankle', alpha = 0.6)
+ax.scatter(mvg_ra_x[:316], mvg_ra_y[:316], mvg_ra_z[:316], label = 'Right ankle', alpha = 0.8)
+ax.scatter(mvg_la_x[:316], mvg_la_y[:316], mvg_la_z[:316], label = 'Left ankle', alpha = 0.6)
 ax.set_xlabel('X (m)', fontsize = 12, fontweight = 'bold')
 ax.set_ylabel('Y (m)', fontsize = 12, fontweight = 'bold')
 ax.set_zlabel('Z (m)', fontsize = 12, fontweight = 'bold')
@@ -145,7 +149,7 @@ ax.set_title('Position of left and right ankle', weight = 'bold', pad = 15)
 plt.legend()
 plt.show()
 
-# Bar charts of log stats 
+# Bar charts of log stats: normal distribution
 fig, (ax0, ax1) = plt.subplots(1,2)
 bars0 = ax0.bar(*zip(*log_ankle.items()), color = 'darkcyan')
 ax0.spines['top'].set_visible(False)
@@ -184,6 +188,61 @@ for bar in bars1:
     ax1.text(
         bar.get_x() + bar.get_width() / 2,
         bar.get_height() + 0.01,
+        round(bar.get_height(), 2),
+        horizontalalignment = 'center',
+        color = bar_color_1,
+        weight='bold'
+    )
+
+plt.show() """
+
+## QQ-plots
+qq.qq_plot(np.array(knee_length[240:316]), "Knees distance during the turning phase")
+qq.qq_plot(np.array(ankle_length[240:316]), "Ankles distance during the turning phase")
+
+# Uniform distribution for the turning phase of hammer throw
+uni_log_knee = uni_st.stats_log(np.array(knee_length[240:316]))
+uni_log_ankle = uni_st.stats_log(np.array(ankle_length[240:316]))
+
+# Bar charts of log stats as uniform distribution
+fig, (ax0, ax1) = plt.subplots(1,2)
+bars0 = ax0.bar(*zip(*uni_log_ankle.items()), color = 'darkcyan')
+ax0.spines['top'].set_visible(False)
+ax0.spines['right'].set_visible(False)
+ax0.spines['left'].set_visible(False)
+ax0.spines['bottom'].set_color('#DDDDDD')
+ax0.set_title('Ankles distance during the turning phase', weight = 'bold', pad = 15, c = 'peru')
+ax0.set_ylabel('[mean,std_dev] = m, [variance] = m^2', fontsize = 12, fontweight = 'bold', color = 'peru')
+ax0.set_axisbelow(True)
+ax0.yaxis.grid(True, color='#EEEEEE')
+ax0.xaxis.grid(False)
+
+bar_color_0 = bars0[0].get_facecolor()
+for bar in bars0:
+    ax0.text(
+        bar.get_x() + bar.get_width() / 2,
+        bar.get_height() + 0.01,
+        round(bar.get_height(), 2),
+        horizontalalignment = 'center',
+        color = bar_color_0,
+        weight='bold'
+    )
+
+bars1 = ax1.bar(*zip(*uni_log_knee.items()), color = 'darkcyan')
+ax1.spines['top'].set_visible(False)
+ax1.spines['right'].set_visible(False)
+ax1.spines['left'].set_visible(False)
+ax1.spines['bottom'].set_color('#DDDDDD')
+ax1.set_title('Knees distance during the turning phase', weight = 'bold', pad = 15, c = 'peru')
+ax1.set_axisbelow(True)
+ax1.yaxis.grid(True, color='#EEEEEE')
+ax1.xaxis.grid(False)
+
+bar_color_1 = bars1[0].get_facecolor()
+for bar in bars1:
+    ax1.text(
+        bar.get_x() + bar.get_width() / 2,
+        bar.get_height() + 0.005,
         round(bar.get_height(), 2),
         horizontalalignment = 'center',
         color = bar_color_1,

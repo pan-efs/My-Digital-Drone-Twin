@@ -1,10 +1,14 @@
 import numpy as np
 from scipy.stats import norm, stats
+import statsmodels.api as sm
 from matplotlib import pyplot as plt
 
 class StatsUtils:
+    """
+    StatsUtils corresponds to Normal Distribution.
+    """
     def __init__(self):
-        return
+        pass
     
     def _standard_deviation(self, ls: list):
         arr = np.array(ls)
@@ -115,3 +119,59 @@ class StatsUtils:
         ax1.set_title(l_title)
 
         plt.show()
+
+class UniformDistribution:
+    def __init__(self):
+        pass
+    
+    def _mean(self, data: np.array):
+        length = len(data)
+        mean = (data[length - 1] + data[0])/2
+        mean = int(mean*100)/100
+        
+        return mean
+    
+    def _median(self, data: np.array):
+        length = len(data)
+        median = (data[length - 1] + data[0])/2
+        median = int(median*100)/100
+        
+        return median
+    
+    def _variance(self, data: np.array):
+        length = len(data)
+        var = ((data[length - 1] - data[0]) * 
+                (data[length - 1] - data[0]))/12
+        #var = int(var*100)/100
+        
+        return var
+    
+    def _standard_deviation(self, data: np.array):
+        var = self._variance(data)
+        std_dev = var ** 0.5
+        std_dev = int(std_dev*100)/100
+        
+        return std_dev
+    
+    def stats_log(self, data: np.array):
+        std_dev = self._standard_deviation(data)
+        var = self._variance(data)
+        mean = self._mean(data)
+        
+        log = {
+            'mean': mean,
+            'std_dev': std_dev, 
+            'variance': var
+            }
+        
+        return log
+
+class QQplot:
+    def __init__(self):
+        pass
+    
+    def qq_plot(self, data: np.array, title: str):
+        fig = sm.qqplot(data, line = '45')
+        fig.suptitle(title)
+        plt.show()
+
