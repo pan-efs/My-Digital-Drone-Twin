@@ -8,8 +8,11 @@ class Configuration:
             "realsense_viewer": "C:\\Users\\Public\\Desktop\\Intel RealSense Viewer.lnk",
             "offline_analysis": "C:\\Users\\Drone\\Desktop\\Panagiotis\\Field\\20210416_134949.bag"
         }
+        # In case of app running
+        """ read_settings = self._read_settings()
+        dict_settings = self._config_json(read_settings)
+        self.config = dict_settings """
     
-    # This function should replace self.config in the future.
     def _read_settings(self):
         self.config_list = []
         
@@ -19,18 +22,20 @@ class Configuration:
                 for i in range(0, len(path)):
                     path[i] = path[i][:-1]
                     self.config_list.append(path[i])
+                    
             return self.config_list
         
         except Exception as ex:
             raise ReadingConfigurationError(ex)
     
     def _config_json(self, config_list: list):
+        length = len(config_list)
+        
         try:
             self._json = {
-                'main': config_list[3],
-                'realsense_viewer': config_list[4],
-                'skeletal_tracking': config_list[5],
-                'offline_analysis': config_list[6]
+                'main': config_list[length - 3],
+                'realsense_viewer': config_list[length - 2],
+                'offline_analysis': config_list[length - 1],
             }
         except Exception as ex:
             raise IndexConfigurationError(ex)
@@ -39,7 +44,3 @@ class Configuration:
     
     def _get_dir(self, key_path: str):
         return self.config[key_path]
-
-
-#TODO: Write camera's configurations here as well.
-#Comment: settings.txt should have at least 3 lines in order to run. Otherwise raises an error.

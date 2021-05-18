@@ -264,7 +264,7 @@ class SettingsScreen(Screen):
                 file = open('logging\\settings.txt', 'a')
                 file.writelines(path + '\n')
                 file.close()
-                print("GOT PATH:" + path)
+                print("GOT PATH: \n" + path)
             except:
                 print('File cannot open.')
         else:

@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="my_digital_drone_twin",
     version="0.0.1",
-    description="3D Human pose estimation and extract biomechanics info using a depth camera attached on drone",
+    description="Skeletal tracking for sports using LiDAR depth camera",
     url="https://github.com/pan-efs/My-Digital-Drone-Twin",
     author="Panagiotis Efstratiou",
     author_email="",
