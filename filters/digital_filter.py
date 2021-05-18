@@ -4,19 +4,26 @@ import pandas as pd
 from scipy.signal import *
 
 class DigitalFilter:
+    def __init__(self):
+        pass
     
     def digital_filter(self, xn: np.ndarray, n):
         """
-        Description: [text]:
         Design a digital filter.
         Find the coefficients of initial states.
         Filter data along one-dimension with an IIR. Filter a data sequence, xn, using a digital filter.
         Apply a forward-backward filter, to obtain a filter with linear phase.
-    
-        Parameters: [array, int]: [signal, order]
-    
-        Returns: [z, z2, y]: [lfilter once, lfilter twice, filtfilt]
+        
+        :param xn: signal
+        :type xn: np.ndarray
+        :param n: order of filter
+        :type n: int
+        
+        :return: z: output of digital filter, z2: output of digital filter based on z's output, 
+                y: the filtered output with the same shape as signal.
+        :rtype: z: array, z2: array, y: np.ndarray
         """
+        
         b, a = butter(n, 0.05)
         zi = lfilter_zi(b, a)
         z, _ = lfilter(b, a, xn, zi = zi * xn[0])
@@ -27,7 +34,6 @@ class DigitalFilter:
     
     def visualization(self, signal: np.ndarray, z, z2, y, title: str):
         """
-        Description: [text]:
         Visualize the returned parameters of digital_filter function.
         """
         plt.figure
@@ -43,8 +49,7 @@ class DigitalFilter:
     
     def visualize_local_max_min(self, filtfilt: np.ndarray, name: str):
         """
-        Description: [text]:
-        Visualize filtfilt filtered signal.
+        Visualize filtfilt filtered signal, that one with linear phase.
         """
         df = pd.DataFrame(filtfilt, columns = ['filtfilt'])
         df['min'] = df.iloc[argrelextrema(df.filtfilt.values, np.less_equal,

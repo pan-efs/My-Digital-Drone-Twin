@@ -9,13 +9,22 @@ class KalmanFilters:
         pass
     
     def smoothing_filter(self, data: np.ndarray):
+        """
+        Apply kalman filter and then RTS smoother.
+        
+        :param data: signal
+        :type data: np.ndarray
+        
+        :return: M: smoothed means, mu: means
+        :rtype: np.ndarray , array
+        """
         fk = KalmanFilter(dim_x = 2, dim_z = 1)
         fk.x = np.array([0., 1.])      # state (x and dx)
         fk.F = np.array([[1., 1.],
-                        [0., 1.]])    # state transition matrix
+                        [0., 1.]])     # state transition matrix
         fk.H = np.array([[1., 0.]])    # Measurement function
         fk.P*= 10.                     # covariance matrix
-        fk.R = 25                   # state uncertainty
+        fk.R = 25                      # state uncertainty
         fk.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.001)  # process uncertainty
         
         mu, cov, _, _ = fk.batch_filter(data)
@@ -24,6 +33,18 @@ class KalmanFilters:
         return M, mu
 
     def visualization(self, data: np.ndarray, M, mu, title: str):
+        """
+        Visualize original data, smoothed means from rts_smoother and means from batch_filter.
+        
+        :param data: signal
+        :type data: np.ndarray
+        :param M: smoothed means
+        :type M: np.ndarray
+        :param mu: means
+        :type mu: array
+        :param title: desired title
+        :type title: str
+        """
         plt.plot(data, c = 'r', label = 'Measurements')
         plt.plot(M[:, 0], c = 'b', label = 'RTS')
         plt.plot(mu[:, 0], c = 'g', ls = '--', label = 'KF Output')

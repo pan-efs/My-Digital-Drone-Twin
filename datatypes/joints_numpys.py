@@ -32,6 +32,11 @@ class JointsNumpys:
         return ls
     
     def __return_nps__(self):
+        """
+        Split each dataframe into a list which contains coordinates of x, y, z.
+        
+        :rtype: List
+        """
         ls = self.__return_dfs__()
         
         converted_list = []
@@ -52,7 +57,7 @@ class JointsNumpys:
         :type joint_df: pd.DataFrame
         
         :return: Three arrays of X,Y,Z coordinates, respectively.
-        :rtype: np.ndarray
+        :rtype: np.array
         """
         arrX = joint_df['joint_x'].to_numpy()
         arrY = joint_df['joint_y'].to_numpy()

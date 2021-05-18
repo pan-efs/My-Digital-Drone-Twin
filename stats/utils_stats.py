@@ -68,7 +68,6 @@ class StatsUtils:
         return per
     
     def _cdf(self, ls:list):
-        "It works the same as 'percentile' function. Yet, it returns the probability for each value."
         x = np.array(ls)
         std_dev = self._standard_deviation(ls)
         mean = self._mean(ls)
@@ -121,6 +120,9 @@ class StatsUtils:
         plt.show()
 
 class UniformDistribution:
+    """
+    StatsUtils corresponds to Uniform Distribution.
+    """
     def __init__(self):
         pass
     
@@ -171,6 +173,14 @@ class QQplot:
         pass
     
     def qq_plot(self, data: np.array, title: str):
+        """
+        Plot a QQ plot in order to estimate the distribution of the input data.
+        
+        :param data: desired data
+        :type data: np.array
+        :param title: desired title
+        :type title: str
+        """
         fig = sm.qqplot(data, line = '45')
         fig.suptitle(title)
         plt.show()

@@ -22,12 +22,23 @@ class JointsDataframe:
         return std_df
     
     def _rename(self, df: pd.DataFrame):
-        df = df.rename({0: 'joint_index', 1: 'joint_x', 2: 'joint_y', 3: 'joint_z'},
+        df = df.rename({
+                        0: 'joint_index', 
+                        1: 'joint_x',
+                        2: 'joint_y',
+                        3: 'joint_z'
+                        },
                 axis = 'columns')
         
         return df
     
     def _transformer(self):
+        """
+        Split the main dataframe into 18 distinct dataframes with x, y, z coordinates as columns.
+        
+        :return: From joint_0 to joint_17
+        :rtype: DataFrame
+        """
         df = self._standarize()
         
         # Split dataframe according to joint_index
@@ -93,6 +104,10 @@ class JointsDataframe:
         return joint_0, joint_1, joint_2, joint_3, joint_4, joint_5, joint_6, joint_7, joint_8, joint_9, joint_10, joint_11, joint_12, joint_13, joint_14, joint_15, joint_16, joint_17
     
     def remove_brackets(self):
+        """
+        Clean an input text file from opening and closing brackets
+        and save it in an output file.
+        """
         fin = open(self.text_path, "rt")
         fout = open(self.out_path, "wt")
     
