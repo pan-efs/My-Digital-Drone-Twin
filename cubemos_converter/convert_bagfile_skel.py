@@ -99,7 +99,7 @@ if __name__ == "__main__":
         config = rs.config()
         config.enable_device_from_file(bag_file, False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
-        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30) # change to 30 if necessary
+        config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         #config.enable_stream(rs.stream.infrared, 1024, 768, rs.format.y8, 30)
         #config.enable_stream(rs.stream.confidence, 1024, 768, rs.format.raw8, 30)
 

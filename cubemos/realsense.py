@@ -88,15 +88,15 @@ def render_ids_3d(
                         thickness,
                     )
 
-"""
-Description: [text]:
-A function to get the joints of lower body.
-
-Parameters: [list]: [list of skeletons]
-
-Returns: [tuple]: [size 12] (right hip, right knee, right ankle, left hip, left knee, left ankle) for both x,y coords.
-"""
 def get_lower_body_joints(skeletons):
+    """
+    Get joints' coordinates for lower body.
+    
+    :param skeletons: detected skeleton
+    :type skeletons: list
+    :return: (right hip, right knee, right ankle, left hip, left knee, left ankle) for both x,y coords.
+    :rtype: tuple
+    """
     for skeleton_index in range(len(skeletons)):
         skeleton = skeletons[skeleton_index]
         joints = skeleton.joints
@@ -105,15 +105,15 @@ def get_lower_body_joints(skeletons):
                     joints[10].x, joints[10].y, joints[11].x, joints[11].y,
                     joints[12].x, joints[12].y, joints[13].x, joints[13].y)
 
-"""
-Description: [text]:
-A function to get the joints of upper body.
-
-Parameters: [list]: [list of skeletons]
-
-Returns: [tuple]: [size 12] (right shoulder, right elbow, right wrist, left shoulder, left elbow, left wrist) for both x,y coords.
-"""
 def get_upper_body_joints(skeletons):
+    """
+    Get joints' coordinates for upper body.
+    
+    :param skeletons: detected skeleton
+    :type skeletons: list
+    :return: (right shoulder, right elbow, right wrist, left shoulder, left elbow, left wrist) for both x,y coords.
+    :rtype: tuple
+    """
     for skeleton_index in range(len(skeletons)):
         skeleton = skeletons[skeleton_index]
         joints = skeleton.joints
@@ -122,13 +122,16 @@ def get_upper_body_joints(skeletons):
                     joints[4].x, joints[4].y, joints[5].x, joints[5].y,
                     joints[6].x, joints[6].y, joints[7].x, joints[7].y)
 
-"""
-Description: [text]:
-Helper function which removes parenthesis.
 
-Returns: [str]: [the string without parenthesis]
-"""
 def remove_parenthesis(log: str):
+    """
+    Clean a string from opening and closing parenthesis.
+    
+    :param log: a string of joints
+    :type log: str
+    :return: cleaned string
+    :rtype: str
+    """
     log = log.replace('(', '')
     removed = log.replace(')', '')
     return removed
@@ -141,7 +144,6 @@ if __name__ == "__main__":
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         
-        # TODO: Save .bag file
         # Video can be saved from SDK of RealSense
         config.enable_record_to_file("file_new.bag")
 

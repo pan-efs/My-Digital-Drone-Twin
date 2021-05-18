@@ -23,17 +23,25 @@ def __errors__(data: pd.DataFrame):
 
 
 class AngularKinematics:
-    """
-    Description: [text]:
-    Calculates joint angle using three 3D vectors.
-    Before calling this function vectorize should be applied. For example,
-    vec = np.vectorize(k.calculate_3d_angle)
-    """
-
-    "Parameters: [vectors]: [joint_x, joint_y, joint_z]"
-
-    "Returns: [float]: [angle],  [units]: degrees"
+    def __init__(self):
+        pass
+    
     def calculate_3d_angle(self, A: np.ndarray, B: np.ndarray, C: np.ndarray):
+        """
+        Calculates joint angle using three 3D vectors.
+        Before calling this function vectorize should be applied. For example,
+        vec = np.vectorize(k.calculate_3d_angle)
+        
+        :param A: joint's x coordinate
+        :type A: np.ndarray
+        :param B: joint's y coordinate
+        :type B: np.ndarray
+        :param C: joint's z coordinate
+        :type C: np.ndarray
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         ba = A - B
         bc = C - B
 
@@ -45,19 +53,21 @@ class AngularKinematics:
     
         
 class LinearKinematics:
-    """
-    Description: [text]:
-    Calculates speed from x,y,z axis values using the first central difference method.
-    Speed is calculated between two video frames.
-    Pre-requisite: analyze a video offline knowing in before fps.
+    def __init__(self):
+        pass
     
-    """
-
-    "Parameters: [dataframe]: [time, joint_x, joint_y, joint_z]"
-
-    "Returns: [list]: [speed],  [units]: m/s"
-
     def calculate_speed(self, data):
+        """
+        Calculates speed from x,y,z axis values using the first central difference method.
+        Speed is calculated between two video frames.
+        Pre-requisite: analyze a video offline knowing in before fps.
+        
+        :param data: a dataframe with time interval and x, y, z coordinates.
+        :type data: pd.DataFrame
+        
+        :return: speed
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -81,14 +91,17 @@ class LinearKinematics:
     
     def cal_speed(self, time, data):
         """
-        Description: [text]:
         Calculates speed from 3D coordinates (x, y, z) using the first central difference method.
         Speed is calculated between two video frames.
+        
+        :param time: time
+        :type time: array
+        :param data: desired data
+        :type data: array
+        
+        :return: new time, speed
+        :rtype: list
         """
-
-        "Parameters: [array]: [time, joint(x,y,z)]"
-
-        "Returns: [tuple]: time, speed [units]: m/s"
         new_time = []
         speed = []
         
@@ -108,17 +121,17 @@ class LinearKinematics:
         
         return new_time, speed
     
-    
-    """
-    Description: [text]:
-    Calculate the horizontal and vertical displacement using 3D coordinates, as well as the resultant displacement.
-    First central defference method.
-    
-    Parameters: [dataframe]: [time, joint_x, joint_y, joint_z]
-    
-    Returns: [tuple]: time, dx, dy, dz, r
-    """
-    def calculate_displacement(self, data):
+    def calculate_displacement(self, data: pd.DataFrame):
+        """
+        Calculate the horizontal and vertical displacement using 3D coordinates, as well as the resultant displacement.
+        First central defference method.
+        
+        :param data: a dataframe with containing, time, and x, y, z coordinates. 
+        :type data: pd.DataFrame
+        
+        :return: new time, dx, dy, dz, resultant
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -191,8 +204,8 @@ class Magnitude:
         ax.scatter(df.index, df['min'], c='r', label = str(self.minimum))
         ax.scatter(df.index, df['max'], c='g', label = str(self.maximum))
         plt.title(name, weight = 'bold', pad = 15)
-        plt.xlabel('Frames', fontsize = 12, fontweight = 'bold')
-        plt.ylabel('Magnitude', fontsize = 12, fontweight = 'bold')
+        plt.xlabel('Frames', fontsize = 16, fontweight = 'bold')
+        plt.ylabel('Magnitude', fontsize = 16, fontweight = 'bold')
         ax.plot(df.index, df['fil_ls'])
         
         if show == True:
@@ -208,7 +221,19 @@ class Cadence:
         self.length_data_per_min = 0 # according to fps
         
     def calculate_cadence(self, maximum, fps: int = 30):
+        """
+        Calculate cadence.
         
+        :param maximum: the number of local maximums
+        :type maximum: int
+        :param fps: frames per second, defaults to 30
+        :type fps: int, optional
+        
+        :raises FpsError: if the value of fps cannot be satisfied
+        
+        :return: RPM (Revolution Per Minute) value
+        :rtype: int
+        """
         # if statement is not necessary, but could be helpful in future
         # if-else can be converted to dictionary
         if fps == 30:

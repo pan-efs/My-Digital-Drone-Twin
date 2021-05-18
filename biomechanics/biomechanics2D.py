@@ -21,29 +21,41 @@ def __errors__(data: pd.DataFrame):
 
 
 class AngularKinematics:
-    """
-    Helper function which normalizes 2D coordinates.
-    """
+    def __init__(self):
+        pass
+    
     def normalize_2d_coordinates(self, arr, img_height, img_width):
+        """
+        Helper function which normalizes 2D coordinates.
+        
+        :param arr: (x, y) coordinates
+        :type arr: array
+        :param img_height: height dimension
+        :type img_height: int
+        :param img_width: width dimension
+        :type img_width: int
+        
+        :return: normalized array with 2D coordinates
+        :rtype: array
+        """
         for i in range(0, len(arr)):
             arr[i][0] = arr[i][0]/img_height
             arr[i][1] = arr[i][1]/img_width
         
         return arr
-        
     
-    """
-    Description: [text]:
-    Calculates the absolute angle of a body segment on 2D saggital plane
-    relative to right horizontal.
-    
-    """
-
-    "Parameters: [joints]: proximal(x1,y1), distal(x2,y2)"
-
-    "Returns: [float]: [angle in degrees]"
-
     def calculate_abs_angle(self, proximal, distal):
+        """
+        Calculates the absolute angle of a body segment on 2D saggital plane relative to right horizontal.
+        
+        :param proximal: proximal's position
+        :type proximal: pd.DataFrame
+        :param distal: distal's position
+        :type distal: pd.DataFrame
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         y = proximal[1] - distal[1]
         x = proximal[0] - distal[0]
         div = y / x
@@ -58,19 +70,22 @@ class AngularKinematics:
             theta = math.degrees(math.atan(div)) + 360
 
         return theta
-
-    """
-    Description: [text]:
-    Calculates the relative angle between longitudinal axes of two segments.
-    It is also reffered to joint angle or intersegmental angle.
     
-    """
-    "Parameters: [dataframes]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
-
-    "Returns: [float]: [angle in degrees]"
-    
-    # The below function is preferable
-    def calculate_rel_angle(self, proximal, centre, distal):
+    def calculate_rel_angle(self, proximal: pd.DataFrame, centre: pd.DataFrame, distal: pd.DataFrame):
+        """
+        Calculates the relative angle between longitudinal axes of two segments.
+        It is also reffered to joint angle or intersegmental angle.
+        
+        :param proximal: proximal's position
+        :type proximal: pd.DataFrame
+        :param centre: centre's position
+        :type centre: pd.DataFrame
+        :param distal: distal's position
+        :type distal: pd.DataFrame
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         a = math.sqrt(
             math.pow((proximal[0] - distal[0]), 2)
             + math.pow((proximal[1] - distal[1]), 2)
@@ -91,16 +106,21 @@ class AngularKinematics:
 
         return theta
     
-    """
-    Description: [text]:
-    Calculates the relative angle between longitudinal axes of two segments.
-    It is also reffered to joint angle or intersegmental angle.
-    
-    """
-    "Parameters: [array]: proximal(x1,y1), center(x2,y2), distal(x3,y3)"
-
-    "Returns: [array]: [float]: [angle in degrees]"
-    def calculate_relative_angle(self, proximal, centre, distal):
+    def calculate_relative_angle(self, proximal: np.array, centre: np.array, distal: np.array):
+        """
+        Calculates the relative angle between longitudinal axes of two segments.
+        It is also reffered to joint angle or intersegmental angle.
+        
+        :param proximal: proximal's position
+        :type proximal: np.array
+        :param centre: centre's position
+        :type centre: np.array
+        :param distal: distal's position
+        :type distal: np.array
+        
+        :return: angle in degrees
+        :rtype: list
+        """
         length = proximal.shape[0]
         theta = []
         
@@ -131,69 +151,72 @@ class AngularKinematics:
                 theta.append(th)
         
         return theta
-
-    """ 
-    Description: [text]:
-    Calculates the hip angle using absolute angles.
-    The right side of the subject's body is closest to the camera and is considered to 
-    be in the x-y plane.
     
-    """
-    "Parameters: [absolute angles]: absolute_angle_thigh, absolute_angle_trunk"
-
-    "Returns: [float]: [angle in degrees]"
-
     def calculate_hip_angle(self, abs_thigh, abs_trunk):
+        """
+        Calculates the hip angle using absolute angles.
+        The right side of the subject's body is closest to the camera and is considered to be in the x-y plane.
+        
+        :param abs_leg: absolute angle of thigh
+        :type abs_leg: array
+        :param abs_foot: absolute angle of trunk
+        :type abs_foot: array
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         theta = abs_thigh - abs_trunk
         return theta
-
-    """ 
-    Description: [text]:
-    Calculates the knee angle using absolute angles.
-    The right side of the subject's body is closest to the camera and is considered to 
-    be in the x-y plane.
     
-    """
-    "Parameters: [absolute angles]: absolute_angle_thigh, absolute_angle_leg"
-
-    "Returns: [float]: [angle in degrees]"
-
     def calculate_knee_angle(self, abs_thigh, abs_leg):
+        """
+        Calculates the knee angle using absolute angles.
+        The right side of the subject's body is closest to the camera and is considered to be in the x-y plane.
+        
+        :param abs_leg: absolute angle of thigh
+        :type abs_leg: array
+        :param abs_foot: absolute angle of leg
+        :type abs_foot: array
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         theta = abs_thigh - abs_leg
         return theta
-
-    """ 
-    Description: [text]:
-    Calculates the ankle angle using absolute angles.
-    The right side of the subject's body is closest to the camera and is considered to 
-    be in the x-y plane.
     
-    """
-    "Parameters: [absolute angles]: absolute_angle_leg, absolute_angle_foot"
-
-    "Returns: [float]: [angle in degrees]"
-
     def calculate_ankle_angle(self, abs_leg, abs_foot):
+        """
+        Calculates the ankle angle using absolute angles.
+        The right side of the subject's body is closest to the camera and is considered to be in the x-y plane.
+        
+        :param abs_leg: absolute angle of leg
+        :type abs_leg: array
+        :param abs_foot: absolute angle of foot
+        :type abs_foot: array
+        
+        :return: angle in degrees
+        :rtype: float
+        """
         theta = abs_leg - abs_foot + 90
         return theta
 
 
 class LinearKinematics:
-
-    """
-    Description: [text]:
-    Calculates velocity for horizontal and vertical components using the first central difference method.
-    Velocity is calculated between two video frames.
-    Pre-requisite: analyze a video offline knowing in before fps.
+    def __init__(self):
+        pass
     
-    """
-
-    "Parameters: [dataframe]: [time, joint_x, joint_y]"
-
-    "Returns: [tuple]: horizontal velocity, vertical velocity,  [units]: m/s"
-    
-    # The below function is preferable
-    def calculate_velocity(self, data):
+    def calculate_velocity(self, data: pd.DataFrame):
+        """
+        Calculates velocity for horizontal and vertical components using the first central difference method.
+        Velocity is calculated between two video frames.
+        Pre-requisite: analyze a video offline knowing in before fps.
+        
+        :param data: a dataframe including time interval, horizontal position and vertical position.
+        :type data: pd.DataFrame
+        
+        :return: new time, horizontal velocity and vertical velocity
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -213,19 +236,20 @@ class LinearKinematics:
 
         return time, vel_x, vel_y
     
-    """
-    Description: [text]:
-    Calculates velocity for horizontal and vertical components using the first central difference method.
-    Velocity is calculated between two video frames.
-    Pre-requisite: analyze a video offline knowing in before fps.
-    
-    """
-
-    "Parameters: [array]: [time, joint(x,y)]"
-
-    "Returns: [tuple]: time, horizontal velocity, vertical velocity,  [units]: m/s"
     def cal_velocity(self, time, data):
+        """
+        Calculates velocity for horizontal and vertical components using the first central difference method.
+        Velocity is calculated between two video frames.
+        Pre-requisite: analyze a video offline knowing in before fps.
         
+        :param time: time interval
+        :type time: array
+        :param data: desired joint velocity data
+        :type data: array
+        
+        :return: new time, horizontal velocity and vertical velocity
+        :rtype: list
+        """
         new_time = []
         vel_x = []
         vel_y = []
@@ -242,20 +266,19 @@ class LinearKinematics:
             vel_y.append(y)
 
         return new_time, vel_x, vel_y
-
-    """
-    Description: [text]:
-    Calculates acceleration for horizontal and vertical components using the first central difference method.
-    Acceleration is calculated between two video frames.
-    Pre-requisite: analyze a video offline knowing in before fps.
     
-    """
-    "Parameters: [dataframe]: [time, velocity_x, velocity_y]"
-
-    "Returns: [tuple]: horizontal acceleration, vertical acceleration,  [units]: m/s^2"
-
-    # The below function is preferable
-    def calculate_acceleration(self, data):
+    def calculate_acceleration(self, data: pd.DataFrame):
+        """
+        Calculates acceleration for horizontal and vertical components using the first central difference method.
+        Acceleration is calculated between two video frames.
+        Pre-requisite: analyze a video offline knowing in before fps.
+        
+        :param data: a dataframe including time interval, horizontal velocity and vertical velocity.
+        :type data: pd.DataFrame
+        
+        :return: new time, horizontal velocity and vertical velocity
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -272,21 +295,23 @@ class LinearKinematics:
             time.append(data.at[i, "time"])
             acc_x.append(x)
             acc_y.append(y)
-
+            
         return time, acc_x, acc_y
     
-    
-    """
-    Description: [text]:
-    Calculates acceleration for horizontal and vertical components using the first central difference method.
-    Acceleration is calculated between two video frames.
-    Pre-requisite: analyze a video offline knowing in before fps.
-    
-    """
-    "Parameters: [array]: [time, velocity]"
-
-    "Returns: [tuple]:time, horizontal acceleration, vertical acceleration,  [units]: m/s^2"
     def cal_acceleration(self, time, data):
+        """
+        Calculates acceleration for horizontal and vertical components using the first central difference method.
+        Acceleration is calculated between two video frames.
+        Pre-requisite: analyze a video offline knowing in before fps.
+        
+        :param time: time interval
+        :type time: array
+        :param data: desired joint's velocity data
+        :type data: array
+        
+        :return: new time, horizontal acceleration, vertical acceleration
+        :rtype: list
+        """
         
         new_time = []
         acc_x = []
@@ -305,17 +330,17 @@ class LinearKinematics:
         
         return new_time, acc_x, acc_y
     
-    """
-    Description: [text]:
-    Calculates speed from 2D coordinates (x, y) using the first central difference method.
-    Speed is calculated between two video frames.
-    """
-
-    "Parameters: [dataframe]: [time, joint_x, joint_y]"
-
-    "Returns: [tuple]: time, speed  [units]: m/s"
-
     def calculate_speed(self, data):
+        """
+        Calculates speed from 2D coordinates (x, y) using the first central difference method.
+        Speed is calculated between two video frames.
+        
+        :param data: a dataframe including time interval, joint x position and joint y position.
+        :type data: pd.DataFrame
+        
+        :return: new time, speed
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -334,17 +359,19 @@ class LinearKinematics:
 
         return time, speed
     
-    """
-    Description: [text]:
-    Calculates speed from 2D coordinates (x, y) using the first central difference method.
-    Speed is calculated between two video frames.
-    """
-
-    "Parameters: [array]: [time, joint(x,y)]"
-
-    "Returns: [tuple]: time, speed [units]: m/s"
     def cal_speed(self, time, data):
+        """
+        Calculates speed from 2D coordinates (x, y) using the first central difference method.
+        Speed is calculated between two video frames.
         
+        :param time: time interval
+        :type time: array
+        :param data: desired joint's position data
+        :type data: array
+        
+        :return: new time, speed
+        :rtype: list
+        """
         new_time = []
         speed = []
         
@@ -361,17 +388,17 @@ class LinearKinematics:
         
         return new_time, speed
     
-    """
-    Description: [text]:
-    Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
-    First central defference method.
-    
-    Parameters: [dataframe]: [time, joint_x, joint_y]
-    
-    Returns: [tuple]: time, dx, dy, r
-    """
-    
-    def calculate_displacement(self, data):
+    def calculate_displacement(self, data: pd.DataFrame):
+        """
+        Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
+        First central defference method.
+        
+        :param data: a dataframe including time interval, joint x position and joint y position.
+        :type data: pd.DataFrame
+        
+        :return: new time, dx, dy, resultant
+        :rtype: list
+        """
         __errors__(data)
         
         time = []
@@ -393,16 +420,19 @@ class LinearKinematics:
         
         return time, dx, dy, r
     
-    """
-    Description: [text]:
-    Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
-    First central defference method.
-    
-    Parameters: [array]: [time, joints(x,y)]
-    
-    Returns: [tuple]: time, dx, dy, r
-    """
     def cal_displacement(self, time, data):
+        """
+        Calculate the horizontal and vertical displacement using 2D coordinates, as well as the resultant displacement.
+        First central defference method.
+        
+        :param time: time interval
+        :type time: array
+        :param data: desired joints position data
+        :type data: array
+        
+        :return: new time, dx, dy, resultant
+        :rtype: list
+        """
         
         new_time = []
         dx = []
@@ -424,18 +454,19 @@ class LinearKinematics:
         return new_time, dx, dy, r
 
 class Energy:
-
-    """
-    Description: [text]:
-    Estimates the energy expenditure based to velocity.
-    Equation derives from 'Energy-speed relation and optimal speed during level walking (1958)' article.
+    def __init__(self):
+        pass
     
-    """
-
-    "Parameters: [float]: [speed], [units]: m/min"
-
-    "Returns: [float]: [energy expenditure], [units]: cal/meter/kg"
-
     def energy_expenditure(self, speed):
+        """
+        Estimates the energy expenditure based to velocity.
+        Equation derives from 'Energy-speed relation and optimal speed during level walking (1958)' article.
+        
+        :param speed: speed in m/min
+        :type speed: float
+        
+        :return: energy expenditure in cal/m/kg
+        :rtype: float
+        """
         e = 29 / speed + 0.0053 * speed
         return e
