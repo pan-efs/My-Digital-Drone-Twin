@@ -1,4 +1,5 @@
 # My Digital Drone Twin
+### Skeleton-Tracking for Sports using LiDAR Depth Camera
 :walking:   :helicopter:   :running:
 
 ![kth logo](https://www.findaphd.com/common/institutions/logos/Institutions/PID208.gif)
@@ -39,8 +40,8 @@ From your local project's path:
 
 `python configuration.py --a <main path> --b <realsense_viewer path> --c <offline_analysis path>`
 
-- Parser is not required. That means that you can define your paths manually from [here](https://github.com/pan-efs/My-Digital-Drone-Twin/blob/main/app/configuration.py)
-- Main path is your local project's path
+- Parser is not required. That means that you can define your paths manually from [here](https://github.com/pan-efs/My-Digital-Drone-Twin/blob/main/app/configuration.py).
+- Main path is your local project's path.
 - RealSense Viewer is your local path of Intel's viewer app.
 - Offline analysis path is the .bag file that you want to be converted.
 
