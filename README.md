@@ -35,12 +35,16 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 # Run biomechanical analysis examples
 ### Run cadence
 From your local project's path:
+
 `cd datatypes`
+
 `python cadence_example.py --path <text file>`
 
 ### Run hammer throw
 From your local project's path:
+
 `cd datatypes`
+
 `python hammer_example.py --path <text file>`
 
 - Try to parse your text path using `\\` instead of `\`. 
