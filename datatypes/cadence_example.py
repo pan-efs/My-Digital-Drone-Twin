@@ -1,14 +1,24 @@
+import matplotlib
+import numpy as np
+import argparse
+
 from joints_dataframe import JointsDataframe
 from joints_numpys import JointsNumpys
 from joints_list import JointsList
 from filters.digital_filter import DigitalFilter
 from biomechanics.biomechanics3D import AngularKinematics, Magnitude, Cadence
 from matplotlib import pyplot as plt
-import matplotlib
-import numpy as np
+
+# Parse the desired path by the user
+# Could be: C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt
+parser = argparse.ArgumentParser(description = 'Provide the cycling text file for analysis.')
+parser.add_argument('--path', type = str,
+                    help = 'A path to text file to read the skeleton data from.',
+                    required = True)
+args = parser.parse_args()
 
 # Starting point
-jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt', 
+jl = JointsList(args.path, 
                 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
 jLs = jl.__return__()
 

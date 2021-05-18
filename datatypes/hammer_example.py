@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib
-from matplotlib import pyplot as plt
+import argparse
 
+from matplotlib import pyplot as plt
 from joints_dataframe import JointsDataframe
 from joints_numpys import JointsNumpys
 from joints_list import JointsList
@@ -11,13 +12,22 @@ from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
 from stats.utils_stats import StatsUtils, UniformDistribution, QQplot
 
-# Data pre-processing
-
+#---------- OUT OF SCOPE ----------#
 # If we want the app to run totally automatically, we can get the directory directly after converter.
 #jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\cubemos_converter\\get_3d_joints_from_video.txt',
 #                'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
+#---------- OUT OF SCOPE ----------#
 
-jl = JointsList('C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt',
+# Parse the desired path by the user
+# Could be: C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\teen_male_hammer_long.txt
+parser = argparse.ArgumentParser(description = 'Provide the hammer throwing text file for analysis.')
+parser.add_argument('--path', type = str,
+                    help = 'A path to text file to read the skeleton data from.',
+                    required = True)
+args = parser.parse_args()
+
+# Starting point
+jl = JointsList(args.path,
                 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\datatypes\\logging\\clean_3d.txt')
 jLs = jl.__return__()
 
