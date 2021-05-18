@@ -32,6 +32,24 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 
 `python.pythonPath` may not be the same. Look your directory.
 
+# Configurations
+From your local project's path:
+
+`cd app`
+
+`python configuration.py --a <main path> --b <realsense_viewer path> --c <offline_analysis path>`
+
+- Parser is not required. That means that you can define your paths manually from [here](https://github.com/pan-efs/My-Digital-Drone-Twin/blob/main/app/configuration.py)
+- Main path is your local project's path
+- RealSense Viewer is your local path of Intel's viewer app.
+- Offline analysis path is the .bag file that you want to be converted.
+
+### Run converter after 'configuration' step
+From your local project's path:
+
+`cd cubemos_converter`
+
+`python convert_bagfile_skel.py`
 # Run biomechanical analysis examples
 ### Run cadence
 From your local project's path:
@@ -49,6 +67,6 @@ From your local project's path:
 
 - Try to parse your text path using `\\` instead of `\`. 
 - Turning phase should be defined manually. Otherwise, delete the range limit from lists, e.g. line 102 in `hammer_example.py`.
-- If you do not have a text file, you can choose one among `<project path>\\samples\\data`.
+- If you do not have a text file, you can choose one among `<project path>\\samples\\data` or from [here](https://github.com/pan-efs/My-Digital-Drone-Twin/tree/main/samples/data).
 # Run unittests
 Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
