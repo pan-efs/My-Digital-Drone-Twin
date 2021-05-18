@@ -92,6 +92,7 @@ dependencies:
   - pip:
     - chardet==4.0.0
     - cubemos-skeletontracking==3.1.0
+    - dataclasses==0.6
     - decorator==4.4.2
     - docutils==0.16
     - ffmpeg-python==0.2.0
@@ -110,8 +111,11 @@ dependencies:
     - my-digital-drone-twin==0.0.1
     - numpy==1.18.5
     - opencv-python==4.5.1.48
-    - pip==21.0.1
+    - patsy==0.5.1
+    - pip==21.1.1
     - proglog==0.1.9
+    - psutil==5.8.0
+    - pycallgraph==1.0.1
     - pygments==2.8.1
     - pykalman==0.9.5
     - pypiwin32==223
@@ -121,6 +125,7 @@ dependencies:
     - setuptools==54.2.0
     - statistics==1.0.3.5
     - stats==0.1.2a0
+    - statsmodels==0.12.2
     - tqdm==4.56.0
     - urllib3==1.26.4
     - wheel==0.36.2
