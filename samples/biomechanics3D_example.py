@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from animations.anime import Animations
 from biomechanics.biomechanics3D import LinearKinematics as LinearKinematics
@@ -13,7 +14,7 @@ import os
 #--------START FILE--------#
 
 # Define the desired paths here
-file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_pef_cyc_45left_both.txt'
+file_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\rec_mj_cyc_leftside_new.txt'
 out_path = 'C:\\Users\\Drone\\Desktop\\Panagiotis\\My-Digital-Drone-Twin\\samples\\data\\clean_3d_joints.txt'
 
 #--------END FILE--------#
@@ -393,6 +394,27 @@ stats_log_theta_left_RTS, per_theta_left_RTS = stats.stats_log(rts_theta_left)
 
 #--------START VISUALIZATION--------#
 
+# Default settings related to plotting (overcome all other settings from this point)
+font = {
+    'family' : 'normal',
+    'weight' : 'bold',
+    'size'   : 18
+}
+
+axes = {
+    'titleweight': 'bold',
+    'labelweight': 'bold',
+    'labelsize': 16
+}
+
+figure = {
+    'titleweight': 'bold'
+}
+
+matplotlib.rc('font', **font)
+matplotlib.rc('axes', **axes)
+matplotlib.rc('figure', **figure)
+
 # Visualize right and left knee angle (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
 ax1.plot(un_theta_right)
@@ -435,21 +457,21 @@ stats.visualization(stats_log_theta_left_KF, stats_log_theta_right_KF, 'Left kne
 
 # Plot all together (from unfiltered to filtered angles)
 fig, (ax1, ax2) = plt.subplots(1,2)
-ax1.plot(un_theta_right, c = 'black', label = 'Unfiltered', alpha = 0.5)
-ax1.plot(theta_right, c = 'cyan', label = 'BW')
-ax1.plot(kf_theta_right, c = 'yellow', label = 'KF')
-ax1.plot(rts_theta_right, c = 'r', label = 'RTS')
+ax1.plot(un_theta_left, c = 'black', label = 'Unfiltered', linewidth = 2, alpha = 0.5)
+#ax1.plot(theta_left, c = 'cyan', label = 'BW')
+ax1.plot(kf_theta_left, c = 'darkturquoise', label = 'KF', linewidth = 2)
+#ax1.plot(rts_theta_left, c = 'r', label = 'RTS')
 ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
-ax1.set_title('Knee Right')
-ax1.set_facecolor('grey')
+ax1.set_title('Left knee', weight = 'bold', pad = 15)
+ax1.set_facecolor('gainsboro')
 
-ax2.plot(un_theta_left, c = 'black', label = 'Unfiltered', alpha = 0.5)
-ax2.plot(theta_left, c = 'cyan', label = 'BW')
-ax2.plot(kf_theta_left, c = 'yellow', label = 'KF')
-ax2.plot(rts_theta_left, c = 'r', label = 'RTS')
+ax2.plot(un_theta_right, c = 'black', label = 'Unfiltered',linewidth = 2, alpha = 0.5)
+#ax2.plot(theta_right, c = 'cyan', label = 'BW')
+ax2.plot(kf_theta_right, c = 'darkturquoise', label = 'KF', linewidth = 2)
+#ax2.plot(rts_theta_right, c = 'r', label = 'RTS')
 ax2.set(xlabel = 'Frames')
-ax2.set_title('Knee Left')
-ax2.set_facecolor('grey')
+ax2.set_title('Right knee', weight = 'bold', pad = 15)
+ax2.set_facecolor('gainsboro')
 
 plt.legend(loc = 4)
 plt.show()
