@@ -41,6 +41,7 @@ olefile @ file:///home/conda/feedstock_root/build_artifacts/olefile_160286652116
 opencv-python==4.5.1.48
 pandas @ file:///C:/ci/pandas_1602088205210/work
 pathspec==0.7.0
+patsy==0.5.1
 Pillow @ file:///D:/bld/pillow_1610407628862/work
 proglog==0.1.9
 psutil==5.8.0
@@ -66,6 +67,7 @@ scipy @ file:///C:/ci/scipy_1597686737426/work
 six==1.15.0
 statistics==1.0.3.5
 stats==0.1.2a0
+statsmodels==0.12.2
 threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
 toml @ file:///tmp/build/80754af9/toml_1592853716807/work
 tornado @ file:///D:/bld/tornado_1610094878337/work

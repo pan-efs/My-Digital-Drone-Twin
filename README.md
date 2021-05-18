@@ -32,5 +32,19 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 
 `python.pythonPath` may not be the same. Look your directory.
 
+# Run biomechanical analysis examples
+### Run cadence
+From your local project's path:
+`cd datatypes`
+`python cadence_example.py --path <text file>`
+
+### Run hammer throw
+From your local project's path:
+`cd datatypes`
+`python hammer_example.py --path <text file>`
+
+- Try to parse your text path using `\\` instead of `\`. 
+- Turning phase should be defined manually. Otherwise, delete the range limit from lists, e.g. line 102 in `hammer_example.py`.
+- If you do not have a text file, you can choose one among `<project path>\\samples\\data`.
 # Run unittests
 Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
