@@ -4,6 +4,7 @@ from joints_list import JointsList
 from filters.digital_filter import DigitalFilter
 from biomechanics.biomechanics3D import AngularKinematics, Magnitude, Cadence
 from matplotlib import pyplot as plt
+import matplotlib
 import numpy as np
 
 # Starting point
@@ -32,6 +33,27 @@ for i in range(0, len(ur8) - 1):
 for i in range(0, len(ur11) - 1):
     un_th_left = a.calculate_3d_angle(np.asarray(ur11[i]), np.asarray(ur12[i]), np.asarray(ur13[i]))
     un_theta_left.append(un_th_left)
+
+# Default settings related to plotting (overcome all other settings)
+font = {
+    'family' : 'normal',
+    'weight' : 'bold',
+    'size'   : 18
+}
+
+axes = {
+    'titleweight': 'bold',
+    'labelweight': 'bold',
+    'labelsize': 16
+}
+
+figure = {
+    'titleweight': 'bold'
+}
+
+matplotlib.rc('font', **font)
+matplotlib.rc('axes', **axes)
+matplotlib.rc('figure', **figure)
 
 # Visualize right and left knee angle (unfiltered data)
 fig, (ax1,ax2) = plt.subplots(1,2)
