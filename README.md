@@ -73,7 +73,7 @@ From your local project's path:
 - Turning phase should be defined manually. Otherwise, delete the range limit from lists, e.g. line 102 in `hammer_example.py`.
 - If you do not have a text file, you can choose one among `<project path>\\samples\\data` or from [here](https://github.com/pan-efs/My-Digital-Drone-Twin/tree/main/samples/data).
 
-#### e.g. plot ankles and knees distances during turning phase, moving average filter. 
+#### e.g. plot ankles' and knees' distances between supporting and rotating leg during turning phase, moving average filter. 
 ![hammer throw plot](/samples/imgs/error_bar_hammer_fast.png)
 # Run unittests
 Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
