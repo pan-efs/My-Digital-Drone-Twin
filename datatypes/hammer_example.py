@@ -114,7 +114,6 @@ for i in range(0, len(mvg_right_ankle[:405])):
 
 # Default settings related to plotting (overcome all other settings)
 font = {
-    'family' : 'normal',
     'weight' : 'bold',
     'size'   : 18
 }

@@ -46,7 +46,6 @@ for i in range(0, len(ur11) - 1):
 
 # Default settings related to plotting (overcome all other settings)
 font = {
-    'family' : 'normal',
     'weight' : 'bold',
     'size'   : 18
 }
@@ -169,10 +168,6 @@ mg_ak = m_ak.calculate_magnitude()
 
 c_rk = Cadence(mg_rk)
 c_ak = Cadence(mg_ak)
-
-plt.plot(arr9)
-plt.plot(arr12)
-plt.show()
 
 max_rk, min_rk = m_rk.find_visualize_local_max_min('KR, BW, Cycling', True)
 cadence_rk, duration_rk = c_rk.calculate_cadence(max_rk)
