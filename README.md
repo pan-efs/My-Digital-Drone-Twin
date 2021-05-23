@@ -45,12 +45,14 @@ From your local project's path:
 - RealSense Viewer is your local path of Intel's viewer app.
 - Offline analysis path is the .bag file that you want to be converted.
 
-### Run converter after 'configuration' step
+### Run converter
 From your local project's path:
 
 `cd cubemos_converter`
 
-`python convert_bagfile_skel.py`
+`python convert_bagfile_skel.py --a <main path> --b <realsense_viewer path> --c <offline_analysis path>`
+
+- Details are provided in `Configurations` part.
 # Run biomechanical analysis examples
 ### Run cadence
 From your local project's path:
