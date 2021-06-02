@@ -70,7 +70,7 @@ def render_ids_3d(
                     point_3d = rs.rs2_deproject_pixel_to_point(
                         depth_intrinsic, depth_pixel, median_distance
                     )
-                    file = open('get_3d_joints.txt', 'a')
+                    file = open('logging\\get_3d_joints.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.round([float(i) for i in point_3d], 3)
@@ -113,9 +113,11 @@ if __name__ == "__main__":
         skeletrack = skeletontracker(cloud_tracking_api_key="")
         joint_confidence = 0.2
         
+        # Save video
+        videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
+        
         # Erase the content of .txt files
-        #open('lower_body.txt', 'w').close()
-        open('get_3d_joints.txt', 'w').close()
+        open('logging\\get_3d_joints.txt', 'w').close()
         
         # Create window for initialisation
         window_name = "Skeleton tracking with Intel RealSense L515 camera. Press Esc button for exit."
@@ -145,12 +147,14 @@ if __name__ == "__main__":
             render_ids_3d(
                 color_image, skeletons, depth, depth_intrinsic, joint_confidence
             )
+            videoout.write(color_image)
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
                 # Press Esc button for exit
                 break
         
         pipeline.stop()
+        videoout.release()
         cv2.destroyAllWindows()
         
     except Exception as ex:
