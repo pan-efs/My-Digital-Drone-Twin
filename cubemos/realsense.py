@@ -2,15 +2,10 @@
 from collections import namedtuple
 import cv2
 import time
-import re
 import pyrealsense2 as rs
 import math
 import numpy as np
-import sys
 
-from app.configuration import Configuration
-config_path = Configuration()._get_dir('main')
-sys.path.append(config_path)
 from cubemos import util as cm
 from cubemos.skeletontracker import skeletontracker
 
@@ -21,11 +16,13 @@ def render_ids_3d(
     text_color = (255, 255, 255)
     rows, cols, channel = render_image.shape[:3]
     distance_kernel_size = 5
+    
     # calculate 3D keypoints and display them
     for skeleton_index in range(len(skeletons_2d)):
         skeleton_2D = skeletons_2d[skeleton_index]
         joints_2D = skeleton_2D.joints
         did_once = False
+        
         for joint_index in range(len(joints_2D)):
             if did_once == False:
                 cv2.putText(
@@ -77,7 +74,7 @@ def render_ids_3d(
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.round([float(i) for i in point_3d], 3)
-                    point_str = [str(x) for x in point_3d]
+                    #point_str = [str(x) for x in point_3d]
                     cv2.putText(
                         render_image,
                         str(point_3d),
@@ -88,54 +85,6 @@ def render_ids_3d(
                         thickness,
                     )
 
-def get_lower_body_joints(skeletons):
-    """
-    Get joints' coordinates for lower body.
-    
-    :param skeletons: detected skeleton
-    :type skeletons: list
-    :return: (right hip, right knee, right ankle, left hip, left knee, left ankle) for both x,y coords.
-    :rtype: tuple
-    """
-    for skeleton_index in range(len(skeletons)):
-        skeleton = skeletons[skeleton_index]
-        joints = skeleton.joints
-        if skeleton.confidences[skeleton_index] > 0.3:
-            return (joints[8].x, joints[8].y, joints[9].x, joints[9].y,
-                    joints[10].x, joints[10].y, joints[11].x, joints[11].y,
-                    joints[12].x, joints[12].y, joints[13].x, joints[13].y)
-
-def get_upper_body_joints(skeletons):
-    """
-    Get joints' coordinates for upper body.
-    
-    :param skeletons: detected skeleton
-    :type skeletons: list
-    :return: (right shoulder, right elbow, right wrist, left shoulder, left elbow, left wrist) for both x,y coords.
-    :rtype: tuple
-    """
-    for skeleton_index in range(len(skeletons)):
-        skeleton = skeletons[skeleton_index]
-        joints = skeleton.joints
-        if skeleton.confidences[skeleton_index] > 0.3:
-            return (joints[2].x, joints[2].y, joints[3].x, joints[3].y,
-                    joints[4].x, joints[4].y, joints[5].x, joints[5].y,
-                    joints[6].x, joints[6].y, joints[7].x, joints[7].y)
-
-
-def remove_parenthesis(log: str):
-    """
-    Clean a string from opening and closing parenthesis.
-    
-    :param log: a string of joints
-    :type log: str
-    :return: cleaned string
-    :rtype: str
-    """
-    log = log.replace('(', '')
-    removed = log.replace(')', '')
-    return removed
-
 # Main content begins
 if __name__ == "__main__":
     try:
@@ -145,7 +94,7 @@ if __name__ == "__main__":
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
         
         # Video can be saved from SDK of RealSense
-        config.enable_record_to_file("file_new.bag")
+        #config.enable_record_to_file("file_new.bag")
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
@@ -165,11 +114,11 @@ if __name__ == "__main__":
         joint_confidence = 0.2
         
         # Erase the content of .txt files
-        open('lower_body.txt', 'w').close()
+        #open('lower_body.txt', 'w').close()
         open('get_3d_joints.txt', 'w').close()
         
         # Create window for initialisation
-        window_name = "cubemos skeleton tracking with realsense D400 series"
+        window_name = "Skeleton tracking with Intel RealSense L515 camera. Press Esc button for exit."
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL + cv2.WINDOW_KEEPRATIO)
         
         # Start timer
@@ -189,14 +138,6 @@ if __name__ == "__main__":
 
             # perform inference and update the tracking id
             skeletons = skeletrack.track_skeletons(color_image)
-            
-            # Get lower body joints and write them into a file
-            log = get_lower_body_joints(skeletons)
-            print(log)
-            clean_log = remove_parenthesis(str(log))
-            file = open('lower_body.txt', 'a')
-            file.writelines(str(time.time() - start_time) + ', ' + clean_log + '\n')
-            file.close()
 
             # render the skeletons on top of the acquired image and display it
             color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
@@ -206,6 +147,7 @@ if __name__ == "__main__":
             )
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
+                # Press Esc button for exit
                 break
         
         pipeline.stop()
