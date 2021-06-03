@@ -108,14 +108,24 @@ class HammerThrowScreen(QMainWindow):
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.positionSlider)
         
-        lbl = QLabel()
-        lbl.setText('Hello!')
-        lbl.setAlignment(Qt.AlignCenter)
+        self.lbl = QLabel()
+        self.lbl.setText('Plot Distances')
+        self.lbl.setAlignment(Qt.AlignCenter)
+        
+        self.combobox = QComboBox()
+        self.combobox.addItem('Distances')
+        self.combobox.addItem('Distances (Unfiltered)')
+        self.combobox.currentTextChanged.connect(self.get_current_text)
+        
+        visLayout = QHBoxLayout()
+        visLayout.addWidget(self.lbl)
+        visLayout.addWidget(self.combobox)
+
         
         qvboxlayout = QVBoxLayout()
         qvboxlayout.addWidget(video)
         qvboxlayout.addLayout(controlLayout)
-        qvboxlayout.addWidget(lbl)
+        qvboxlayout.addLayout(visLayout)
         
         centralwidget.setLayout(qvboxlayout)
         
@@ -126,6 +136,7 @@ class HammerThrowScreen(QMainWindow):
         
         self.open_video()
     
+    # Methods related to video playback
     def open_video(self):
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.mediaPlayer.setMedia(
@@ -154,6 +165,14 @@ class HammerThrowScreen(QMainWindow):
 
     def durationChanged(self, duration):
         self.positionSlider.setRange(0, duration)
+    
+    # Methods related to visualization
+    def get_current_text(self):
+        txt = self.combobox.currentText()
+        if txt == 'Distances':
+            self.lbl.setText('Plot Distances')
+        else:
+            self.lbl.setText('Plot Positions')
 
 
 
