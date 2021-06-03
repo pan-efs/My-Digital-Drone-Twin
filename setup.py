@@ -19,7 +19,8 @@ setup(
         "exceptions",
         "app",
         "datatypes",
-        "computer_info",      
+        "computer_info",
+        "application",      
     ],
     install_requires=[
         "pandas", 
