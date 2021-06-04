@@ -6,7 +6,7 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 import pyqtgraph as pg
 import os
-import sys
+import subprocess
 
 class WelcomeScreen(QMainWindow):
     def __init__(self):
@@ -55,41 +55,76 @@ class WelcomeScreen(QMainWindow):
         user_reply = msg_box.exec()
         
         msg_path = QMessageBox()
-        msg_path.setText('Oops! Path cannot be found.')
+        msg_path.setText('Oops! Local path cannot be found.')
         msg_path.setIcon(QMessageBox.Warning)
         msg_path.setStandardButtons(QMessageBox.Ok)
         msg_path.setDefaultButton(QMessageBox.Ok)
+        
+        msg_dev = QMessageBox()
+        msg_dev.setText('No device connected.')
+        msg_dev.setIcon(QMessageBox.Warning)
+        msg_dev.setStandardButtons(QMessageBox.Ok)
+        msg_dev.setDefaultButton(QMessageBox.Ok)
         
         if user_reply == QMessageBox.Yes:
             try:
                 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 os.chdir(BASE_DIR + '/cubemos')
-                os.system('python realsense.py')
-                print('Go to hammer screen')
-                self.main_style()
-                self.switch_to_hammer_screen().show()
+                retcode = subprocess.call('python realsense.py', shell = True)
+                
+                if retcode == 0:
+                    print('Go to hammer screen')
+                    self.main_style()
+                    self.switch_to_hammer_screen().show()
+                else:
+                    self.main_style()
+                    raise RuntimeError
                 
             except OSError:
                 msg_path.exec()
+            
+            except RuntimeError:
+                msg_dev.exec()
+                
         elif user_reply == QMessageBox.Close:
+            # TODO: Cycling screen if we include it
             try:
                 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 os.chdir(BASE_DIR + '/cubemos')
-                os.system('python realsense.py')
-                print('Go to cycling screen')
-                self.main_style()
-                # TODO: Cycling screen
+                retcode = subprocess.call('python realsense.py', shell = True)
+                
+                if retcode == 0:
+                    print('Go to cycling screen')
+                    self.main_style()
+                    #self.switch_to_cycling_screen().show()
+                else:
+                    self.main_style()
+                    raise RuntimeError
             except OSError:
                 msg_path.exec()
+            
+            except RuntimeError:
+                msg_dev.exec()
+                
         elif user_reply == QMessageBox.Discard:
             try:
                 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 os.chdir(BASE_DIR + '/cubemos')
-                os.system('python realsense.py')
-                self.main_style()
+                retcode = subprocess.call('python realsense.py', shell = True)
+                
+                if retcode == 0:
+                    print('Just recording')
+                    self.main_style()
+                else:
+                    self.main_style()
+                    raise RuntimeError
                 
             except OSError:
                 msg_path.exec()
+            
+            except RuntimeError:
+                msg_dev.exec()
+                
         elif user_reply == QMessageBox.Cancel:
             self.main_style()
     
