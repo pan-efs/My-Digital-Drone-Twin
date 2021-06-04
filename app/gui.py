@@ -242,14 +242,3 @@ class HammerThrowScreen(QMainWindow):
             
         elif txt == 'None':
             self.graphWidget.clear()
-
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    
-    welcome = WelcomeScreen()
-    
-    welcome.show()
-    
-    sys.exit(app.exec_())
