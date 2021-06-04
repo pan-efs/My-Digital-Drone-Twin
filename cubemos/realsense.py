@@ -70,7 +70,7 @@ def render_ids_3d(
                     point_3d = rs.rs2_deproject_pixel_to_point(
                         depth_intrinsic, depth_pixel, median_distance
                     )
-                    file = open('logging\\get_3d_joints.txt', 'a')
+                    file = open('logging/get_3d_joints.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.round([float(i) for i in point_3d], 3)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt files
-        open('logging\\get_3d_joints.txt', 'w').close()
+        open('logging/get_3d_joints.txt', 'w').close()
         
         # Create window for initialisation
         window_name = "Skeleton tracking with Intel RealSense L515 camera. Press Esc button for exit."

@@ -3,7 +3,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from pyqtgraph import PlotWidget, plot
 
+import pyqtgraph as pg
 import os
 import sys
 
@@ -43,8 +45,8 @@ class WelcomeScreen(QMainWindow):
     
     def start_recording(self):
         msg_box = QMessageBox()
-        msg_box.setText('For hammer throw press yes, otherwise no!')
-        msg_box.setInformativeText('No means cycling.')
+        msg_box.setText('Do you want to record hammer throw event?')
+        msg_box.setInformativeText('No means cycling. Close this window for just recording.')
         msg_box.setIcon(QMessageBox.Information)
         msg_box.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msg_box.setDefaultButton(QMessageBox.Yes)
@@ -85,15 +87,25 @@ class HammerThrowScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         
-        self.setMinimumHeight(700)
-        self.setMinimumWidth(1600)
+        self.setMinimumHeight(900)
+        self.setMinimumWidth(1700)
         self.setWindowTitle('Hammer Throw')
+        
+        try:
+            self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        except OSError:
+            raise NotImplementedError
         
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         video = QVideoWidget()
         
         centralwidget = QWidget(self)
-        self.setCentralWidget(centralwidget) 
+        self.setCentralWidget(centralwidget)
+        
+        self.graphWidget = pg.PlotWidget()
+        self.graphWidget.setBackground('w')
+        self.graphWidget.showGrid(x = True, y = True)
+        self.graphWidget.setMaximumHeight(450)
         
         self.playButton = QPushButton()
         self.playButton.setEnabled(False)
@@ -108,19 +120,14 @@ class HammerThrowScreen(QMainWindow):
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.positionSlider)
         
-        self.lbl = QLabel()
-        self.lbl.setText('Plot Distances')
-        self.lbl.setAlignment(Qt.AlignCenter)
-        
         self.combobox = QComboBox()
         self.combobox.addItem('Distances')
         self.combobox.addItem('Distances (Unfiltered)')
-        self.combobox.currentTextChanged.connect(self.get_current_text)
+        self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
         visLayout = QHBoxLayout()
-        visLayout.addWidget(self.lbl)
+        visLayout.addWidget(self.graphWidget)
         visLayout.addWidget(self.combobox)
-
         
         qvboxlayout = QVBoxLayout()
         qvboxlayout.addWidget(video)
@@ -138,9 +145,8 @@ class HammerThrowScreen(QMainWindow):
     
     # Methods related to video playback
     def open_video(self):
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.mediaPlayer.setMedia(
-                    QMediaContent(QUrl.fromLocalFile(BASE_DIR + '/cubemos' + '/output-skeleton.avi')))
+                    QMediaContent(QUrl.fromLocalFile(self.BASE_DIR + '/cubemos' + '/output-skeleton.avi')))
         self.playButton.setEnabled(True)
         
     def play(self):
@@ -167,10 +173,40 @@ class HammerThrowScreen(QMainWindow):
         self.positionSlider.setRange(0, duration)
     
     # Methods related to visualization
-    def get_current_text(self):
+    def get_current_text_and_plot(self):
         txt = self.combobox.currentText()
+        
+        # TODO: run hammer analysis script first, otherwise .txt files will not be modified.
+        
         if txt == 'Distances':
-            self.lbl.setText('Plot Distances')
+            knees_dir = self.BASE_DIR + '/datatypes/logging/knee_distances.txt'
+            
+            with open(knees_dir, 'r') as knees:
+                kn_lines = knees.readlines()
+            knees.close()
+            
+            for i in range(0, len(kn_lines)):
+                kn_lines[i] = float(kn_lines[i][:-1])
+            
+            ankles_dir = self.BASE_DIR + '/datatypes/logging/ankle_distances.txt'
+            with open(ankles_dir, 'r') as ankles:
+                an_lines = ankles.readlines()
+            ankles.close()
+            
+            for i in range(0, len(an_lines)):
+                an_lines[i] = float(an_lines[i][:-1])
+            
+            pen_kn = pg.mkPen(color= 'r')
+            pen_an = pg.mkPen(color= 'b')
+            styles = {
+                    'color': '#000000', 
+                    'font-size': '20px',
+                    }
+            self.graphWidget.setLabel('left', 'meters', **styles)
+            self.graphWidget.addLegend()
+            self.graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
+            self.graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
+            self.graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
         else:
             self.lbl.setText('Plot Positions')
 
