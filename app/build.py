@@ -7,14 +7,14 @@ import sys
 class SkeletonTrackingApp:
     def __init__(self):
         self.app = QApplication(sys.argv)
-        self.screens = QStackedWidget()
+        #self.screens = QStackedWidget()
     
     def build(self):
         self.welcome = WelcomeScreen()
-        self.screens.addWidget(self.welcome)
+        #self.screens.addWidget(self.welcome)
     
     def show(self):
-        self.screens.show()
+        self.welcome.show()
     
     def run(self):
         self.build()

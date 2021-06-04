@@ -3,7 +3,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from pyqtgraph import PlotWidget, plot
 
 import pyqtgraph as pg
 import os
@@ -13,9 +12,10 @@ class WelcomeScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         
-        self.setFixedHeight(500)
-        self.setFixedWidth(500)    
+        self.setMinimumHeight(500)
+        self.setMinimumWidth(500)
         self.setWindowTitle("Welcome!")
+        self.main_style()
         
         centralWidget = QWidget(self)          
         self.setCentralWidget(centralWidget) 
@@ -38,6 +38,7 @@ class WelcomeScreen(QMainWindow):
         boxlayout.addWidget(lbl_instructions)
         
         button = QPushButton('Start Recording...')
+        button.clicked.connect(self.detected_button)
         button.clicked.connect(self.start_recording)
         boxlayout.addWidget(button)
         
@@ -46,10 +47,11 @@ class WelcomeScreen(QMainWindow):
     def start_recording(self):
         msg_box = QMessageBox()
         msg_box.setText('Do you want to record hammer throw event?')
-        msg_box.setInformativeText('No means cycling. Close this window for just recording.')
+        msg_box.setInformativeText('No/X-cycling. Discard-just recording. Cancel-back.')
         msg_box.setIcon(QMessageBox.Information)
-        msg_box.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Discard | QMessageBox.Close | QMessageBox.Cancel)
         msg_box.setDefaultButton(QMessageBox.Yes)
+        msg_box.setWindowTitle('Recording...')
         user_reply = msg_box.exec()
         
         msg_path = QMessageBox()
@@ -64,23 +66,52 @@ class WelcomeScreen(QMainWindow):
                 os.chdir(BASE_DIR + '/cubemos')
                 os.system('python realsense.py')
                 print('Go to hammer screen')
+                self.main_style()
                 self.switch_to_hammer_screen().show()
                 
             except OSError:
                 msg_path.exec()
-        else:
+        elif user_reply == QMessageBox.Close:
             try:
                 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 os.chdir(BASE_DIR + '/cubemos')
                 os.system('python realsense.py')
                 print('Go to cycling screen')
-                # When we finish hammer screen, we copy it for cycling as well. It'll be almost the same code.
+                self.main_style()
+                # TODO: Cycling screen
             except OSError:
                 msg_path.exec()
+        elif user_reply == QMessageBox.Discard:
+            try:
+                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                os.chdir(BASE_DIR + '/cubemos')
+                os.system('python realsense.py')
+                self.main_style()
+                
+            except OSError:
+                msg_path.exec()
+        elif user_reply == QMessageBox.Cancel:
+            self.main_style()
     
     def switch_to_hammer_screen(self):
         self.hammer = HammerThrowScreen()
         return self.hammer
+    
+    def main_style(self):
+        self.setStyleSheet('margin: 1px; padding: 10px; \
+                            background-color: rgba(220, 245, 250, 0.5); \
+                            color: rgba(0,0,0,255); \
+                            border-style: solid; \
+                            border-radius: 2px; border-width: 1px; \
+                            border-color: rgba(0,0,0,255);')
+    
+    def detected_button(self):
+        self.setStyleSheet('margin: 1px; padding: 10px; \
+                            background-color: rgba(95, 200, 255, 0.5); \
+                            color: rgba(0,0,0,255); \
+                            border-style: solid; \
+                            border-radius: 4px; border-width: 3px; \
+                            border-color: rgba(0,0,0,255);')
 
 
 class HammerThrowScreen(QMainWindow):
@@ -90,6 +121,7 @@ class HammerThrowScreen(QMainWindow):
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Hammer Throw')
+        self.setStyleSheet('background-color: rgba(220, 245, 250, 0.5);')
         
         try:
             self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -121,8 +153,8 @@ class HammerThrowScreen(QMainWindow):
         controlLayout.addWidget(self.positionSlider)
         
         self.combobox = QComboBox()
+        self.combobox.addItem('None')
         self.combobox.addItem('Distances')
-        self.combobox.addItem('Distances (Unfiltered)')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
         visLayout = QHBoxLayout()
@@ -196,8 +228,8 @@ class HammerThrowScreen(QMainWindow):
             for i in range(0, len(an_lines)):
                 an_lines[i] = float(an_lines[i][:-1])
             
-            pen_kn = pg.mkPen(color= 'r')
-            pen_an = pg.mkPen(color= 'b')
+            pen_kn = pg.mkPen(color= 'r', width = 4)
+            pen_an = pg.mkPen(color= 'b', width = 4)
             styles = {
                     'color': '#000000', 
                     'font-size': '20px',
@@ -205,10 +237,11 @@ class HammerThrowScreen(QMainWindow):
             self.graphWidget.setLabel('left', 'meters', **styles)
             self.graphWidget.addLegend()
             self.graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
-            self.graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
-            self.graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
-        else:
-            self.lbl.setText('Plot Positions')
+            self.graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn, symbol = 'x', symbolPen = pen_kn, symbolBrush = 0.3)
+            self.graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an, symbol = 'x', symbolPen = pen_an, symbolBrush = 0.3)
+            
+        elif txt == 'None':
+            self.graphWidget.clear()
 
 
 

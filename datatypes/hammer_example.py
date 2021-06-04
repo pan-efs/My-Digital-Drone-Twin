@@ -69,19 +69,13 @@ for i in range(0, len(mvg_la_x)):
 # Slopes
 sl = Slope()
 
-ankle_xy, ankle_xz, ankle_yz, ankle_length, knee_xy, knee_xz, knee_yz, knee_length = ([] for i in range(8))
+ankle_length, knee_length = ([] for i in range(2))
 
 for i in range(0, len(mvg_right_ankle)):
     xy, xz, yz, length = sl.three_dim_slopes(mvg_right_ankle[i], mvg_left_ankle[i])
-    ankle_xy.append(xy)
-    ankle_xz.append(xz)
-    ankle_yz.append(yz)
     ankle_length.append(length)
     
     _xy, _xz, _yz, _length = sl.three_dim_slopes(mvg_right_knee[i], mvg_left_knee[i])
-    knee_xy.append(_xy)
-    knee_xz.append(_xz)
-    knee_yz.append(_yz)
     knee_length.append(_length)
 
 # Erase the content and write the new ones
