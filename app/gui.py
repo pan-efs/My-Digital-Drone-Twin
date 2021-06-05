@@ -6,8 +6,16 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 import pyqtgraph as pg
 import os
+import sys
 import subprocess
 
+def _get_base_dir():
+    if getattr(sys, 'frozen', False):
+        BASE_DIR = os.path.dirname(sys.executable)
+    else:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    return BASE_DIR
 class WelcomeScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -68,7 +76,7 @@ class WelcomeScreen(QMainWindow):
         
         if user_reply == QMessageBox.Yes:
             try:
-                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/cubemos')
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
@@ -81,15 +89,17 @@ class WelcomeScreen(QMainWindow):
                     raise RuntimeError
                 
             except OSError:
+                self.main_style()
                 msg_path.exec()
             
             except RuntimeError:
+                self.main_style()
                 msg_dev.exec()
                 
         elif user_reply == QMessageBox.Close:
             # TODO: Cycling screen if we include it
             try:
-                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/cubemos')
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
@@ -100,15 +110,18 @@ class WelcomeScreen(QMainWindow):
                 else:
                     self.main_style()
                     raise RuntimeError
+                
             except OSError:
+                self.main_style()
                 msg_path.exec()
             
             except RuntimeError:
+                self.main_style()
                 msg_dev.exec()
                 
         elif user_reply == QMessageBox.Discard:
             try:
-                BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/cubemos')
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
@@ -120,9 +133,11 @@ class WelcomeScreen(QMainWindow):
                     raise RuntimeError
                 
             except OSError:
+                self.main_style()
                 msg_path.exec()
             
             except RuntimeError:
+                self.main_style()
                 msg_dev.exec()
                 
         elif user_reply == QMessageBox.Cancel:
@@ -159,7 +174,7 @@ class HammerThrowScreen(QMainWindow):
         self.setStyleSheet('background-color: rgba(220, 245, 250, 0.5);')
         
         try:
-            self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            self.BASE_DIR = _get_base_dir()
         except OSError:
             raise NotImplementedError
         

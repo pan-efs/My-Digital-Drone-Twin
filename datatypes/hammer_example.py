@@ -1,11 +1,14 @@
-import os
+import os, sys
 
 from joints_list import JointsList
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
 
 # Starting point
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 jl = JointsList(BASE_DIR + '/cubemos/logging/get_3d_joints.txt',
                 BASE_DIR + '/datatypes/logging/clean_3d.txt')
