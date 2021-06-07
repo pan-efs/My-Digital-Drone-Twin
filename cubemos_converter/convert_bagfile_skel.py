@@ -1,17 +1,8 @@
 from collections import namedtuple 
-import cv2
-import time
 import pyrealsense2 as rs
-import math
 import numpy as np
-import os
-import sys
-from timeit import default_timer as timer
-from computer_info.information import ComputerInfo
-from app.configuration import Configuration
+import cv2, math
 
-config_path = Configuration()._get_dir('main')
-sys.path.append(config_path)
 from cubemos_converter import util as cm
 from cubemos_converter.skeletontracker import skeletontracker
 
@@ -75,7 +66,7 @@ def render_ids_3d(
                     point_3d = rs.rs2_deproject_pixel_to_point(
                         depth_intrinsic, depth_pixel, median_distance
                     )
-                    file = open('get_3d_joints_from_video.txt', 'a')
+                    file = open('logging/get_3d_joints_from_video.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.array([int(i*100) for i in point_3d])
@@ -89,19 +80,14 @@ def render_ids_3d(
                         thickness,
                     )
 
-info = ComputerInfo()
-bag_file = Configuration()._get_dir('offline_analysis')
-
 # Main content begins
 if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_device_from_file(bag_file, False)
+        config.enable_device_from_file('C:/Users/Drone/Desktop/Panagiotis/Field/20210416_135052.bag', False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-        #config.enable_stream(rs.stream.infrared, 1024, 768, rs.format.y8, 30)
-        #config.enable_stream(rs.stream.confidence, 1024, 768, rs.format.raw8, 30)
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
@@ -128,10 +114,8 @@ if __name__ == "__main__":
         videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt file
-        open('get_3d_joints_from_video.txt', 'w').close()
+        open('logging/get_3d_joints_from_video.txt', 'w').close()
         
-        i=0
-        start_time = timer()
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
             unaligned_frames = pipeline.wait_for_frames(100)
@@ -145,10 +129,6 @@ if __name__ == "__main__":
             depth_image = np.asanyarray(depth.get_data())
             color_image = np.asanyarray(color.get_data())
 
-            # Flip frames if necessary
-            #depth_image = np.flipud(depth_image)
-            #color_image = np.flipud(color_image)
-
             # Convert color in image if necessary
             color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
             
@@ -156,25 +136,13 @@ if __name__ == "__main__":
             skeletons = skeletrack.track_skeletons(color_image)
 
             # render the skeletons on top of the acquired image and display it
-            
             cm.render_result(skeletons, color_image, joint_confidence)
             render_ids_3d(color_image, skeletons, depth, depth_intrinsic, joint_confidence)
-            #cv2.imshow(window_name, color_image)
             videoout.write(color_image)
 
-            i += 1
-            if i % 60 == 0:
-                end_time = timer()
-                performance_time = end_time - start_time
-                print(f'frames: {i:.2f}', f'start: {start_time:.2f}', f'end: {end_time:.2f}',
-                    f'performance: {performance_time:.2f}')
-                # Calculate the CPU utilization
-                #info.cpu_percent_utilization()
-                
-                
         pipeline.stop()
         videoout.release()
-        #cv2.destroyAllWindows()
 
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))
+        # We don't raise the RuntimeError here

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from collections import namedtuple
-import sys, os, cv2, time, math, shutil
+from datetime import datetime
+import sys, os, cv2, math, shutil
 import numpy as np
 
 import pyrealsense2 as rs
@@ -9,8 +10,10 @@ from cubemos import util as cm
 from cubemos.skeletontracker import skeletontracker
 
 def _get_base_dir():
+    frozen = 'not'
     if getattr(sys, 'frozen', False):
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
+        frozen = 'ever so'
+        BASE_DIR = sys._MEIPASS
     else:
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
@@ -99,9 +102,6 @@ if __name__ == "__main__":
         config = rs.config()
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
-        
-        # Video can be saved from SDK of RealSense
-        #config.enable_record_to_file("file_new.bag")
 
         # Start the realsense pipeline
         pipeline = rs.pipeline()
@@ -121,18 +121,18 @@ if __name__ == "__main__":
         joint_confidence = 0.2
         
         # Save video
-        output_skeleton = str(time.time()) + '.avi'
+        dt = datetime.now().strftime('%m-%d-%Y %H-%M-%S')
+        output_skeleton = dt + '.avi'
         videoout = cv2.VideoWriter(output_skeleton, cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
+        #videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt files
         open('logging/get_3d_joints.txt', 'w').close()
         
         # Create window for initialisation
-        window_name = "Skeleton tracking with Intel RealSense L515 camera. Press Esc button for exit."
+        window_name = "Skeleton tracking with Intel RealSense camera. Press Esc button for exit."
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL + cv2.WINDOW_KEEPRATIO)
         
-        # Start timer
-        start_time = time.time()
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
             unaligned_frames = pipeline.wait_for_frames()
@@ -159,6 +159,7 @@ if __name__ == "__main__":
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
                 # Press Esc button for exit and save on user's desktop
+                #source = _get_base_dir() + '/cubemos/output-skeleton.avi'
                 source = _get_base_dir() + '/cubemos/' + output_skeleton
                 dest = os.path.expanduser("~/Desktop") # works both on windows and linux
                 shutil.copy2(source, dest)
@@ -167,7 +168,7 @@ if __name__ == "__main__":
         pipeline.stop()
         videoout.release()
         cv2.destroyAllWindows()
-        os.remove(source)
+        #os.remove(source)
         
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))
