@@ -1,18 +1,50 @@
-import os, sys
+import os, sys, argparse
 
 from joints_list import JointsList
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
 
 # Starting point
+frozen = 'not'
 if getattr(sys, 'frozen', False):
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
+    frozen = 'even so'
+    BASE_DIR = sys._MEIPASS
 else:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-jl = JointsList(BASE_DIR + '/cubemos/logging/get_3d_joints.txt',
+# Flag for analysis
+parser = argparse.ArgumentParser(description = 'Provide the flag.')
+parser.add_argument('--flag', type = str,
+                    help = '--cubemos or --cubemos_converter',
+                    required = False)
+parser.add_argument('--file', type = str,
+                    help = 'Provide the directory of a 3D clean text file.',
+                    required = False)
+args = parser.parse_args()
+
+# Get the path according to the flag
+if args.file and args.flag:
+    raise NotImplementedError
+
+if args.flag:
+    if args.flag == 'cubemos_converter':
+        jl = JointsList(BASE_DIR + '/cubemos_converter/logging/get_3d_joints_from_video.txt',
+                    BASE_DIR + '/datatypes/logging/clean_3d_from_video.txt')
+        jLs = jl.__return__()
+    elif args.flag == 'cubemos':
+        jl = JointsList(BASE_DIR + '/cubemos/logging/get_3d_joints.txt',
                 BASE_DIR + '/datatypes/logging/clean_3d.txt')
-jLs = jl.__return__()
+        jLs = jl.__return__()
+
+if args.file:
+    jl = JointsList(args.file,
+                BASE_DIR + '/datatypes/logging/clean_3d.txt')
+    jLs = jl.__return__()
+
+################################################################
+#--------------------------------------------------------------#
+#--------------------------------------------------------------#
+################################################################
 
 # Get all body joints
 joints = []
@@ -73,8 +105,10 @@ for i in range(0, len(mvg_la_x)):
 sl = Slope()
 
 ankle_length, knee_length = ([] for i in range(2))
+print(len(mvg_right_ankle), len(mvg_left_ankle))
+print(len(mvg_right_knee), len(mvg_left_knee))
 
-for i in range(0, len(mvg_right_ankle)):
+for i in range(0, len(mvg_right_ankle[:417])):
     xy, xz, yz, length = sl.three_dim_slopes(mvg_right_ankle[i], mvg_left_ankle[i])
     ankle_length.append(length)
     
