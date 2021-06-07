@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 from collections import namedtuple
-import cv2
-import time
-import pyrealsense2 as rs
-import math
+import sys, os, cv2, time, math, shutil
 import numpy as np
+
+import pyrealsense2 as rs
 
 from cubemos import util as cm
 from cubemos.skeletontracker import skeletontracker
+
+def _get_base_dir():
+    if getattr(sys, 'frozen', False):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
+    else:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    return BASE_DIR
 
 def render_ids_3d(
     render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
@@ -114,7 +121,8 @@ if __name__ == "__main__":
         joint_confidence = 0.2
         
         # Save video
-        videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
+        output_skeleton = str(time.time()) + '.avi'
+        videoout = cv2.VideoWriter(output_skeleton, cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt files
         open('logging/get_3d_joints.txt', 'w').close()
@@ -150,12 +158,16 @@ if __name__ == "__main__":
             videoout.write(color_image)
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
-                # Press Esc button for exit
+                # Press Esc button for exit and save on user's desktop
+                source = _get_base_dir() + '/cubemos/' + output_skeleton
+                dest = os.path.expanduser("~/Desktop") # works both on windows and linux
+                shutil.copy2(source, dest)
                 break
         
         pipeline.stop()
         videoout.release()
         cv2.destroyAllWindows()
+        os.remove(source)
         
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))

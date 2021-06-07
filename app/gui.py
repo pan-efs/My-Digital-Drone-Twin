@@ -5,13 +5,11 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 import pyqtgraph as pg
-import os
-import sys
-import subprocess
+import sys, os, subprocess
 
 def _get_base_dir():
     if getattr(sys, 'frozen', False):
-        BASE_DIR = os.path.dirname(sys.executable)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
     else:
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     

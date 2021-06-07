@@ -6,7 +6,7 @@ from biomechanics.biomechanics3D import Slope
 
 # Starting point
 if getattr(sys, 'frozen', False):
-    BASE_DIR = os.path.dirname(sys.executable)
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
 else:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
