@@ -8,8 +8,10 @@ import pyqtgraph as pg
 import sys, os, subprocess
 
 def _get_base_dir():
+    frozen = 'not'
     if getattr(sys, 'frozen', False):
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.executable)))
+        frozen = 'ever so'
+        BASE_DIR = sys._MEIPASS
     else:
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
@@ -53,7 +55,7 @@ class WelcomeScreen(QMainWindow):
     def start_recording(self):
         msg_box = QMessageBox()
         msg_box.setText('Do you want to record hammer throw event?')
-        msg_box.setInformativeText('No/X-cycling. Discard-just recording. Cancel-back.')
+        msg_box.setInformativeText('No-.bag, Discard-just recording. Cancel-back.')
         msg_box.setIcon(QMessageBox.Information)
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Discard | QMessageBox.Close | QMessageBox.Cancel)
         msg_box.setDefaultButton(QMessageBox.Yes)
@@ -72,6 +74,12 @@ class WelcomeScreen(QMainWindow):
         msg_dev.setStandardButtons(QMessageBox.Ok)
         msg_dev.setDefaultButton(QMessageBox.Ok)
         
+        msg_lic = QMessageBox()
+        msg_lic.setText('You do not have the permission to convert your file.')
+        msg_lic.setIcon(QMessageBox.Warning)
+        msg_lic.setStandardButtons(QMessageBox.Ok)
+        msg_lic.setDefaultButton(QMessageBox.Ok)
+        
         if user_reply == QMessageBox.Yes:
             try:
                 BASE_DIR = _get_base_dir()
@@ -79,9 +87,9 @@ class WelcomeScreen(QMainWindow):
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
                 if retcode == 0:
-                    print('Go to hammer screen')
+                    print('Go to screen for analysis after recording')
                     self.main_style()
-                    self.switch_to_hammer_screen().show()
+                    self.switch_to_hammer_screen('Yes').show()
                 else:
                     self.main_style()
                     raise RuntimeError
@@ -95,55 +103,58 @@ class WelcomeScreen(QMainWindow):
                 msg_dev.exec()
                 
         elif user_reply == QMessageBox.Close:
-            # TODO: Cycling screen if we include it
             try:
                 BASE_DIR = _get_base_dir()
-                os.chdir(BASE_DIR + '/cubemos')
-                retcode = subprocess.call('python realsense.py', shell = True)
+                os.chdir(BASE_DIR + '/cubemos_converter')
+                retcode = subprocess.call('python convert_bagfile_skel.py', shell = True)
                 
                 if retcode == 0:
-                    print('Go to cycling screen')
+                    print('Go to converter screen')
+                    self.switch_to_hammer_screen('No').show()
                     self.main_style()
-                    #self.switch_to_cycling_screen().show()
                 else:
                     self.main_style()
-                    raise RuntimeError
+                    raise NotImplementedError
                 
             except OSError:
                 self.main_style()
                 msg_path.exec()
             
-            except RuntimeError:
+            except NotImplementedError:
                 self.main_style()
-                msg_dev.exec()
+                msg_lic.exec()
                 
         elif user_reply == QMessageBox.Discard:
             try:
                 BASE_DIR = _get_base_dir()
-                os.chdir(BASE_DIR + '/cubemos')
-                retcode = subprocess.call('python realsense.py', shell = True)
+                os.chdir(BASE_DIR + '/datatypes')
+                retcode = subprocess.call('python hammer_example.py --file C:/Users/Drone/Desktop/Panagiotis/My-Digital-Drone-Twin/cubemos_converter/logging/get_3d_joints_from_video.txt', shell = True)
                 
                 if retcode == 0:
-                    print('Just recording')
+                    print('Text Analysis')
                     self.main_style()
+                    self.switch_to_text_screen().show()
                 else:
                     self.main_style()
-                    raise RuntimeError
+                    raise NotImplementedError
                 
             except OSError:
                 self.main_style()
                 msg_path.exec()
             
-            except RuntimeError:
+            except NotImplementedError:
                 self.main_style()
-                msg_dev.exec()
                 
         elif user_reply == QMessageBox.Cancel:
             self.main_style()
     
-    def switch_to_hammer_screen(self):
-        self.hammer = HammerThrowScreen()
+    def switch_to_hammer_screen(self, event:str):
+        self.hammer = HammerThrowScreen(event)
         return self.hammer
+    
+    def switch_to_text_screen(self):
+        self.text_screen = TextFileScreen()
+        return self.text_screen
     
     def main_style(self):
         self.setStyleSheet('margin: 1px; padding: 10px; \
@@ -163,8 +174,10 @@ class WelcomeScreen(QMainWindow):
 
 
 class HammerThrowScreen(QMainWindow):
-    def __init__(self):
+    def __init__(self, welcome_screen_event):
         QMainWindow.__init__(self)
+        
+        self.welcome_screen_event = welcome_screen_event
         
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
@@ -221,12 +234,23 @@ class HammerThrowScreen(QMainWindow):
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         
-        self.open_video()
+        self.open_video(self.welcome_screen_event)
     
     # Methods related to video playback
-    def open_video(self):
-        self.mediaPlayer.setMedia(
-                    QMediaContent(QUrl.fromLocalFile(self.BASE_DIR + '/cubemos' + '/output-skeleton.avi')))
+    def open_video(self, previous_screen_event: str):
+        if previous_screen_event == 'Yes':
+            format = '/cubemos'
+        elif previous_screen_event == 'No':
+            format = '/cubemos_converter'
+        
+        desired_dir = self.BASE_DIR + format
+        desired_ext = '.avi'
+        
+        for i in os.listdir(desired_dir):
+            if i.endswith(desired_ext):
+                self.desired_path = i
+                
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.desired_path)))
         self.playButton.setEnabled(True)
         
     def play(self):
@@ -254,12 +278,58 @@ class HammerThrowScreen(QMainWindow):
     
     # Methods related to visualization
     def get_current_text_and_plot(self):
-        txt = self.combobox.currentText()
-        
         # TODO: run hammer analysis script first, otherwise .txt files will not be modified.
+        # if flag yes,...if flag no,...
+        text_and_plot(self.BASE_DIR, self.graphWidget, self.combobox)
+
+class TextFileScreen(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+            
+        self.setMinimumHeight(900)
+        self.setMinimumWidth(1700)
+        self.setWindowTitle('Text Analysis')
+        self.setStyleSheet('background-color: rgba(220, 245, 250, 0.5);')
+        
+        try:
+            self.BASE_DIR = _get_base_dir()
+        except OSError:
+            raise NotImplementedError
+        
+        centralwidget = QWidget(self)
+        self.setCentralWidget(centralwidget)
+        
+        self.graphWidget = pg.PlotWidget()
+        self.graphWidget.setBackground('w')
+        self.graphWidget.showGrid(x = True, y = True)
+        
+        self.combobox = QComboBox()
+        self.combobox.addItem('None')
+        self.combobox.addItem('Distances')
+        self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
+        
+        visLayout = QHBoxLayout()
+        visLayout.addWidget(self.graphWidget)
+        visLayout.addWidget(self.combobox)
+        
+        centralwidget.setLayout(visLayout)
+    
+    def get_current_text_and_plot(self):
+        # TODO: Get the text file from user not manually as now
+        text_and_plot(self.BASE_DIR, self.graphWidget, self.combobox)
+
+
+
+
+
+
+
+# Utilities
+def text_and_plot(base_dir:str, graphWidget, combobox):
+        txt = combobox.currentText()
         
         if txt == 'Distances':
-            knees_dir = self.BASE_DIR + '/datatypes/logging/knee_distances.txt'
+            knees_dir = base_dir + '/datatypes/logging/knee_distances.txt'
             
             with open(knees_dir, 'r') as knees:
                 kn_lines = knees.readlines()
@@ -268,7 +338,7 @@ class HammerThrowScreen(QMainWindow):
             for i in range(0, len(kn_lines)):
                 kn_lines[i] = float(kn_lines[i][:-1])
             
-            ankles_dir = self.BASE_DIR + '/datatypes/logging/ankle_distances.txt'
+            ankles_dir = base_dir + '/datatypes/logging/ankle_distances.txt'
             with open(ankles_dir, 'r') as ankles:
                 an_lines = ankles.readlines()
             ankles.close()
@@ -282,11 +352,11 @@ class HammerThrowScreen(QMainWindow):
                     'color': '#000000', 
                     'font-size': '20px',
                     }
-            self.graphWidget.setLabel('left', 'meters', **styles)
-            self.graphWidget.addLegend()
-            self.graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
-            self.graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn, symbol = 'x', symbolPen = pen_kn, symbolBrush = 0.3)
-            self.graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an, symbol = 'x', symbolPen = pen_an, symbolBrush = 0.3)
+            graphWidget.setLabel('left', 'meters', **styles)
+            graphWidget.addLegend()
+            graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
+            graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn, symbol = 'x', symbolPen = pen_kn, symbolBrush = 0.3)
+            graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an, symbol = 'x', symbolPen = pen_an, symbolBrush = 0.3)
             
         elif txt == 'None':
-            self.graphWidget.clear()
+            graphWidget.clear()
