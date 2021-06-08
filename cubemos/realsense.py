@@ -84,7 +84,6 @@ def render_ids_3d(
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.round([float(i) for i in point_3d], 3)
-                    #point_str = [str(x) for x in point_3d]
                     cv2.putText(
                         render_image,
                         str(point_3d),
@@ -124,7 +123,6 @@ if __name__ == "__main__":
         dt = datetime.now().strftime('%m-%d-%Y %H-%M-%S')
         output_skeleton = dt + '.avi'
         videoout = cv2.VideoWriter(output_skeleton, cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
-        #videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt files
         open('logging/get_3d_joints.txt', 'w').close()
@@ -151,15 +149,14 @@ if __name__ == "__main__":
 
             # render the skeletons on top of the acquired image and display it
             color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
+            
             cm.render_result(skeletons, color_image, joint_confidence)
-            render_ids_3d(
-                color_image, skeletons, depth, depth_intrinsic, joint_confidence
-            )
+            render_ids_3d(color_image, skeletons, depth, depth_intrinsic, joint_confidence)
             videoout.write(color_image)
+            
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
                 # Press Esc button for exit and save on user's desktop
-                #source = _get_base_dir() + '/cubemos/output-skeleton.avi'
                 source = _get_base_dir() + '/cubemos/' + output_skeleton
                 dest = os.path.expanduser("~/Desktop") # works both on windows and linux
                 shutil.copy2(source, dest)

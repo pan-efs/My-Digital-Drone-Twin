@@ -1,11 +1,20 @@
 from collections import namedtuple 
 import pyrealsense2 as rs
 import numpy as np
-import cv2, math
+import cv2, math, argparse
 
 from cubemos_converter import util as cm
 from cubemos_converter.skeletontracker import skeletontracker
 
+# Starting point
+parser = argparse.ArgumentParser(description = 'Provide directory of .bag file.')
+parser.add_argument('--file', type = str,
+                    help = 'Provide the directory of a .bag file.',
+                    required = True)
+args = parser.parse_args()
+
+if not args.file:
+    raise NotImplementedError
 
 def render_ids_3d(
     render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
@@ -85,7 +94,7 @@ if __name__ == "__main__":
     try:
         # Configure depth and color streams of the intel realsense
         config = rs.config()
-        config.enable_device_from_file('C:/Users/Drone/Desktop/Panagiotis/Field/20210416_135052.bag', False)
+        config.enable_device_from_file(args.file, False)
         config.enable_stream(rs.stream.depth, 1024, 768, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, 1280, 720, rs.format.bgr8, 30)
 

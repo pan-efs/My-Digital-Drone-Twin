@@ -13,12 +13,12 @@ else:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Flag for analysis
-parser = argparse.ArgumentParser(description = 'Provide the flag.')
+parser = argparse.ArgumentParser(description = 'Provide flag or file.')
 parser.add_argument('--flag', type = str,
                     help = '--cubemos or --cubemos_converter',
                     required = False)
 parser.add_argument('--file', type = str,
-                    help = 'Provide the directory of a 3D clean text file.',
+                    help = 'Provide the directory of a 3D joints text file.',
                     required = False)
 args = parser.parse_args()
 
@@ -105,10 +105,18 @@ for i in range(0, len(mvg_la_x)):
 sl = Slope()
 
 ankle_length, knee_length = ([] for i in range(2))
+
+# Equal lengths
 print(len(mvg_right_ankle), len(mvg_left_ankle))
 print(len(mvg_right_knee), len(mvg_left_knee))
+find_minimum_length = min(len(mvg_right_ankle), 
+                        len(mvg_left_ankle), 
+                        len(mvg_right_knee), 
+                        len(mvg_left_knee))
+print(find_minimum_length)
 
-for i in range(0, len(mvg_right_ankle[:417])):
+
+for i in range(0, find_minimum_length):
     xy, xz, yz, length = sl.three_dim_slopes(mvg_right_ankle[i], mvg_left_ankle[i])
     ankle_length.append(length)
     

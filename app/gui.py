@@ -55,10 +55,11 @@ class WelcomeScreen(QMainWindow):
     def start_recording(self):
         msg_box = QMessageBox()
         msg_box.setText('Do you want to record hammer throw event?')
-        msg_box.setInformativeText('No-.bag, Discard-just recording. Cancel-back.')
+        msg_box.setInformativeText('Show details for more information.')
         msg_box.setIcon(QMessageBox.Information)
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Discard | QMessageBox.Close | QMessageBox.Cancel)
         msg_box.setDefaultButton(QMessageBox.Yes)
+        msg_box.setDetailedText('Yes: recording \nDiscard: provide only text analysis \nClose: converts a .bag file \nCancel: returns back')
         msg_box.setWindowTitle('Recording...')
         user_reply = msg_box.exec()
         
@@ -79,6 +80,12 @@ class WelcomeScreen(QMainWindow):
         msg_lic.setIcon(QMessageBox.Warning)
         msg_lic.setStandardButtons(QMessageBox.Ok)
         msg_lic.setDefaultButton(QMessageBox.Ok)
+        
+        msg_format = QMessageBox()
+        msg_format.setText('The format of the file should be .bag.')
+        msg_format.setIcon(QMessageBox.Warning)
+        msg_format.setStandardButtons(QMessageBox.Ok)
+        msg_format.setDefaultButton(QMessageBox.Ok)
         
         if user_reply == QMessageBox.Yes:
             try:
@@ -103,10 +110,20 @@ class WelcomeScreen(QMainWindow):
                 msg_dev.exec()
                 
         elif user_reply == QMessageBox.Close:
+            options = QFileDialog.Options()
+            fileName, _ = QFileDialog.getOpenFileName(self,
+                                                    "QFileDialog.getOpenFileName()","","All Files (*);;Bag Files (*.bag)", 
+                                                    options = options)
             try:
+                if fileName.endswith('.bag'):
+                    print(fileName)
+                    pass
+                else:
+                    raise FileNotFoundError
+                
                 BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/cubemos_converter')
-                retcode = subprocess.call('python convert_bagfile_skel.py', shell = True)
+                retcode = subprocess.call('python convert_bagfile_skel.py --file ' + fileName, shell = True)
                 
                 if retcode == 0:
                     print('Go to converter screen')
@@ -115,20 +132,34 @@ class WelcomeScreen(QMainWindow):
                 else:
                     self.main_style()
                     raise NotImplementedError
-                
-            except OSError:
-                self.main_style()
-                msg_path.exec()
             
             except NotImplementedError:
                 self.main_style()
                 msg_lic.exec()
+            
+            except FileNotFoundError:
+                self.main_style()
+                msg_format.exec()
+            
+            except OSError:
+                self.main_style()
+                msg_path.exec()
                 
         elif user_reply == QMessageBox.Discard:
+            options = QFileDialog.Options()
+            fileName, _ = QFileDialog.getOpenFileName(self,
+                                                    "QFileDialog.getOpenFileName()","","All Files (*);;Text Files (*.txt)", 
+                                                    options = options)
             try:
+                if fileName.endswith('.txt'):
+                    print(fileName)
+                    pass
+                else:
+                    raise NotImplementedError
+                
                 BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/datatypes')
-                retcode = subprocess.call('python hammer_example.py --file C:/Users/Drone/Desktop/Panagiotis/My-Digital-Drone-Twin/cubemos_converter/logging/get_3d_joints_from_video.txt', shell = True)
+                retcode = subprocess.call('python hammer_example.py --file ' + fileName, shell = True)
                 
                 if retcode == 0:
                     print('Text Analysis')
@@ -188,6 +219,8 @@ class HammerThrowScreen(QMainWindow):
             self.BASE_DIR = _get_base_dir()
         except OSError:
             raise NotImplementedError
+        
+        self.index_analysis = 0
         
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         video = QVideoWidget()
@@ -275,12 +308,22 @@ class HammerThrowScreen(QMainWindow):
 
     def durationChanged(self, duration):
         self.positionSlider.setRange(0, duration)
-    
-    # Methods related to visualization
+        
     def get_current_text_and_plot(self):
-        # TODO: run hammer analysis script first, otherwise .txt files will not be modified.
-        # if flag yes,...if flag no,...
-        text_and_plot(self.BASE_DIR, self.graphWidget, self.combobox)
+        if self.index_analysis == 0:
+            if self.welcome_screen_event == 'Yes':
+                flag = 'cubemos'
+                self.index_analysis = 1
+            elif self.welcome_screen_event == 'No':
+                flag = 'cubemos_converter'
+                self.index_analysis = 1
+            
+            os.chdir(self.BASE_DIR + '/datatypes')
+            subprocess.call('python hammer_example.py --flag ' + flag, shell = True)
+        else:
+            pass
+        
+        plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
 
 class TextFileScreen(QMainWindow):
     def __init__(self):
@@ -315,8 +358,7 @@ class TextFileScreen(QMainWindow):
         centralwidget.setLayout(visLayout)
     
     def get_current_text_and_plot(self):
-        # TODO: Get the text file from user not manually as now
-        text_and_plot(self.BASE_DIR, self.graphWidget, self.combobox)
+        plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
 
 
 
@@ -325,7 +367,7 @@ class TextFileScreen(QMainWindow):
 
 
 # Utilities
-def text_and_plot(base_dir:str, graphWidget, combobox):
+def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
         
         if txt == 'Distances':
@@ -353,10 +395,11 @@ def text_and_plot(base_dir:str, graphWidget, combobox):
                     'font-size': '20px',
                     }
             graphWidget.setLabel('left', 'meters', **styles)
+            graphWidget.setLabel('bottom', 'frames', **styles)
             graphWidget.addLegend()
             graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
-            graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn, symbol = 'x', symbolPen = pen_kn, symbolBrush = 0.3)
-            graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an, symbol = 'x', symbolPen = pen_an, symbolBrush = 0.3)
+            graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
+            graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
             
         elif txt == 'None':
             graphWidget.clear()
