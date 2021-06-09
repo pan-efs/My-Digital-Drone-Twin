@@ -31,16 +31,16 @@ class WelcomeScreen(QMainWindow):
         boxlayout = QBoxLayout(QBoxLayout.TopToBottom)
         
         lbl_welcome = QLabel(centralWidget)
-        lbl_welcome.setText('Welcome to Skeleton Tracking App!')
+        lbl_welcome.setText('<big><b>Welcome to Skeleton Tracking App!</b></big>')
         lbl_welcome.setAlignment(Qt.AlignCenter)
         boxlayout.addWidget(lbl_welcome)
         
         lbl_instructions = QLabel(centralWidget)
         lbl_instructions.setText(
-                        '1. Connect your Intel RealSense camera before start recording! \n' +
-                        '2. Camera should be fixed. \n' +
-                        '3. Press start recording and choose your movement. \n' +
-                        '4. Press Esc button to stop recording.'
+                        '<ol>1. Connect your Intel RealSense camera before start recording!</ol>' + 
+                        '<ol>2. Camera should be fixed.</ol>' +
+                        '<ol>3. Press start recording and choose your next action.</ol>' +
+                        '<ol>4. Press Esc button to stop recording.</ol>'
                         )
         lbl_instructions.setAlignment(Qt.AlignCenter)
         boxlayout.addWidget(lbl_instructions)

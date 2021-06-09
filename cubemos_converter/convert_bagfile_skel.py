@@ -90,11 +90,11 @@ def render_ids_3d(
                     )
                 else:
                     file = open('logging/get_3d_joints_from_video.txt', 'a')
-                    file.writelines(str(joint_index) + ', ' + '[0, 0, 0]' + '\n')
+                    file.writelines(str(joint_index) + ', ' + '[NaN, NaN, NaN]' + '\n')
                     file.close()
             else:
                 file = open('logging/get_3d_joints_from_video.txt', 'a')
-                file.writelines(str(joint_index) + ', ' + '[0, 0, 0]' + '\n')
+                file.writelines(str(joint_index) + ', ' + '[NaN, NaN, NaN]' + '\n')
                 file.close()
 
 # Main content begins

@@ -16,7 +16,14 @@ class JointsDataframe:
         return self._transformer()
     
     def _standarize(self):
-        df = pd.read_csv(self.out_path, delimiter = ",", header = None)
+        # Replace str NaNs with np.nan
+        converter = lambda x: pd.to_numeric(x, 'coerce')
+        
+        df = pd.read_csv(self.out_path, delimiter = ",", 
+                        converters = {1: converter, 
+                                    2: converter, 
+                                    3: converter}, 
+                        header = None)
         std_df = self._rename(df)
         
         return std_df
@@ -80,6 +87,27 @@ class JointsDataframe:
         del joint_15['joint_index']
         del joint_16['joint_index']
         del joint_17['joint_index']
+        
+        # Fill np.nan values
+        columns = ['joint_x', 'joint_y', 'joint_z']
+        joint_0[columns] = joint_0[columns].fillna(method = 'ffill')
+        joint_1[columns] = joint_1[columns].fillna(method = 'ffill')
+        joint_2[columns] = joint_2[columns].fillna(method = 'ffill')
+        joint_3[columns] = joint_3[columns].fillna(method = 'ffill')
+        joint_4[columns] = joint_4[columns].fillna(method = 'ffill')
+        joint_5[columns] = joint_5[columns].fillna(method = 'ffill')
+        joint_6[columns] = joint_6[columns].fillna(method = 'ffill')
+        joint_7[columns] = joint_7[columns].fillna(method = 'ffill')
+        joint_8[columns] = joint_8[columns].fillna(method = 'ffill')
+        joint_9[columns] = joint_9[columns].fillna(method = 'ffill')
+        joint_10[columns] = joint_10[columns].fillna(method = 'ffill')
+        joint_11[columns] = joint_11[columns].fillna(method = 'ffill')
+        joint_12[columns] = joint_12[columns].fillna(method = 'ffill')
+        joint_13[columns] = joint_13[columns].fillna(method = 'ffill')
+        joint_14[columns] = joint_14[columns].fillna(method = 'ffill')
+        joint_15[columns] = joint_15[columns].fillna(method = 'ffill')
+        joint_16[columns] = joint_16[columns].fillna(method = 'ffill')
+        joint_17[columns] = joint_17[columns].fillna(method = 'ffill')
         
         # Reset indexes
         joint_0 = joint_0.reset_index(drop=True)
