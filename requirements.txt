@@ -1,3 +1,4 @@
+altgraph==0.17
 appdirs==1.4.4
 astroid @ file:///C:/ci/astroid_1592481955828/work
 attrs @ file:///tmp/build/80754af9/attrs_1604765588209/work
@@ -18,6 +19,7 @@ future==0.18.2
 idna==2.10
 imageio==2.9.0
 imageio-ffmpeg==0.4.3
+importlib-metadata==4.5.0
 isort @ file:///home/conda/feedstock_root/build_artifacts/isort_1602591728846/work
 joblib @ file:///tmp/build/80754af9/joblib_1601912903842/work
 Kivy==2.0.0
@@ -42,11 +44,14 @@ opencv-python==4.5.1.48
 pandas @ file:///C:/ci/pandas_1602088205210/work
 pathspec==0.7.0
 patsy==0.5.1
+pefile==2021.5.24
 Pillow @ file:///D:/bld/pillow_1610407628862/work
 proglog==0.1.9
 psutil==5.8.0
 pycallgraph==1.0.1
 Pygments==2.8.1
+pyinstaller==4.3
+pyinstaller-hooks-contrib==2021.1
 pykalman==0.9.5
 pylint @ file:///C:/ci/pylint_1598605958085/work
 pyparsing==2.4.7
@@ -54,12 +59,14 @@ pypiwin32==223
 PyQt5==5.12.3
 PyQt5-sip==4.19.18
 PyQtChart==5.12
+pyqtgraph==0.12.1
 PyQtWebEngine==5.12.1
 pyrealsense2==2.41.0.2666
 python-dateutil==2.8.1
 python-utils @ file:///home/conda/feedstock_root/build_artifacts/python-utils_1610715096358/work
 pytz==2020.1
 pywin32==300
+pywin32-ctypes==0.2.0
 regex @ file:///C:/ci/regex_1606691216163/work
 requests==2.25.1
 scikit-learn @ file:///C:/ci/scikit-learn_1598376983131/work
@@ -77,3 +84,4 @@ typing-extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_ext
 urllib3==1.26.4
 wincertstore==0.2
 wrapt==1.11.2
+zipp==3.4.1

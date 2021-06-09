@@ -21,6 +21,7 @@ setup(
     install_requires=[
         "pandas", 
         "numpy",
+        "pyqt5",
         "pyrealsense2",
         "filterpy",],
     zip_safe=False,
