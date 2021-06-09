@@ -93,6 +93,14 @@ def render_ids_3d(
                         text_color,
                         thickness,
                     )
+                else:
+                    file = open('logging/get_3d_joints.txt', 'a')
+                    file.writelines(str(joint_index) + ', ' + '[0, 0, 0]' + '\n')
+                    file.close()
+            else:
+                file = open('logging/get_3d_joints.txt', 'a')
+                file.writelines(str(joint_index) + ', ' + '[0, 0, 0]' + '\n')
+                file.close()
 
 # Main content begins
 if __name__ == "__main__":
