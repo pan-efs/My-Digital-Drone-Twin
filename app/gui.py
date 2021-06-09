@@ -249,6 +249,8 @@ class HammerThrowScreen(QMainWindow):
         self.combobox = QComboBox()
         self.combobox.addItem('None')
         self.combobox.addItem('Distances')
+        self.combobox.addItem('Knees Magnitude')
+        self.combobox.addItem('Ankles Magnitude')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
         visLayout = QHBoxLayout()
@@ -277,15 +279,27 @@ class HammerThrowScreen(QMainWindow):
             format = '/cubemos_converter'
         
         desired_dir = self.BASE_DIR + format
-        desired_ext = '.avi'
+        
+        video_path = self.remove_videos(desired_dir)
+        
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(video_path)))
+        self.playButton.setEnabled(True)
+    
+    def remove_videos(self, desired_dir: str):
+        desired_path = []
         
         for i in os.listdir(desired_dir):
-            if i.endswith(desired_ext):
-                self.desired_path = i
-                
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(self.desired_path)))
-        self.playButton.setEnabled(True)
+            if i.endswith('.avi'):
+                desired_path.append(i)
         
+        # pop the last one and remove it
+        self.video_path = desired_path.pop()
+        
+        for i in range(0, len(desired_path)):
+            os.remove(desired_dir + '/' + desired_path[i])
+        
+        return self.video_path
+    
     def play(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
@@ -349,6 +363,8 @@ class TextFileScreen(QMainWindow):
         self.combobox = QComboBox()
         self.combobox.addItem('None')
         self.combobox.addItem('Distances')
+        self.combobox.addItem('Knees Magnitude')
+        self.combobox.addItem('Ankles Magnitude')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
         visLayout = QHBoxLayout()
@@ -361,16 +377,12 @@ class TextFileScreen(QMainWindow):
         plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
 
 
-
-
-
-
-
-# Utilities
+# Helper utility function
 def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
         
         if txt == 'Distances':
+            graphWidget.clear()
             knees_dir = base_dir + '/datatypes/logging/knee_distances.txt'
             
             with open(knees_dir, 'r') as knees:
@@ -400,6 +412,70 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
             graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
             graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
+        
+        elif txt == 'Knees Magnitude':
+            graphWidget.clear()
+            knee_dir_R = base_dir + '/datatypes/logging/knee_right_mag.txt'
             
+            with open(knee_dir_R, 'r') as knee_R:
+                kn_lines_R = knee_R.readlines()
+            knee_R.close()
+            
+            for i in range(0, len(kn_lines_R)):
+                kn_lines_R[i] = float(kn_lines_R[i][:-1])
+            
+            knee_dir_L = base_dir + '/datatypes/logging/knee_left_mag.txt'
+            
+            with open(knee_dir_L, 'r') as knee_L:
+                kn_lines_L = knee_L.readlines()
+            knee_L.close()
+            
+            for i in range(0, len(kn_lines_L)):
+                kn_lines_L[i] = float(kn_lines_L[i][:-1])
+            
+            pen_kn_r = pg.mkPen(color= 'r', width = 4)
+            pen_kn_l = pg.mkPen(color= 'b', width = 4)
+            styles = {
+                    'color': '#000000', 
+                    'font-size': '20px',
+                    }
+            graphWidget.setLabel('left', 'magnitude', **styles)
+            graphWidget.setLabel('bottom', 'frames', **styles)
+            graphWidget.addLegend()
+            graphWidget.plot(kn_lines_R, name = 'Knee right', pen = pen_kn_r)
+            graphWidget.plot(kn_lines_L, name = 'Knee left', pen = pen_kn_l)
+        
+        elif txt == 'Ankles Magnitude':
+            graphWidget.clear()
+            ankle_dir_R = base_dir + '/datatypes/logging/ankle_right_mag.txt'
+            
+            with open(ankle_dir_R, 'r') as ankle_R:
+                an_lines_R = ankle_R.readlines()
+            ankle_R.close()
+            
+            for i in range(0, len(an_lines_R)):
+                an_lines_R[i] = float(an_lines_R[i][:-1])
+            
+            ankle_dir_L = base_dir + '/datatypes/logging/ankle_left_mag.txt'
+            
+            with open(ankle_dir_L, 'r') as ankle_L:
+                an_lines_L = ankle_L.readlines()
+            ankle_L.close()
+            
+            for i in range(0, len(an_lines_L)):
+                an_lines_L[i] = float(an_lines_L[i][:-1])
+            
+            pen_an_r = pg.mkPen(color= 'r', width = 4)
+            pen_an_l = pg.mkPen(color= 'b', width = 4)
+            styles = {
+                    'color': '#000000', 
+                    'font-size': '20px',
+                    }
+            graphWidget.setLabel('left', 'magnitude', **styles)
+            graphWidget.setLabel('bottom', 'frames', **styles)
+            graphWidget.addLegend()
+            graphWidget.plot(an_lines_R, name = 'Ankle right', pen = pen_an_r)
+            graphWidget.plot(an_lines_L, name = 'Ankle left', pen = pen_an_l)
+        
         elif txt == 'None':
             graphWidget.clear()

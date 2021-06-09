@@ -275,9 +275,14 @@ class Slope:
         length = math.sqrt((sp[0] - fp[0])*(sp[0] - fp[0]) + 
                 (sp[1] - fp[1])*(sp[1] - fp[1]) + 
                 (sp[2] - fp[2])*(sp[2] - fp[2]))
-    
-        xy = (sp[2] - fp[2]) / length
-        xz = (sp[1] - fp[1]) / length
-        yz = (sp[0] - fp[0]) / length
+        
+        if length != 0:
+            xy = (sp[2] - fp[2]) / length
+            xz = (sp[1] - fp[1]) / length
+            yz = (sp[0] - fp[0]) / length
+        else:
+            xy = 0
+            xz = 0
+            yz = 0
     
         return xy, xz, yz, length
