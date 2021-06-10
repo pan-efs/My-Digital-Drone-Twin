@@ -20,6 +20,10 @@ parser.add_argument('--flag', type = str,
 parser.add_argument('--file', type = str,
                     help = 'Provide the directory of a 3D joints text file.',
                     required = False)
+parser.add_argument('--wsize', type = int,
+                    help = 'Provide moving average filter window size.',
+                    default = 6,
+                    required = False)
 args = parser.parse_args()
 
 # Get the path according to the flag
@@ -40,6 +44,10 @@ if args.file:
     jl = JointsList(args.file,
                 BASE_DIR + '/datatypes/logging/clean_3d.txt')
     jLs = jl.__return__()
+else:
+    jl = JointsList(BASE_DIR + '/datatypes/logging/clean_3d.txt',
+                BASE_DIR + '/datatypes/logging/clean_3d_after_filter.txt')
+    jLs = jl.__return__()
 
 ################################################################
 #--------------------------------------------------------------#
@@ -57,30 +65,30 @@ for i in range(0, len(jLs), 3):
 mvg = MovingAverage()
 
 # Right lower body side
-mvg_rh_x = mvg.moving_average(jLs[24],6)
-mvg_rh_y = mvg.moving_average(jLs[25],6)
-mvg_rh_z = mvg.moving_average(jLs[26],6)
+mvg_rh_x = mvg.moving_average(jLs[24], args.wsize)
+mvg_rh_y = mvg.moving_average(jLs[25], args.wsize)
+mvg_rh_z = mvg.moving_average(jLs[26], args.wsize)
 
-mvg_rk_x = mvg.moving_average(jLs[27],6)
-mvg_rk_y = mvg.moving_average(jLs[28],6)
-mvg_rk_z = mvg.moving_average(jLs[29],6)
+mvg_rk_x = mvg.moving_average(jLs[27], args.wsize)
+mvg_rk_y = mvg.moving_average(jLs[28], args.wsize)
+mvg_rk_z = mvg.moving_average(jLs[29], args.wsize)
 
-mvg_ra_x = mvg.moving_average(jLs[30],6)
-mvg_ra_y = mvg.moving_average(jLs[31],6)
-mvg_ra_z = mvg.moving_average(jLs[32],6)
+mvg_ra_x = mvg.moving_average(jLs[30], args.wsize)
+mvg_ra_y = mvg.moving_average(jLs[31], args.wsize)
+mvg_ra_z = mvg.moving_average(jLs[32], args.wsize)
 
 # Left lower body side
-mvg_lh_x = mvg.moving_average(jLs[33],6)
-mvg_lh_y = mvg.moving_average(jLs[34],6)
-mvg_lh_z = mvg.moving_average(jLs[35],6)
+mvg_lh_x = mvg.moving_average(jLs[33], args.wsize)
+mvg_lh_y = mvg.moving_average(jLs[34], args.wsize)
+mvg_lh_z = mvg.moving_average(jLs[35], args.wsize)
 
-mvg_lk_x = mvg.moving_average(jLs[36],6)
-mvg_lk_y = mvg.moving_average(jLs[37],6)
-mvg_lk_z = mvg.moving_average(jLs[38],6)
+mvg_lk_x = mvg.moving_average(jLs[36], args.wsize)
+mvg_lk_y = mvg.moving_average(jLs[37], args.wsize)
+mvg_lk_z = mvg.moving_average(jLs[38], args.wsize)
 
-mvg_la_x = mvg.moving_average(jLs[39],6)
-mvg_la_y = mvg.moving_average(jLs[40],6)
-mvg_la_z = mvg.moving_average(jLs[41],6)
+mvg_la_x = mvg.moving_average(jLs[39], args.wsize)
+mvg_la_y = mvg.moving_average(jLs[40], args.wsize)
+mvg_la_z = mvg.moving_average(jLs[41], args.wsize)
 
 # Create list for moving average filtered data
 mvg_right_knee, mvg_left_knee, mvg_right_ankle, mvg_left_ankle = ([] for i in range(4))
@@ -111,17 +119,7 @@ sl = Slope()
 
 ankle_length, knee_length = ([] for i in range(2))
 
-# Equal lengths
-print(len(mvg_right_ankle), len(mvg_left_ankle))
-print(len(mvg_right_knee), len(mvg_left_knee))
-find_minimum_length = min(len(mvg_right_ankle), 
-                        len(mvg_left_ankle), 
-                        len(mvg_right_knee), 
-                        len(mvg_left_knee))
-print(find_minimum_length)
-
-
-for i in range(0, find_minimum_length):
+for i in range(0, len(mvg_right_ankle)):
     xy, xz, yz, length = sl.three_dim_slopes(mvg_right_ankle[i], mvg_left_ankle[i])
     ankle_length.append(length)
     

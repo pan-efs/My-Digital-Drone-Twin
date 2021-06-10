@@ -45,24 +45,17 @@ class WelcomeScreen(QMainWindow):
         lbl_instructions.setAlignment(Qt.AlignCenter)
         boxlayout.addWidget(lbl_instructions)
         
-        button = QPushButton('Start Recording...')
-        button.clicked.connect(self.detected_button)
-        button.clicked.connect(self.start_recording)
-        boxlayout.addWidget(button)
+        self.start_box = QComboBox()
+        self.start_box.addItem('Choose your next movement...')
+        self.start_box.addItem('Recording')
+        self.start_box.addItem('Convert video')
+        self.start_box.addItem('Text analysis')
+        self.start_box.activated.connect(self.start_doing)
+        boxlayout.addWidget(self.start_box)
         
         centralWidget.setLayout(boxlayout)
     
-    def start_recording(self):
-        msg_box = QMessageBox()
-        msg_box.setText('Do you want to record hammer throw event?')
-        msg_box.setInformativeText('Show details for more information.')
-        msg_box.setIcon(QMessageBox.Information)
-        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Discard | QMessageBox.Close | QMessageBox.Cancel)
-        msg_box.setDefaultButton(QMessageBox.Yes)
-        msg_box.setDetailedText('Yes: recording \nDiscard: provide only text analysis \nClose: converts a .bag file \nCancel: returns back')
-        msg_box.setWindowTitle('Recording...')
-        user_reply = msg_box.exec()
-        
+    def start_doing(self):
         msg_path = QMessageBox()
         msg_path.setText('Oops! Local path cannot be found.')
         msg_path.setIcon(QMessageBox.Warning)
@@ -82,12 +75,14 @@ class WelcomeScreen(QMainWindow):
         msg_lic.setDefaultButton(QMessageBox.Ok)
         
         msg_format = QMessageBox()
-        msg_format.setText('The format of the file should be .bag.')
+        msg_format.setText('The format of the file is not correct.')
         msg_format.setIcon(QMessageBox.Warning)
         msg_format.setStandardButtons(QMessageBox.Ok)
         msg_format.setDefaultButton(QMessageBox.Ok)
         
-        if user_reply == QMessageBox.Yes:
+        user_reply = self.start_box.currentText()
+        
+        if user_reply == 'Recording':
             try:
                 BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/cubemos')
@@ -95,21 +90,17 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to screen for analysis after recording')
-                    self.main_style()
                     self.switch_to_hammer_screen('Yes').show()
                 else:
-                    self.main_style()
                     raise RuntimeError
                 
             except OSError:
-                self.main_style()
                 msg_path.exec()
             
             except RuntimeError:
-                self.main_style()
                 msg_dev.exec()
                 
-        elif user_reply == QMessageBox.Close:
+        elif user_reply == 'Convert video':
             options = QFileDialog.Options()
             fileName, _ = QFileDialog.getOpenFileName(self,
                                                     "QFileDialog.getOpenFileName()","","All Files (*);;Bag Files (*.bag)", 
@@ -118,6 +109,8 @@ class WelcomeScreen(QMainWindow):
                 if fileName.endswith('.bag'):
                     print(fileName)
                     pass
+                elif fileName == '':
+                    raise NotImplementedError
                 else:
                     raise FileNotFoundError
                 
@@ -128,24 +121,22 @@ class WelcomeScreen(QMainWindow):
                 if retcode == 0:
                     print('Go to converter screen')
                     self.switch_to_hammer_screen('No').show()
-                    self.main_style()
                 else:
-                    self.main_style()
-                    raise NotImplementedError
+                    raise ValueError
             
-            except NotImplementedError:
-                self.main_style()
+            except ValueError:
                 msg_lic.exec()
             
             except FileNotFoundError:
-                self.main_style()
                 msg_format.exec()
             
             except OSError:
-                self.main_style()
                 msg_path.exec()
+            
+            except NotImplementedError:
+                pass
                 
-        elif user_reply == QMessageBox.Discard:
+        elif user_reply == 'Text analysis':
             options = QFileDialog.Options()
             fileName, _ = QFileDialog.getOpenFileName(self,
                                                     "QFileDialog.getOpenFileName()","","All Files (*);;Text Files (*.txt)", 
@@ -154,8 +145,10 @@ class WelcomeScreen(QMainWindow):
                 if fileName.endswith('.txt'):
                     print(fileName)
                     pass
-                else:
+                elif fileName == '':
                     raise NotImplementedError
+                else:
+                    raise FileNotFoundError
                 
                 BASE_DIR = _get_base_dir()
                 os.chdir(BASE_DIR + '/datatypes')
@@ -163,21 +156,19 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Text Analysis')
-                    self.main_style()
                     self.switch_to_text_screen().show()
-                else:
-                    self.main_style()
-                    raise NotImplementedError
-                
+            
+            except FileNotFoundError:
+                msg_format.exec()
+            
             except OSError:
-                self.main_style()
                 msg_path.exec()
             
             except NotImplementedError:
-                self.main_style()
-                
-        elif user_reply == QMessageBox.Cancel:
-            self.main_style()
+                pass
+            
+        elif user_reply == 'Choose you next movement...':
+            pass
     
     def switch_to_hammer_screen(self, event:str):
         self.hammer = HammerThrowScreen(event)
@@ -189,20 +180,11 @@ class WelcomeScreen(QMainWindow):
     
     def main_style(self):
         self.setStyleSheet('margin: 1px; padding: 10px; \
-                            background-color: rgba(220, 245, 250, 0.5); \
+                            background-color: rgba(171, 198, 228, 0.5); \
                             color: rgba(0,0,0,255); \
                             border-style: solid; \
                             border-radius: 2px; border-width: 1px; \
                             border-color: rgba(0,0,0,255);')
-    
-    def detected_button(self):
-        self.setStyleSheet('margin: 1px; padding: 10px; \
-                            background-color: rgba(95, 200, 255, 0.5); \
-                            color: rgba(0,0,0,255); \
-                            border-style: solid; \
-                            border-radius: 4px; border-width: 3px; \
-                            border-color: rgba(0,0,0,255);')
-
 
 class HammerThrowScreen(QMainWindow):
     def __init__(self, welcome_screen_event):
@@ -213,7 +195,7 @@ class HammerThrowScreen(QMainWindow):
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Hammer Throw')
-        self.setStyleSheet('background-color: rgba(220, 245, 250, 0.5);')
+        self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
         
         try:
             self.BASE_DIR = _get_base_dir()
@@ -253,9 +235,32 @@ class HammerThrowScreen(QMainWindow):
         self.combobox.addItem('Ankles Magnitude')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
+        self.radioButtonThree = QRadioButton('3')
+        self.radioButtonSix = QRadioButton('6')
+        self.radioButtonNine = QRadioButton('9')
+        self.radioButtonTwelve = QRadioButton('12')
+        self.radioButtonThree.setChecked(True)
+        
+        self.radioButtonThree = QRadioButton('3')
+        self.radioButtonSix = QRadioButton('6')
+        self.radioButtonNine = QRadioButton('9')
+        self.radioButtonTwelve = QRadioButton('12')
+        self.radioButtonSix.setChecked(True)
+        self.radioButtonThree.toggled.connect(self.button_toggled)
+        self.radioButtonSix.toggled.connect(self.button_toggled)
+        self.radioButtonNine.toggled.connect(self.button_toggled)
+        self.radioButtonTwelve.toggled.connect(self.button_toggled)
+        
+        radioLayout = QHBoxLayout()
+        radioLayout.addWidget(self.radioButtonThree)
+        radioLayout.addWidget(self.radioButtonSix)
+        radioLayout.addWidget(self.radioButtonNine)
+        radioLayout.addWidget(self.radioButtonTwelve)
+        
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
         visLayout.addWidget(self.combobox)
+        visLayout.addLayout(radioLayout)
         
         qvboxlayout = QVBoxLayout()
         qvboxlayout.addWidget(video)
@@ -338,6 +343,23 @@ class HammerThrowScreen(QMainWindow):
             pass
         
         plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
+    
+    def button_toggled(self):
+        if self.radioButtonThree.isChecked():
+            windows_size_changed(self.BASE_DIR, 3)
+            self.combobox.setCurrentText('None')
+            
+        elif self.radioButtonSix.isChecked():
+            windows_size_changed(self.BASE_DIR, 6)
+            self.combobox.setCurrentText('None')
+            
+        elif self.radioButtonNine.isChecked():
+            windows_size_changed(self.BASE_DIR, 9)
+            self.combobox.setCurrentText('None')
+            
+        else:
+            windows_size_changed(self.BASE_DIR, 12)
+            self.combobox.setCurrentText('None')
 
 class TextFileScreen(QMainWindow):
     def __init__(self):
@@ -346,7 +368,7 @@ class TextFileScreen(QMainWindow):
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Text Analysis')
-        self.setStyleSheet('background-color: rgba(220, 245, 250, 0.5);')
+        self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
         
         try:
             self.BASE_DIR = _get_base_dir()
@@ -367,17 +389,51 @@ class TextFileScreen(QMainWindow):
         self.combobox.addItem('Ankles Magnitude')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
         
+        self.radioButtonThree = QRadioButton('3')
+        self.radioButtonSix = QRadioButton('6')
+        self.radioButtonNine = QRadioButton('9')
+        self.radioButtonTwelve = QRadioButton('12')
+        self.radioButtonSix.setChecked(True)
+        self.radioButtonThree.toggled.connect(self.button_toggled)
+        self.radioButtonSix.toggled.connect(self.button_toggled)
+        self.radioButtonNine.toggled.connect(self.button_toggled)
+        self.radioButtonTwelve.toggled.connect(self.button_toggled)
+        
+        radioLayout = QHBoxLayout()
+        radioLayout.addWidget(self.radioButtonThree)
+        radioLayout.addWidget(self.radioButtonSix)
+        radioLayout.addWidget(self.radioButtonNine)
+        radioLayout.addWidget(self.radioButtonTwelve)
+        
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
         visLayout.addWidget(self.combobox)
+        visLayout.addLayout(radioLayout)
         
         centralwidget.setLayout(visLayout)
     
     def get_current_text_and_plot(self):
         plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
+    
+    def button_toggled(self):
+        if self.radioButtonThree.isChecked():
+            windows_size_changed(self.BASE_DIR, 3)
+            self.combobox.setCurrentText('None')
+            
+        elif self.radioButtonSix.isChecked():
+            windows_size_changed(self.BASE_DIR, 6)
+            self.combobox.setCurrentText('None')
+            
+        elif self.radioButtonNine.isChecked():
+            windows_size_changed(self.BASE_DIR, 9)
+            self.combobox.setCurrentText('None')
+            
+        else:
+            windows_size_changed(self.BASE_DIR, 12)
+            self.combobox.setCurrentText('None')
 
 
-# Helper utility function
+# Helper utility functions (all classes)
 def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
         
@@ -479,3 +535,12 @@ def plot_cases(base_dir:str, graphWidget, combobox):
         
         elif txt == 'None':
             graphWidget.clear()
+
+def windows_size_changed(base_dir: str, wsize: int):
+    os.chdir(base_dir + '/datatypes')
+    retcode = subprocess.call('python hammer_example.py --wsize ' + str(wsize), shell = True)
+    
+    if retcode == 0:
+        print('Windows size changed')
+    else:
+        raise NotImplementedError
