@@ -165,7 +165,8 @@ if __name__ == "__main__":
             cv2.imshow(window_name, color_image)
             if cv2.waitKey(1) == 27:
                 # Press Esc button for exit and save on user's desktop
-                source = _get_base_dir() + '/cubemos/' + output_skeleton
+                BASE_DIR = _get_base_dir()
+                source = f'{BASE_DIR}/cubemos/{output_skeleton}'
                 dest = os.path.expanduser("~/Desktop") # works both on windows and linux
                 shutil.copy2(source, dest)
                 break

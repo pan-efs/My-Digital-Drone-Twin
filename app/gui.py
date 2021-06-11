@@ -5,17 +5,8 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 import pyqtgraph as pg
-import sys, os, subprocess
+import sys, os, subprocess, pickle
 
-def _get_base_dir():
-    frozen = 'not'
-    if getattr(sys, 'frozen', False):
-        frozen = 'ever so'
-        BASE_DIR = sys._MEIPASS
-    else:
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
-    return BASE_DIR
 class WelcomeScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -85,7 +76,7 @@ class WelcomeScreen(QMainWindow):
         if user_reply == 'Recording':
             try:
                 BASE_DIR = _get_base_dir()
-                os.chdir(BASE_DIR + '/cubemos')
+                os.chdir(f'{BASE_DIR}/cubemos')
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
                 if retcode == 0:
@@ -115,8 +106,8 @@ class WelcomeScreen(QMainWindow):
                     raise FileNotFoundError
                 
                 BASE_DIR = _get_base_dir()
-                os.chdir(BASE_DIR + '/cubemos_converter')
-                retcode = subprocess.call('python convert_bagfile_skel.py --file ' + fileName, shell = True)
+                os.chdir(f'{BASE_DIR}/cubemos_converter')
+                retcode = subprocess.call(f'python convert_bagfile_skel.py --file {fileName}', shell = True)
                 
                 if retcode == 0:
                     print('Go to converter screen')
@@ -151,8 +142,8 @@ class WelcomeScreen(QMainWindow):
                     raise FileNotFoundError
                 
                 BASE_DIR = _get_base_dir()
-                os.chdir(BASE_DIR + '/datatypes')
-                retcode = subprocess.call('python hammer_example.py --file ' + fileName, shell = True)
+                os.chdir(f'{BASE_DIR}/datatypes')
+                retcode = subprocess.call(f'python hammer_example.py --file {fileName}', shell = True)
                 
                 if retcode == 0:
                     print('Text Analysis')
@@ -283,7 +274,7 @@ class HammerThrowScreen(QMainWindow):
         elif previous_screen_event == 'No':
             format = '/cubemos_converter'
         
-        desired_dir = self.BASE_DIR + format
+        desired_dir = f'{self.BASE_DIR}{format}'
         
         video_path = self.remove_videos(desired_dir)
         
@@ -301,7 +292,7 @@ class HammerThrowScreen(QMainWindow):
         self.video_path = desired_path.pop()
         
         for i in range(0, len(desired_path)):
-            os.remove(desired_dir + '/' + desired_path[i])
+            os.remove(f'{desired_dir}/{desired_path[i]}')
         
         return self.video_path
     
@@ -337,8 +328,8 @@ class HammerThrowScreen(QMainWindow):
                 flag = 'cubemos_converter'
                 self.index_analysis = 1
             
-            os.chdir(self.BASE_DIR + '/datatypes')
-            subprocess.call('python hammer_example.py --flag ' + flag, shell = True)
+            os.chdir(f'{self.BASE_DIR}/datatypes')
+            subprocess.call(f'python hammer_example.py --flag {flag}', shell = True)
         else:
             pass
         
@@ -434,27 +425,29 @@ class TextFileScreen(QMainWindow):
 
 
 # Helper utility functions (all classes)
+def _get_base_dir():
+    frozen = 'not'
+    if getattr(sys, 'frozen', False):
+        frozen = 'ever so'
+        BASE_DIR = sys._MEIPASS
+    else:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    return BASE_DIR
+
 def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
         
         if txt == 'Distances':
             graphWidget.clear()
-            knees_dir = base_dir + '/datatypes/logging/knee_distances.txt'
             
-            with open(knees_dir, 'r') as knees:
-                kn_lines = knees.readlines()
-            knees.close()
+            knees_dir = f'{base_dir}/datatypes/logging/knee_distances.txt'
+            with open(knees_dir, 'rb') as knees:
+                kn_lines = pickle.load(knees)
             
-            for i in range(0, len(kn_lines)):
-                kn_lines[i] = float(kn_lines[i][:-1])
-            
-            ankles_dir = base_dir + '/datatypes/logging/ankle_distances.txt'
-            with open(ankles_dir, 'r') as ankles:
-                an_lines = ankles.readlines()
-            ankles.close()
-            
-            for i in range(0, len(an_lines)):
-                an_lines[i] = float(an_lines[i][:-1])
+            ankles_dir = f'{base_dir}/datatypes/logging/ankle_distances.txt'
+            with open(ankles_dir, 'rb') as ankles:
+                an_lines = pickle.load(ankles)
             
             pen_kn = pg.mkPen(color= 'r', width = 4)
             pen_an = pg.mkPen(color= 'b', width = 4)
@@ -471,23 +464,14 @@ def plot_cases(base_dir:str, graphWidget, combobox):
         
         elif txt == 'Knees Magnitude':
             graphWidget.clear()
-            knee_dir_R = base_dir + '/datatypes/logging/knee_right_mag.txt'
             
-            with open(knee_dir_R, 'r') as knee_R:
-                kn_lines_R = knee_R.readlines()
-            knee_R.close()
+            knee_dir_R = f'{base_dir}/datatypes/logging/knee_right_mag.txt'
+            with open(knee_dir_R, 'rb') as knee_R:
+                kn_lines_R = pickle.load(knee_R)
             
-            for i in range(0, len(kn_lines_R)):
-                kn_lines_R[i] = float(kn_lines_R[i][:-1])
-            
-            knee_dir_L = base_dir + '/datatypes/logging/knee_left_mag.txt'
-            
-            with open(knee_dir_L, 'r') as knee_L:
-                kn_lines_L = knee_L.readlines()
-            knee_L.close()
-            
-            for i in range(0, len(kn_lines_L)):
-                kn_lines_L[i] = float(kn_lines_L[i][:-1])
+            knee_dir_L = f'{base_dir}/datatypes/logging/knee_left_mag.txt'
+            with open(knee_dir_L, 'rb') as knee_L:
+                kn_lines_L = pickle.load(knee_L)
             
             pen_kn_r = pg.mkPen(color= 'r', width = 4)
             pen_kn_l = pg.mkPen(color= 'b', width = 4)
@@ -503,23 +487,14 @@ def plot_cases(base_dir:str, graphWidget, combobox):
         
         elif txt == 'Ankles Magnitude':
             graphWidget.clear()
-            ankle_dir_R = base_dir + '/datatypes/logging/ankle_right_mag.txt'
             
-            with open(ankle_dir_R, 'r') as ankle_R:
-                an_lines_R = ankle_R.readlines()
-            ankle_R.close()
+            ankle_dir_R = f'{base_dir}/datatypes/logging/ankle_right_mag.txt'
+            with open(ankle_dir_R, 'rb') as ankle_R:
+                an_lines_R = pickle.load(ankle_R)
             
-            for i in range(0, len(an_lines_R)):
-                an_lines_R[i] = float(an_lines_R[i][:-1])
-            
-            ankle_dir_L = base_dir + '/datatypes/logging/ankle_left_mag.txt'
-            
-            with open(ankle_dir_L, 'r') as ankle_L:
-                an_lines_L = ankle_L.readlines()
-            ankle_L.close()
-            
-            for i in range(0, len(an_lines_L)):
-                an_lines_L[i] = float(an_lines_L[i][:-1])
+            ankle_dir_L = f'{base_dir}/datatypes/logging/ankle_left_mag.txt'
+            with open(ankle_dir_L, 'rb') as ankle_L:
+                an_lines_L = pickle.load(ankle_L)
             
             pen_an_r = pg.mkPen(color= 'r', width = 4)
             pen_an_l = pg.mkPen(color= 'b', width = 4)
@@ -537,8 +512,8 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.clear()
 
 def windows_size_changed(base_dir: str, wsize: int):
-    os.chdir(base_dir + '/datatypes')
-    retcode = subprocess.call('python hammer_example.py --wsize ' + str(wsize), shell = True)
+    os.chdir(f'{base_dir}/datatypes')
+    retcode = subprocess.call(f'python hammer_example.py --wsize {wsize}', shell = True)
     
     if retcode == 0:
         print('Windows size changed')

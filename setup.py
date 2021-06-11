@@ -13,7 +13,6 @@ setup(
         "cubemos_converter",
         "filters",
         "cubemos",
-        "stats",
         "exceptions",
         "datatypes",
         "app",      

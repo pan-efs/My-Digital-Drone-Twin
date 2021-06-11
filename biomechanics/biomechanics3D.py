@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import math
 from scipy.signal import *
 from matplotlib import pyplot as plt
 from exceptions.movement_analysis import ShapeDataFrame3DError, ColNamesDataFrame3DError, FpsError
@@ -83,7 +82,7 @@ class LinearKinematics:
             z = (data.at[i + 1, "joint_z"] - data.at[i - 1, "joint_z"]) / (
                 data.at[i + 1, "time"] - data.at[i - 1, "time"]
             )
-            vel = math.sqrt(x*x + y*y + z*z)
+            vel = (x*x + y*y + z*z)**0.5
             speed.append(vel)
             time.append(data.at[i, "time"])
             
@@ -115,7 +114,7 @@ class LinearKinematics:
             z = (data[i + 1][2] - data[i - 1][2]) / (
                 time[i + 1] - time[i - 1]
             )
-            s = math.sqrt(x*x + y*y + z*z)
+            s = (x*x + y*y + z*z)**0.5
             speed.append(s)
             new_time.append(time[i])
         
@@ -148,7 +147,7 @@ class LinearKinematics:
             
             deltaZ = (data.at[i + 1, 'joint_z'] - data.at[i, 'joint_z'])
             
-            resultant = math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)
+            resultant = (deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)**0.5
             
             time.append(data.at[i, "time"])
             dx.append(deltaX)
@@ -272,17 +271,8 @@ class Slope:
         :return: The slopes of xy-, xz-, yz- and distance (length).
         :rtype: float
         """
-        length = math.sqrt((sp[0] - fp[0])*(sp[0] - fp[0]) + 
+        length = ((sp[0] - fp[0])*(sp[0] - fp[0]) + 
                 (sp[1] - fp[1])*(sp[1] - fp[1]) + 
-                (sp[2] - fp[2])*(sp[2] - fp[2]))
+                (sp[2] - fp[2])*(sp[2] - fp[2])) **0.5
         
-        if length != 0:
-            xy = (sp[2] - fp[2]) / length
-            xz = (sp[1] - fp[1]) / length
-            yz = (sp[0] - fp[0]) / length
-        else:
-            xy = 0
-            xz = 0
-            yz = 0
-    
-        return xy, xz, yz, length
+        return length
