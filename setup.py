@@ -15,7 +15,7 @@ setup(
         "cubemos",
         "exceptions",
         "datatypes",
-        "app",      
+        "app",    
     ],
     install_requires=[
         "pandas", 

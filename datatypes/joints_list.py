@@ -1,6 +1,5 @@
 import numpy as np
 from exceptions.movement_analysis import LengthArraysError
-from joints_dataframe import JointsDataframe
 from joints_numpys import JointsNumpys
 
 class JointsList:

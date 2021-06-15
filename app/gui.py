@@ -194,6 +194,7 @@ class HammerThrowScreen(QMainWindow):
             raise NotImplementedError
         
         self.index_analysis = 0
+        self.frames = graph_length(self.BASE_DIR, self.welcome_screen_event)
         
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         video = QVideoWidget()
@@ -205,9 +206,10 @@ class HammerThrowScreen(QMainWindow):
         self.graphWidget.setBackground('w')
         self.graphWidget.showGrid(x = True, y = True)
         self.graphWidget.setMaximumHeight(450)
+        self.line = 0
         
         self.playButton = QPushButton()
-        self.playButton.setEnabled(False)
+        self.playButton.setEnabled(False) 
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
 
@@ -271,11 +273,11 @@ class HammerThrowScreen(QMainWindow):
     def open_video(self, previous_screen_event: str):
         if previous_screen_event == 'Yes':
             format = '/cubemos'
+            
         elif previous_screen_event == 'No':
             format = '/cubemos_converter'
         
         desired_dir = f'{self.BASE_DIR}{format}'
-        
         video_path = self.remove_videos(desired_dir)
         
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(video_path)))
@@ -288,11 +290,14 @@ class HammerThrowScreen(QMainWindow):
             if i.endswith('.avi'):
                 desired_path.append(i)
         
-        # pop the last one and remove it
-        self.video_path = desired_path.pop()
-        
-        for i in range(0, len(desired_path)):
-            os.remove(f'{desired_dir}/{desired_path[i]}')
+        #pop the last one and remove it
+        if len(desired_path) == 1:
+            self.video_path = desired_path[0]
+            
+        else:
+            self.video_path = desired_path.pop()
+            for i in range(0, len(desired_path)):
+                os.remove(f'{desired_dir}/{desired_path[i]}')
         
         return self.video_path
     
@@ -315,7 +320,25 @@ class HammerThrowScreen(QMainWindow):
 
     def positionChanged(self, position):
         self.positionSlider.setValue(position)
-
+        
+        frame_position = self.get_frame_position(position)
+        
+        if self.line == 0:
+            self.line = self.graphWidget.addLine(x = 0, pen = pg.mkPen('g', width = 2), movable = False)
+            
+        else:
+            self.graphWidget.removeItem(self.line) 
+            self.line = add_line(self.graphWidget, frame_position)
+    
+    def get_frame_position(self, position):
+        duration = self.mediaPlayer.duration()
+        if duration == 0:
+            frame_position = 0
+        else:
+            frame_position = position / (duration/self.frames)
+        
+        return frame_position
+    
     def durationChanged(self, duration):
         self.positionSlider.setRange(0, duration)
         
@@ -324,6 +347,7 @@ class HammerThrowScreen(QMainWindow):
             if self.welcome_screen_event == 'Yes':
                 flag = 'cubemos'
                 self.index_analysis = 1
+                
             elif self.welcome_screen_event == 'No':
                 flag = 'cubemos_converter'
                 self.index_analysis = 1
@@ -435,6 +459,32 @@ def _get_base_dir():
     
     return BASE_DIR
 
+def add_line(graphWidget, position):
+    new_line = graphWidget.addLine(
+                                x = position, 
+                                pen = pg.mkPen(color= 'g', width = 2), 
+                                angle = 90, 
+                                movable = False
+                            )
+    return new_line
+
+def graph_length(base_dir:str, screen: str):
+    if screen == 'Yes':
+        folder = 'cubemos'
+        txt = 'get_3d_joints.txt'
+    else:
+        folder = 'cubemos_converter'
+        txt = 'get_3d_joints_from_video.txt'
+    
+    _dir = f'{base_dir}/{folder}/logging/{txt}'
+    graph = open(_dir, 'r').readlines()
+    
+    graph_len = len(graph)/18
+    
+    print(graph_len)
+    
+    return graph_len
+
 def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
         
@@ -461,6 +511,7 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
             graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
             graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
+            
         
         elif txt == 'Knees Magnitude':
             graphWidget.clear()
@@ -516,6 +567,6 @@ def windows_size_changed(base_dir: str, wsize: int):
     retcode = subprocess.call(f'python hammer_example.py --wsize {wsize}', shell = True)
     
     if retcode == 0:
-        print('Windows size changed')
+        print('Windows size changed to', wsize)
     else:
         raise NotImplementedError
