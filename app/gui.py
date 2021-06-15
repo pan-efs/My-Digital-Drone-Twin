@@ -269,7 +269,6 @@ class HammerThrowScreen(QMainWindow):
         
         self.open_video(self.welcome_screen_event)
     
-    # Methods related to video playback
     def open_video(self, previous_screen_event: str):
         if previous_screen_event == 'Yes':
             format = '/cubemos'
@@ -360,21 +359,13 @@ class HammerThrowScreen(QMainWindow):
         plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
     
     def button_toggled(self):
-        if self.radioButtonThree.isChecked():
-            windows_size_changed(self.BASE_DIR, 3)
-            self.combobox.setCurrentText('None')
-            
-        elif self.radioButtonSix.isChecked():
-            windows_size_changed(self.BASE_DIR, 6)
-            self.combobox.setCurrentText('None')
-            
-        elif self.radioButtonNine.isChecked():
-            windows_size_changed(self.BASE_DIR, 9)
-            self.combobox.setCurrentText('None')
-            
-        else:
-            windows_size_changed(self.BASE_DIR, 12)
-            self.combobox.setCurrentText('None')
+        radiobutton_toggled(
+                            self.BASE_DIR, 
+                            self.radioButtonThree, 
+                            self.radioButtonSix, 
+                            self.radioButtonNine, 
+                            self.combobox
+                        )
 
 class TextFileScreen(QMainWindow):
     def __init__(self):
@@ -431,24 +422,16 @@ class TextFileScreen(QMainWindow):
         plot_cases(self.BASE_DIR, self.graphWidget, self.combobox)
     
     def button_toggled(self):
-        if self.radioButtonThree.isChecked():
-            windows_size_changed(self.BASE_DIR, 3)
-            self.combobox.setCurrentText('None')
-            
-        elif self.radioButtonSix.isChecked():
-            windows_size_changed(self.BASE_DIR, 6)
-            self.combobox.setCurrentText('None')
-            
-        elif self.radioButtonNine.isChecked():
-            windows_size_changed(self.BASE_DIR, 9)
-            self.combobox.setCurrentText('None')
-            
-        else:
-            windows_size_changed(self.BASE_DIR, 12)
-            self.combobox.setCurrentText('None')
+        radiobutton_toggled(
+                            self.BASE_DIR, 
+                            self.radioButtonThree, 
+                            self.radioButtonSix, 
+                            self.radioButtonNine, 
+                            self.combobox
+                        )
 
 
-# Helper utility functions (all classes)
+# Helper functions
 def _get_base_dir():
     frozen = 'not'
     if getattr(sys, 'frozen', False):
@@ -484,6 +467,23 @@ def graph_length(base_dir:str, screen: str):
     print(graph_len)
     
     return graph_len
+
+def radiobutton_toggled(base_dir: str, radiobutton1, radiobutton2, radiobutton3, combobox):
+    if radiobutton1.isChecked():
+        windows_size_changed(base_dir, 3)
+        combobox.setCurrentText('None')
+            
+    elif radiobutton2.isChecked():
+        windows_size_changed(base_dir, 6)
+        combobox.setCurrentText('None')
+            
+    elif radiobutton3.isChecked():
+        windows_size_changed(base_dir, 9)
+        combobox.setCurrentText('None')
+            
+    else:
+        windows_size_changed(base_dir, 12)
+        combobox.setCurrentText('None')
 
 def plot_cases(base_dir:str, graphWidget, combobox):
         txt = combobox.currentText()
