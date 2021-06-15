@@ -174,7 +174,6 @@ if __name__ == "__main__":
         pipeline.stop()
         videoout.release()
         cv2.destroyAllWindows()
-        #os.remove(source)
         
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))

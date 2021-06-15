@@ -59,7 +59,7 @@ class JointsList:
         """
         Helper function.
         Converts three arrays of x,y,z codrdinates into list.
-        It can be applied only to unfiltered corrdinates.
+        It can be applied only to unfiltered coordinates.
 
         :param arr_x: x joint position
         :param arr_y: y joint position

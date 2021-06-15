@@ -143,7 +143,7 @@ class WelcomeScreen(QMainWindow):
                 
                 BASE_DIR = _get_base_dir()
                 os.chdir(f'{BASE_DIR}/datatypes')
-                retcode = subprocess.call(f'python hammer_example.py --file {fileName}', shell = True)
+                retcode = subprocess.call(f'python processing.py --file {fileName}', shell = True)
                 
                 if retcode == 0:
                     print('Text Analysis')
@@ -352,7 +352,7 @@ class HammerThrowScreen(QMainWindow):
                 self.index_analysis = 1
             
             os.chdir(f'{self.BASE_DIR}/datatypes')
-            subprocess.call(f'python hammer_example.py --flag {flag}', shell = True)
+            subprocess.call(f'python processing.py --flag {flag}', shell = True)
         else:
             pass
         
@@ -564,7 +564,7 @@ def plot_cases(base_dir:str, graphWidget, combobox):
 
 def windows_size_changed(base_dir: str, wsize: int):
     os.chdir(f'{base_dir}/datatypes')
-    retcode = subprocess.call(f'python hammer_example.py --wsize {wsize}', shell = True)
+    retcode = subprocess.call(f'python processing.py --wsize {wsize}', shell = True)
     
     if retcode == 0:
         print('Windows size changed to', wsize)
