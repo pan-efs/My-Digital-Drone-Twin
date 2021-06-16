@@ -135,7 +135,7 @@ if __name__ == "__main__":
         
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
-            unaligned_frames = pipeline.wait_for_frames(100)
+            unaligned_frames = pipeline.wait_for_frames(100) 
             frames = align.process(unaligned_frames)
             depth = frames.get_depth_frame()
             color = frames.get_color_frame()
@@ -162,4 +162,6 @@ if __name__ == "__main__":
 
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))
-        # We don't raise the RuntimeError here
+        # Should be included licence error as well, but cannot be checked now.
+        if 'Exception occured: "{}"'.format(ex) == 'Exception occured: "Couldn\'t resolve requests"':
+            raise ex

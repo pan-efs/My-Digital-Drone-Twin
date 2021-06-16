@@ -65,7 +65,7 @@ class WelcomeScreen(QMainWindow):
         msg_dev.setDefaultButton(QMessageBox.Ok)
         
         msg_lic = QMessageBox()
-        msg_lic.setText('You do not have the permission to convert your file.')
+        msg_lic.setText('You do not have the permission to convert your file.\nOR \nCouldn\'t resolve requests.')
         msg_lic.setIcon(QMessageBox.Warning)
         msg_lic.setStandardButtons(QMessageBox.Ok)
         msg_lic.setDefaultButton(QMessageBox.Ok)
@@ -116,9 +116,9 @@ class WelcomeScreen(QMainWindow):
                     print('Go to converter screen')
                     self.switch_to_hammer_screen('No').show()
                 else:
-                    raise ValueError
+                    raise RuntimeError
             
-            except ValueError:
+            except RuntimeError:
                 msg_lic.exec()
             
             except FileNotFoundError:
