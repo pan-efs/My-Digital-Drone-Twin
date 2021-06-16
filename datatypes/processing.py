@@ -1,6 +1,6 @@
 import os, sys, argparse, pickle
 
-from joints_list import JointsList
+from joints import JointsDataframe, JointsNumpys, JointsList
 from utils.helpers import xyz_to_list, magnitude
 from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
