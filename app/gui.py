@@ -16,6 +16,11 @@ class WelcomeScreen(QMainWindow):
         self.setWindowTitle("Welcome!")
         self.main_style()
         
+        try:
+            self.BASE_DIR = _get_base_dir()
+        except OSError:
+            raise NotImplementedError
+        
         centralWidget = QWidget(self)          
         self.setCentralWidget(centralWidget) 
         
@@ -75,8 +80,7 @@ class WelcomeScreen(QMainWindow):
         
         if user_reply == 'Recording':
             try:
-                BASE_DIR = _get_base_dir()
-                os.chdir(f'{BASE_DIR}/cubemos')
+                os.chdir(f'{self.BASE_DIR}/cubemos')
                 retcode = subprocess.call('python realsense.py', shell = True)
                 
                 if retcode == 0:
@@ -105,8 +109,7 @@ class WelcomeScreen(QMainWindow):
                 else:
                     raise FileNotFoundError
                 
-                BASE_DIR = _get_base_dir()
-                os.chdir(f'{BASE_DIR}/cubemos_converter')
+                os.chdir(f'{self.BASE_DIR}/cubemos_converter')
                 retcode = subprocess.call(f'python convert_bagfile_skel.py --file {fileName}', shell = True)
                 
                 if retcode == 0:
@@ -141,8 +144,7 @@ class WelcomeScreen(QMainWindow):
                 else:
                     raise FileNotFoundError
                 
-                BASE_DIR = _get_base_dir()
-                os.chdir(f'{BASE_DIR}/datatypes')
+                os.chdir(f'{self.BASE_DIR}/datatypes')
                 retcode = subprocess.call(f'python processing.py --file {fileName}', shell = True)
                 
                 if retcode == 0:
@@ -227,12 +229,6 @@ class HammerThrowScreen(QMainWindow):
         self.combobox.addItem('Knees Magnitude')
         self.combobox.addItem('Ankles Magnitude')
         self.combobox.currentTextChanged.connect(self.get_current_text_and_plot)
-        
-        self.radioButtonThree = QRadioButton('3')
-        self.radioButtonSix = QRadioButton('6')
-        self.radioButtonNine = QRadioButton('9')
-        self.radioButtonTwelve = QRadioButton('12')
-        self.radioButtonThree.setChecked(True)
         
         self.radioButtonThree = QRadioButton('3')
         self.radioButtonSix = QRadioButton('6')
@@ -345,10 +341,12 @@ class HammerThrowScreen(QMainWindow):
         if self.index_analysis == 0:
             if self.welcome_screen_event == 'Yes':
                 flag = 'cubemos'
+                print('from cubemos')
                 self.index_analysis = 1
                 
             elif self.welcome_screen_event == 'No':
                 flag = 'cubemos_converter'
+                print('from cubemos_converter')
                 self.index_analysis = 1
             
             os.chdir(f'{self.BASE_DIR}/datatypes')
@@ -457,7 +455,7 @@ def graph_length(base_dir:str, screen: str):
         txt = 'get_3d_joints.txt'
     else:
         folder = 'cubemos_converter'
-        txt = 'get_3d_joints_from_video.txt'
+        txt = 'write_3d_joints_from_video.txt'
     
     _dir = f'{base_dir}/{folder}/logging/{txt}'
     graph = open(_dir, 'r').readlines()

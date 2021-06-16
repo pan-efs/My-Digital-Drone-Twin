@@ -33,22 +33,28 @@ if args.file and args.flag:
 
 if args.flag:
     if args.flag == 'cubemos_converter':
-        jl = JointsList(f'{BASE_DIR}/cubemos_converter/logging/get_3d_joints_from_video.txt',
-                    f'{BASE_DIR}/datatypes/logging/clean_3d_from_video.txt')
+        print('reading from cubemos_converter')
+        jl = JointsList(f'{BASE_DIR}/cubemos_converter/logging/write_3d_joints_from_video.txt',
+                    f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
         jLs = jl.__return__()
     elif args.flag == 'cubemos':
+        print('reading from cubemos')
         jl = JointsList(f'{BASE_DIR}/cubemos/logging/get_3d_joints.txt',
                 f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
         jLs = jl.__return__()
 
 if args.file:
+    print('reading from text file')
     jl = JointsList(args.file,
                 f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
     jLs = jl.__return__()
-else:
+
+if not args.flag and not args.file:
+    print('reading from after_filter')
     jl = JointsList(f'{BASE_DIR}/datatypes/logging/clean_3d.txt',
-                f'{BASE_DIR}/datatypes/logging/clean_3d_after_filter.txt')
+                f'{BASE_DIR}/datatypes/logging/set_joints_after_filter.txt')
     jLs = jl.__return__()
+
 
 # Get all body joints
 # Moving average filtering

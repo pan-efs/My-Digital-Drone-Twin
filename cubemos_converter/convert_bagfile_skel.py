@@ -75,7 +75,7 @@ def render_ids_3d(
                     point_3d = rs.rs2_deproject_pixel_to_point(
                         depth_intrinsic, depth_pixel, median_distance
                     )
-                    file = open('logging/get_3d_joints_from_video.txt', 'a')
+                    file = open('logging/write_3d_joints_from_video.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + str(point_3d) + '\n')
                     file.close()
                     point_3d = np.array([int(i*100) for i in point_3d])
@@ -89,11 +89,11 @@ def render_ids_3d(
                         thickness,
                     )
                 else:
-                    file = open('logging/get_3d_joints_from_video.txt', 'a')
+                    file = open('logging/write_3d_joints_from_video.txt', 'a')
                     file.writelines(str(joint_index) + ', ' + '[NaN, NaN, NaN]' + '\n')
                     file.close()
             else:
-                file = open('logging/get_3d_joints_from_video.txt', 'a')
+                file = open('logging/write_3d_joints_from_video.txt', 'a')
                 file.writelines(str(joint_index) + ', ' + '[NaN, NaN, NaN]' + '\n')
                 file.close()
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         videoout = cv2.VideoWriter('output-skeleton.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
         
         # Erase the content of .txt file
-        open('logging/get_3d_joints_from_video.txt', 'w').close()
+        open('logging/write_3d_joints_from_video.txt', 'w').close()
         
         while True:
             # Create a pipeline object. This object configures the streaming camera and owns it's handle
