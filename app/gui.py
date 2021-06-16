@@ -118,6 +118,9 @@ class WelcomeScreen(QMainWindow):
                 else:
                     raise RuntimeError
             
+            except NotImplementedError:
+                pass
+            
             except RuntimeError:
                 msg_lic.exec()
             
@@ -127,8 +130,6 @@ class WelcomeScreen(QMainWindow):
             except OSError:
                 msg_path.exec()
             
-            except NotImplementedError:
-                pass
                 
         elif user_reply == 'Text analysis':
             options = QFileDialog.Options()
@@ -506,7 +507,7 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.setLabel('left', 'meters', **styles)
             graphWidget.setLabel('bottom', 'frames', **styles)
             graphWidget.addLegend()
-            graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(kn_lines)))
+            graphWidget.setRange(xRange = (0, max(len(an_lines), len(an_lines))), yRange = (0, max(max(kn_lines), max(an_lines))))
             graphWidget.plot(kn_lines, name = 'Knees', pen = pen_kn)
             graphWidget.plot(an_lines, name = 'Ankles', pen = pen_an)
             
@@ -531,6 +532,7 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.setLabel('left', 'magnitude', **styles)
             graphWidget.setLabel('bottom', 'frames', **styles)
             graphWidget.addLegend()
+            graphWidget.setRange(xRange = (0, len(kn_lines_R)), yRange = (0, max(max(kn_lines_R), max(kn_lines_L))))
             graphWidget.plot(kn_lines_R, name = 'Knee right', pen = pen_kn_r)
             graphWidget.plot(kn_lines_L, name = 'Knee left', pen = pen_kn_l)
         
@@ -554,6 +556,7 @@ def plot_cases(base_dir:str, graphWidget, combobox):
             graphWidget.setLabel('left', 'magnitude', **styles)
             graphWidget.setLabel('bottom', 'frames', **styles)
             graphWidget.addLegend()
+            graphWidget.setRange(xRange = (0, len(an_lines_R)), yRange = (0, max(max(an_lines_R), max(an_lines_L))))
             graphWidget.plot(an_lines_R, name = 'Ankle right', pen = pen_an_r)
             graphWidget.plot(an_lines_L, name = 'Ankle left', pen = pen_an_l)
         
