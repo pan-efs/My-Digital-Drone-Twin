@@ -158,7 +158,7 @@ class WelcomeScreen(QMainWindow):
             except NotImplementedError:
                 pass
             
-        elif user_reply == 'Choose you next movement...':
+        elif user_reply == 'Choose your next movement...':
             pass
     
     def switch_to_hammer_screen(self, event:str):
@@ -239,10 +239,10 @@ class HammerThrowScreen(QMainWindow):
         self.radioButtonNine = QRadioButton('9')
         self.radioButtonTwelve = QRadioButton('12')
         self.radioButtonSix.setChecked(True)
-        self.radioButtonThree.toggled.connect(self.button_toggled)
-        self.radioButtonSix.toggled.connect(self.button_toggled)
-        self.radioButtonNine.toggled.connect(self.button_toggled)
-        self.radioButtonTwelve.toggled.connect(self.button_toggled)
+        self.radioButtonThree.pressed.connect(self.button_toggled)
+        self.radioButtonSix.pressed.connect(self.button_toggled)
+        self.radioButtonNine.pressed.connect(self.button_toggled)
+        self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
         radioLayout = QHBoxLayout()
         radioLayout.addWidget(self.radioButtonThree)
@@ -400,10 +400,10 @@ class TextFileScreen(QMainWindow):
         self.radioButtonNine = QRadioButton('9')
         self.radioButtonTwelve = QRadioButton('12')
         self.radioButtonSix.setChecked(True)
-        self.radioButtonThree.toggled.connect(self.button_toggled)
-        self.radioButtonSix.toggled.connect(self.button_toggled)
-        self.radioButtonNine.toggled.connect(self.button_toggled)
-        self.radioButtonTwelve.toggled.connect(self.button_toggled)
+        self.radioButtonThree.pressed.connect(self.button_toggled)
+        self.radioButtonSix.pressed.connect(self.button_toggled)
+        self.radioButtonNine.pressed.connect(self.button_toggled)
+        self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
         radioLayout = QHBoxLayout()
         radioLayout.addWidget(self.radioButtonThree)
@@ -469,15 +469,15 @@ def graph_length(base_dir:str, screen: str):
     return graph_len
 
 def radiobutton_toggled(base_dir: str, radiobutton1, radiobutton2, radiobutton3, combobox):
-    if radiobutton1.isChecked():
+    if radiobutton1.isDown():
         windows_size_changed(base_dir, 3)
         combobox.setCurrentText('None')
             
-    elif radiobutton2.isChecked():
+    elif radiobutton2.isDown():
         windows_size_changed(base_dir, 6)
         combobox.setCurrentText('None')
             
-    elif radiobutton3.isChecked():
+    elif radiobutton3.isDown():
         windows_size_changed(base_dir, 9)
         combobox.setCurrentText('None')
             
@@ -570,3 +570,4 @@ def windows_size_changed(base_dir: str, wsize: int):
         print('Windows size changed to', wsize)
     else:
         raise NotImplementedError
+    
