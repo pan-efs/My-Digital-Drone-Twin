@@ -36,11 +36,11 @@ class WelcomeScreen(QMainWindow):
         
         lbl_instructions = QLabel(centralWidget)
         lbl_instructions.setText(
-                        '<ol>1. Connect your Intel RealSense camera before start recording!</ol>' + 
-                        '<ol>2. Camera should be fixed.</ol>' +
-                        '<ol>3. Press start recording and choose your next action.</ol>' +
-                        '<ol>4. Press Esc button to stop recording.</ol>'
-                        )
+                        '<ol>1. Connect your camera if you intend to recording!</ol>' + 
+                        '<ol>2. Camera should be fixed (recommendation).</ol>' +
+                        '<ol>3. Press Esc button to stop recording.</ol>' +
+                        '<ol>4. Choose your desired action from following list.</ol>'
+                    )
         lbl_instructions.setAlignment(Qt.AlignCenter)
         boxlayout.addWidget(lbl_instructions)
         
