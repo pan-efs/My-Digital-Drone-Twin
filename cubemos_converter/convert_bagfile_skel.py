@@ -162,6 +162,6 @@ if __name__ == "__main__":
 
     except Exception as ex:
         print('Exception occured: "{}"'.format(ex))
-        # Should be included licence error as well, but cannot be checked now.
+        # Should be included licence error as well in order to separated, but cannot be checked now.
         if 'Exception occured: "{}"'.format(ex) == 'Exception occured: "Couldn\'t resolve requests"':
             raise ex

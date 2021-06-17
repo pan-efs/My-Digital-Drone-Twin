@@ -1,4 +1,4 @@
-import os, sys, argparse, pickle
+import os, argparse, pickle
 
 from joints import JointsDataframe, JointsNumpys, JointsList
 from utils.helpers import xyz_to_list, magnitude
@@ -6,12 +6,10 @@ from filters.moving_average import MovingAverage as MovingAverage
 from biomechanics.biomechanics3D import Slope
 
 # Starting point
-frozen = 'not'
-if getattr(sys, 'frozen', False):
-    frozen = 'even so'
-    BASE_DIR = sys._MEIPASS
-else:
+try:
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except:
+    raise OSError
 
 # Flag for analysis
 parser = argparse.ArgumentParser(description = 'Provide flag or file.')

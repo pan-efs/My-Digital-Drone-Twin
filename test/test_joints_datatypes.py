@@ -26,7 +26,7 @@ class TestJointsDatatype(TestCase):
             self.assertTrue(len(dfs[i].columns) == 3)
             
             if dfs[i].isnull().sum().sum() != 0:
-                self.assertEqual(dfs[i].isnull().sum().sum(), 3*len(dfs[i])) # it's empty
+                self.assertEqual(dfs[i].isnull().sum().sum(), 3*len(dfs[i])) # it's empty, no filtering
             else:
                 self.assertEqual(dfs[i].isnull().sum().sum(), 0) # filtering has been applied
     

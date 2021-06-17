@@ -10,12 +10,7 @@ from cubemos import util as cm
 from cubemos.skeletontracker import skeletontracker
 
 def _get_base_dir():
-    frozen = 'not'
-    if getattr(sys, 'frozen', False):
-        frozen = 'ever so'
-        BASE_DIR = sys._MEIPASS
-    else:
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     return BASE_DIR
 
