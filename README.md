@@ -4,8 +4,14 @@
 
 ![kth logo](https://www.findaphd.com/common/institutions/logos/Institutions/PID208.gif)
 
+# How does SkeletonTrackingApp work?
+Are you curious to find out how does `SkeletonTrackingApp` work? (*the below video should be replaced with better one)
+
+Watch a video [here.](https://drive.google.com/file/d/1t-GgERY4j2ppLnEbO_lELs6ntI9Gp5FQ/view?usp=sharing)
 # Prep
-The project is mainly built with `python=3.7` version on Windows 10 OS.
+- The project has been built with `python=3.7.9` version on `Windows 10 OS`.
+- You must have `python3` and the version to be `< 3.8` due to Cubemos restrictions.
+- You need an Intel RealSense camera `L515` if you intend to use the functionaly `Recording`. `D400` serie should work as well.
 
 # Miniconda installation
 To install `miniconda` you can follow [the instructions of official website](https://docs.conda.io/en/latest/miniconda.html).
@@ -33,4 +39,4 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 
 `python.pythonPath` may not be the same. Look your directory.
 # Run unittests
-Use the command `coverage run -m unittest discover && coverage report -m` to run the `unittests`.
+Use the command `python run_tests.py` to run the `unittests`.
