@@ -11,7 +11,7 @@ class DigitalFilter:
         """
         Design a digital filter.
         Find the coefficients of initial states.
-        Filter data along one-dimension with an IIR. Filter a data sequence, xn, using a digital filter.
+        Filter data along one-dimension with an FIR. Filter a data sequence, xn, using a digital filter.
         Apply a forward-backward filter, to obtain a filter with linear phase.
         
         :param xn: signal
