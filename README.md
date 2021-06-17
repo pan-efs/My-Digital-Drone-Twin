@@ -4,8 +4,8 @@
 
 ![kth logo](https://www.findaphd.com/common/institutions/logos/Institutions/PID208.gif)
 
-# How does SkeletonTrackingApp work?
-Are you curious to find out how does `SkeletonTrackingApp` work? (*the below video should be replaced with better one)
+# How SkeletonTrackingApp works?
+Are you curious to find out how `SkeletonTrackingApp` works? (*the below video should be replaced with better one)
 
 Watch a video [here.](https://drive.google.com/file/d/1t-GgERY4j2ppLnEbO_lELs6ntI9Gp5FQ/view?usp=sharing)
 # Prep

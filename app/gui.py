@@ -5,10 +5,10 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 from utils import (_get_base_dir, add_line, plot_cases, 
-                    graph_length, radiobutton_toggled, windows_size_changed)
+                    graph_length, radiobutton_toggled)
 
 import pyqtgraph as pg
-import os, subprocess, pickle
+import os, subprocess
 
 class WelcomeScreen(QMainWindow):
     def __init__(self):
@@ -88,7 +88,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to screen for analysis after recording')
-                    self.switch_to_hammer_screen('Yes').show()
+                    self.switch_to_video_screen('Yes').show()
                 else:
                     raise RuntimeError
                 
@@ -117,7 +117,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to converter screen')
-                    self.switch_to_hammer_screen('No').show()
+                    self.switch_to_video_screen('No').show()
                 else:
                     raise RuntimeError
             
@@ -167,8 +167,8 @@ class WelcomeScreen(QMainWindow):
         elif user_reply == 'Choose your next movement...':
             pass
     
-    def switch_to_hammer_screen(self, event:str):
-        self.hammer = HammerThrowScreen(event)
+    def switch_to_video_screen(self, event: str):
+        self.hammer = VideoAnalysisScreen(event)
         return self.hammer
     
     def switch_to_text_screen(self):
@@ -183,7 +183,7 @@ class WelcomeScreen(QMainWindow):
                             border-radius: 2px; border-width: 1px; \
                             border-color: rgba(0,0,0,255);')
 
-class HammerThrowScreen(QMainWindow):
+class VideoAnalysisScreen(QMainWindow):
     def __init__(self, welcome_screen_event):
         QMainWindow.__init__(self)
         

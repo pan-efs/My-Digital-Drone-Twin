@@ -1,7 +1,4 @@
-import os
-import platform
 import cv2
-import numpy as np
 
 keypoint_ids = [
     (1, 2),

@@ -3,8 +3,8 @@ import pyrealsense2 as rs
 import numpy as np
 import cv2, math, argparse
 
-from cubemos_converter import util as cm
-from cubemos_converter.skeletontracker import skeletontracker
+from skeleton_utils import utils as cm
+from skeleton_utils.skeletontracker import skeletontracker
 
 # Starting point
 parser = argparse.ArgumentParser(description = 'Provide directory of .bag file.')

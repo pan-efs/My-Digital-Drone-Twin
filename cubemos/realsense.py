@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 from collections import namedtuple
 from datetime import datetime
-import sys, os, cv2, math, shutil
+import os, cv2, math, shutil
 import numpy as np
 
 import pyrealsense2 as rs
 
-from cubemos import util as cm
-from cubemos.skeletontracker import skeletontracker
+from skeleton_utils import utils as cm
+from skeleton_utils.skeletontracker import skeletontracker
 
 def _get_base_dir():
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
