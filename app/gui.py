@@ -188,7 +188,7 @@ class HammerThrowScreen(QMainWindow):
         
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
-        self.setWindowTitle('Hammer Throw')
+        self.setWindowTitle('Video analysis')
         self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
         
         try:

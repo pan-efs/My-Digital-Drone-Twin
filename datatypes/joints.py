@@ -93,25 +93,28 @@ class JointsDataframe:
         del joint_16['joint_index']
         del joint_17['joint_index']
         
-        # Fill np.nan values
-        joint_0.interpolate()
-        joint_1.interpolate()
-        joint_2.interpolate()
-        joint_3.interpolate()
-        joint_4.interpolate()
-        joint_5.interpolate()
-        joint_6.interpolate()
-        joint_7.interpolate()
-        joint_8.interpolate()
-        joint_9.interpolate()
-        joint_10.interpolate()
-        joint_11.interpolate()
-        joint_12.interpolate()
-        joint_13.interpolate()
-        joint_14.interpolate()
-        joint_15.interpolate()
-        joint_16.interpolate()
-        joint_17.interpolate()
+        # Fill np.nan values.
+        # Initially, fill each dataframe with 'pad'/'forward' method.
+        # If still there are nan values, fill them with the 'backfill' method.
+        # A dataframe will remain empty if it was empty from scratch.
+        joint_0 = joint_0.interpolate().fillna(method = 'backfill')
+        joint_1 = joint_1.interpolate().fillna(method = 'backfill')
+        joint_2 = joint_2.interpolate().fillna(method = 'backfill')
+        joint_3 = joint_3.interpolate().fillna(method = 'backfill')
+        joint_4 = joint_4.interpolate().fillna(method = 'backfill')
+        joint_5 = joint_5.interpolate().fillna(method = 'backfill')
+        joint_6 = joint_6.interpolate().fillna(method = 'backfill')
+        joint_7 = joint_7.interpolate().fillna(method = 'backfill')
+        joint_8 = joint_8.interpolate().fillna(method = 'backfill')
+        joint_9 = joint_9.interpolate().fillna(method = 'backfill')
+        joint_10 = joint_10.interpolate().fillna(method = 'backfill')
+        joint_11 = joint_11.interpolate().fillna(method = 'backfill')
+        joint_12 = joint_12.interpolate().fillna(method = 'backfill')
+        joint_13 = joint_13.interpolate().fillna(method = 'backfill')
+        joint_14 = joint_14.interpolate().fillna(method = 'backfill')
+        joint_15 = joint_15.interpolate().fillna(method = 'backfill')
+        joint_16 = joint_16.interpolate().fillna(method = 'backfill')
+        joint_17 = joint_17.interpolate().fillna(method = 'backfill')
         
         # Reset indexes
         joint_0 = joint_0.reset_index(drop=True)

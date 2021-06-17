@@ -24,6 +24,11 @@ class TestJointsDatatype(TestCase):
         for i in range(0, 17):
             self.assertTrue(type(dfs[i]) is DataFrame)
             self.assertTrue(len(dfs[i].columns) == 3)
+            
+            if dfs[i].isnull().sum().sum() != 0:
+                self.assertEqual(dfs[i].isnull().sum().sum(), 3*len(dfs[i])) # it's empty
+            else:
+                self.assertEqual(dfs[i].isnull().sum().sum(), 0) # filtering has been applied
     
     def test_numpys(self):
         ls = JointsNumpys(input_path, 
