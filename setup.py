@@ -15,6 +15,7 @@ setup(
         "cubemos",
         "exceptions",
         "datatypes",
+        "datatypes.utils",
         "app",
         "skeleton_utils",    
     ],

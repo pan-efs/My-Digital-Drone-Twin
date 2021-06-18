@@ -5,7 +5,8 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 from utils import (_get_base_dir, add_line, plot_cases, 
-                    graph_length, radiobutton_toggled)
+                    graph_length, radiobutton_toggled, plot_all_joints,
+                    hide_joints_from_plot_cases)
 
 import pyqtgraph as pg
 import os, subprocess
@@ -153,7 +154,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Text Analysis')
-                    self.switch_to_text_screen().show()
+                    self.switch_to_text_screen(fileName).show()
             
             except FileNotFoundError:
                 msg_format.exec()
@@ -169,10 +170,12 @@ class WelcomeScreen(QMainWindow):
     
     def switch_to_video_screen(self, event: str):
         self.hammer = VideoAnalysisScreen(event)
+        
         return self.hammer
     
-    def switch_to_text_screen(self):
-        self.text_screen = TextFileScreen()
+    def switch_to_text_screen(self, file_name: str):
+        self.text_screen = TextFileScreen(file_name)
+        
         return self.text_screen
     
     def main_style(self):
@@ -208,6 +211,34 @@ class VideoAnalysisScreen(QMainWindow):
         
         centralwidget = QWidget(self)
         self.setCentralWidget(centralwidget)
+        
+        self.graphWidget_all = pg.PlotWidget()
+        self.graphWidget_all.setBackground('w')
+        self.graphWidget_all.showGrid(x = True, y = True)
+        self.graphWidget_all.setMaximumHeight(450)
+        self.legend_all = plot_all_joints(self.BASE_DIR, self.graphWidget_all, self.welcome_screen_event) # at 0 is the legend
+        
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setHorizontalSpacing(1)
+        self.checkboxes = []
+        
+        names = ['nose', 'sternum', 'shoulder_r', 'elbow_r',
+                'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
+                'hip_r', 'knee_r', 'ankle_r', 'hip_l',
+                'knee_l', 'ankle_l', '', '']
+        
+        positions = [(i, j) for i in range(4) for j in range(4)]
+
+        for position, name in zip(positions, names):
+            if name == '':
+                continue
+            
+            check_box = QCheckBox(name)
+            self.checkboxes.append(check_box)
+            self.gridLayout.addWidget(check_box, *position)
+        
+        for i in range(0, len(self.checkboxes)):
+            self.checkboxes[i].stateChanged.connect(self.hide_joints_from_plot)
         
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setBackground('w')
@@ -251,10 +282,15 @@ class VideoAnalysisScreen(QMainWindow):
         radioLayout.addWidget(self.radioButtonNine)
         radioLayout.addWidget(self.radioButtonTwelve)
         
+        filterLayout = QVBoxLayout()
+        filterLayout.addWidget(self.combobox)
+        filterLayout.addLayout(radioLayout)
+        
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
-        visLayout.addWidget(self.combobox)
-        visLayout.addLayout(radioLayout)
+        visLayout.addLayout(filterLayout)
+        visLayout.addWidget(self.graphWidget_all)
+        visLayout.addLayout(self.gridLayout)
         
         qvboxlayout = QVBoxLayout()
         qvboxlayout.addWidget(video)
@@ -371,15 +407,20 @@ class VideoAnalysisScreen(QMainWindow):
                         )
         
         self.frames = self.initial_frames - frames_pos
+    
+    def hide_joints_from_plot(self):
+        hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
 
 class TextFileScreen(QMainWindow):
-    def __init__(self):
+    def __init__(self, file_name):
         QMainWindow.__init__(self)
             
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Text Analysis')
         self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
+        
+        self.fileName = file_name
         
         try:
             self.BASE_DIR = _get_base_dir()
@@ -388,6 +429,33 @@ class TextFileScreen(QMainWindow):
         
         centralwidget = QWidget(self)
         self.setCentralWidget(centralwidget)
+        
+        self.graphWidget_all = pg.PlotWidget()
+        self.graphWidget_all.setBackground('w')
+        self.graphWidget_all.showGrid(x = True, y = True)
+        self.legend_all = plot_all_joints(self.BASE_DIR, self.graphWidget_all, self.fileName) # at 0 is the legend
+        
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setHorizontalSpacing(1)
+        self.checkboxes = []
+        
+        names = ['nose', 'sternum', 'shoulder_r', 'elbow_r',
+                'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
+                'hip_r', 'knee_r', 'ankle_r', 'hip_l',
+                'knee_l', 'ankle_l', '', '']
+        
+        positions = [(i, j) for i in range(4) for j in range(4)]
+
+        for position, name in zip(positions, names):
+            if name == '':
+                continue
+            
+            check_box = QCheckBox(name)
+            self.checkboxes.append(check_box)
+            self.gridLayout.addWidget(check_box, *position)
+        
+        for i in range(0, len(self.checkboxes)):
+            self.checkboxes[i].stateChanged.connect(self.hide_joints_from_plot)
         
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setBackground('w')
@@ -404,6 +472,7 @@ class TextFileScreen(QMainWindow):
         self.radioButtonSix = QRadioButton('6')
         self.radioButtonNine = QRadioButton('9')
         self.radioButtonTwelve = QRadioButton('12')
+        
         self.radioButtonSix.setChecked(True)
         self.radioButtonThree.pressed.connect(self.button_toggled)
         self.radioButtonSix.pressed.connect(self.button_toggled)
@@ -416,10 +485,15 @@ class TextFileScreen(QMainWindow):
         radioLayout.addWidget(self.radioButtonNine)
         radioLayout.addWidget(self.radioButtonTwelve)
         
+        filterLayout = QVBoxLayout()
+        filterLayout.addWidget(self.combobox)
+        filterLayout.addLayout(radioLayout)
+        
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
-        visLayout.addWidget(self.combobox)
-        visLayout.addLayout(radioLayout)
+        visLayout.addLayout(filterLayout)
+        visLayout.addWidget(self.graphWidget_all)
+        visLayout.addLayout(self.gridLayout)
         
         centralwidget.setLayout(visLayout)
     
@@ -434,3 +508,6 @@ class TextFileScreen(QMainWindow):
                             self.radioButtonNine, 
                             self.combobox,
                         )
+    
+    def hide_joints_from_plot(self):
+        hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
