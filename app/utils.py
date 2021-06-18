@@ -1,4 +1,4 @@
-import os, pickle, subprocess
+import os, pickle, subprocess, shutil
 import pyqtgraph as pg
 
 from datatypes.joints import JointsList
@@ -168,7 +168,11 @@ def magnitude_all_joints(base_dir: str, event: str):
         jl = JointsList(event,
                     f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
         jLs = jl.__return__()
-        
+    
+    source = f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt'
+    dest = os.path.expanduser("~/Desktop")
+    shutil.copy2(source, dest)
+    
     magnitude_jLs = []
     
     for i in range(0, 54, 3):
