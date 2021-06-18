@@ -150,28 +150,31 @@ def plot_cases(base_dir:str, graphWidget, combobox):
         elif txt == 'None':
             graphWidget.clear()
 
+def copy_text_file(base_dir: str):
+    source = f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt'
+    dest = os.path.expanduser("~/Desktop")
+    shutil.copy2(source, dest)
+
 def magnitude_all_joints(base_dir: str, event: str):
     if event == 'Yes':
         print('all joints cubemos')
         jl = JointsList(f'{base_dir}/cubemos/logging/get_3d_joints.txt',
                     f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
         jLs = jl.__return__()
+        copy_text_file(base_dir)
         
     elif event == 'No':
         print('all joints cubemos_converter')
         jl = JointsList(f'{base_dir}/cubemos_converter/logging/write_3d_joints_from_video.txt',
                     f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
         jLs = jl.__return__()
+        copy_text_file(base_dir)
         
     elif event.endswith('.txt'):
         print('all joints text')
         jl = JointsList(event,
                     f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
         jLs = jl.__return__()
-    
-    source = f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt'
-    dest = os.path.expanduser("~/Desktop")
-    shutil.copy2(source, dest)
     
     magnitude_jLs = []
     
