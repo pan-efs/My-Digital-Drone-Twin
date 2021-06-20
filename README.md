@@ -38,5 +38,9 @@ Add `.vscode` folder and create a `settings.json` file. Import the below code bl
 ```
 
 `python.pythonPath` may not be the same. Look your directory.
+# Run the app via command
+Use the below command to run the app. `-W ignore` flag ignores useless warnings which are popped up. 
+`cd app`
+`python -W ignore run.py`
 # Run unittests
 Use the command `python run_tests.py` to run the `unittests`.

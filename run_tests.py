@@ -6,4 +6,5 @@ retcode = subprocess.call('coverage run -m unittest discover && coverage report 
 if retcode == 0:
         print('Tests has been run successfully!')
 else:
-        raise RuntimeError
+        print('Tests has been run UN-successfully!')
+        
