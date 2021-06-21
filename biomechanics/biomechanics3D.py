@@ -1,7 +1,8 @@
-import pandas as pd
 import numpy as np
-from scipy.signal import *
+import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.signal import argrelextrema
+
 from exceptions.movement_analysis import ShapeDataFrame3DError, ColNamesDataFrame3DError, FpsError
 
 def __errors__(data: pd.DataFrame):
@@ -175,12 +176,15 @@ class Magnitude:
         """
         
         for i in range(0, len(self.data)):
-            mag = self.data[i][0]*self.data[i][0] + self.data[i][1]*self.data[i][1] + self.data[i][2]*self.data[i][2]
+            mag = (self.data[i][0]*self.data[i][0] 
+                + self.data[i][1]*self.data[i][1] 
+                + self.data[i][2]*self.data[i][2])
+            
             self.mag_ls.append(mag)
     
         return self.mag_ls
     
-    def find_visualize_local_max_min(self, name: str = 'Title', show: bool = False):
+    def find_visualize_local_max_min(self, name: str='Title', show: bool=False):
         """
         Visualizes local maximums and minimums of a line plot.
         Useful in order to estimate the cadence of repetitive movements, such as cycling.
@@ -191,10 +195,8 @@ class Magnitude:
         
         """
         df = pd.DataFrame(self.mag_ls, columns = ['fil_ls'])
-        df['min'] = df.iloc[argrelextrema(df.fil_ls.values, np.less_equal,
-                    order=3)[0]]['fil_ls']
-        df['max'] = df.iloc[argrelextrema(df.fil_ls.values, np.greater_equal,
-                    order=3)[0]]['fil_ls']
+        df['min'] = df.iloc[argrelextrema(df.fil_ls.values, np.less_equal, order=3)[0]]['fil_ls']
+        df['max'] = df.iloc[argrelextrema(df.fil_ls.values, np.greater_equal, order=3)[0]]['fil_ls']
         
         self.maximum = len(df['max']) - df['max'].isnull().sum()
         self.minimum = len(df['min']) - df['min'].isnull().sum()
@@ -219,7 +221,7 @@ class Cadence:
         self.magnitude = magnitude_data
         self.length_data_per_min = 0 # according to fps
         
-    def calculate_cadence(self, maximum, fps: int = 30):
+    def calculate_cadence(self, maximum, fps: int=30):
         """
         Calculate cadence.
         
@@ -252,7 +254,7 @@ class Cadence:
         
         duration = int(len(self.magnitude)/fps)
         
-        cadence = maximum * (60 / (duration))
+        cadence = maximum * (60/(duration))
         
         return int(np.ceil(cadence)), duration
 
@@ -271,8 +273,8 @@ class Slope:
         :return: The slopes of xy-, xz-, yz- and distance (length).
         :rtype: float
         """
-        length = ((sp[0] - fp[0])*(sp[0] - fp[0]) + 
-                (sp[1] - fp[1])*(sp[1] - fp[1]) + 
-                (sp[2] - fp[2])*(sp[2] - fp[2])) **0.5
+        length = ((sp[0] - fp[0])*(sp[0] - fp[0]) 
+                + (sp[1] - fp[1])*(sp[1] - fp[1]) 
+                + (sp[2] - fp[2])*(sp[2] - fp[2])) ** 0.5
         
         return length

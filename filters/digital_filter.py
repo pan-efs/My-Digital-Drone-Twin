@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.signal import *
+import matplotlib.pyplot as plt
+from scipy.signal import butter, lfilter, lfilter_zi, filtfilt, argrelextrema
 
 class DigitalFilter:
     def __init__(self):
@@ -26,8 +26,8 @@ class DigitalFilter:
         
         b, a = butter(n, 0.05)
         zi = lfilter_zi(b, a)
-        z, _ = lfilter(b, a, xn, zi = zi * xn[0])
-        z2, _ = lfilter(b, a, z, zi = zi * z[0])
+        z, _ = lfilter(b, a, xn, zi=zi*xn[0])
+        z2, _ = lfilter(b, a, z, zi=zi*z[0])
         y = filtfilt(b, a, xn)
         
         return z, z2, y
@@ -37,10 +37,10 @@ class DigitalFilter:
         Visualize the returned parameters of digital_filter function.
         """
         plt.figure
-        plt.plot(signal, 'b', alpha = 0.75)
+        plt.plot(signal, 'b', alpha=0.75)
         plt.plot(z, 'r--', z2, 'r', y, 'k')
-        plt.legend(('noisy signal', 'lfilter, once', 'lfilter, twice',
-            'filtfilt'), loc = 'best')
+        plt.legend(('noisy signal', 'lfilter, once', 'lfilter, twice', 'filtfilt'), 
+                    loc = 'best')
         plt.title(title)
         plt.xlabel('Timestamp')
         plt.ylabel('coords')
@@ -52,10 +52,8 @@ class DigitalFilter:
         Visualize filtfilt filtered signal, that one with linear phase.
         """
         df = pd.DataFrame(filtfilt, columns = ['filtfilt'])
-        df['min'] = df.iloc[argrelextrema(df.filtfilt.values, np.less_equal,
-                    order=3)[0]]['filtfilt']
-        df['max'] = df.iloc[argrelextrema(df.filtfilt.values, np.greater_equal,
-                    order=3)[0]]['filtfilt']
+        df['min'] = df.iloc[argrelextrema(df.filtfilt.values, np.less_equal, order=3)[0]]['filtfilt']
+        df['max'] = df.iloc[argrelextrema(df.filtfilt.values, np.greater_equal, order=3)[0]]['filtfilt']
 
         plt.scatter(df.index, df['min'], c='r')
         plt.scatter(df.index, df['max'], c='g')

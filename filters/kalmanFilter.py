@@ -1,8 +1,8 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 from filterpy.kalman import KalmanFilter
 from filterpy.common import Q_discrete_white_noise
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 class KalmanFilters:
     def __init__(self):
@@ -18,7 +18,7 @@ class KalmanFilters:
         :return: M: smoothed means, mu: means
         :rtype: np.ndarray , array
         """
-        fk = KalmanFilter(dim_x = 2, dim_z = 1)
+        fk = KalmanFilter(dim_x=2, dim_z=1)
         fk.x = np.array([0., 1.])      # state (x and dx)
         fk.F = np.array([[1., 1.],
                         [0., 1.]])     # state transition matrix
@@ -45,28 +45,29 @@ class KalmanFilters:
         :param title: desired title
         :type title: str
         """
-        plt.plot(data, c = 'r', label = 'Measurements')
-        plt.plot(M[:, 0], c = 'b', label = 'RTS')
-        plt.plot(mu[:, 0], c = 'g', ls = '--', label = 'KF Output')
+        plt.plot(data, c='r', label='Measurements')
+        plt.plot(M[:, 0], c='b', label='RTS')
+        plt.plot(mu[:, 0], c='g', ls='--', label='KF Output')
         plt.title(title)
         plt.xlabel('Frames')
         plt.ylabel('Degrees')
-        plt.legend(loc = 3)
+        plt.legend(loc=3)
         plt.show()
     
-    def double_visualization(self, r_kf_data: np.ndarray, r_rts_data: np.ndarray,
-                            l_kf_data: np.ndarray, l_rts_data: np.ndarray,
-                            r_title: str, l_title: str):
+    def double_visualization(
+                    self, r_kf_data: np.ndarray, r_rts_data: np.ndarray,
+                    l_kf_data: np.ndarray, l_rts_data: np.ndarray,
+                    r_title: str, l_title: str):
         fig, (ax1, ax2) = plt.subplots(1,2)
-        ax1.plot(r_kf_data, c = 'g', ls = '--', label = 'KF Output')
-        ax1.plot(r_rts_data, c = 'b', label = 'RTS')
+        ax1.plot(r_kf_data, c='g', ls='--', label='KF Output')
+        ax1.plot(r_rts_data, c='b', label='RTS')
         ax1.set_title(r_title)
-        ax1.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+        ax1.set(xlabel='Frames', ylabel='Knee angle (degrees)')
         
-        ax2.plot(l_kf_data, c = 'g', ls = '--', label = 'KF Output')
-        ax2.plot(l_rts_data, c = 'b', label = 'RTS')
+        ax2.plot(l_kf_data, c='g', ls='--', label='KF Output')
+        ax2.plot(l_rts_data, c='b', label='RTS')
         ax2.set_title(l_title)
-        ax2.set(xlabel = 'Frames', ylabel = 'Knee angle (degrees)')
+        ax2.set(xlabel='Frames', ylabel='Knee angle (degrees)')
         
-        plt.legend(loc = 4)
+        plt.legend(loc=4)
         plt.show()

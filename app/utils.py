@@ -1,4 +1,8 @@
-import os, pickle, subprocess, shutil
+import os
+
+import pickle
+import shutil
+import subprocess
 import pyqtgraph as pg
 
 from datatypes.joints import JointsList
@@ -11,19 +15,17 @@ def _get_base_dir():
 
 def add_line(graphWidget, position):
     new_line = graphWidget.addLine(
-                                x = position, 
-                                pen = pg.mkPen(color= 'g', width = 2), 
-                                angle = 90, 
-                                movable = False
-                            )
+                        x = position, 
+                        pen = pg.mkPen(color= 'g', width = 2), 
+                        angle = 90, 
+                        movable = False)
     return new_line
 
 def add_plot(graphWidget, data, joint_number):
     new_plot = graphWidget.plot(
-                                data,
-                                name = f'joint_{joint_number}',
-                                pen = pg.mkPen(width = 2),
-    )
+                        data,
+                        name = f'joint_{joint_number}',
+                        pen = pg.mkPen(width = 2))
     
     return new_plot
 
@@ -71,7 +73,7 @@ def radiobutton_toggled(base_dir: str, radiobutton1, radiobutton2, radiobutton3,
         combobox.setCurrentText('None')
         return 12
 
-def plot_cases(base_dir:str, graphWidget, combobox):
+def plot_cases(base_dir: str, graphWidget, combobox):
         txt = combobox.currentText()
         
         if txt == 'Distances':

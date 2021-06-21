@@ -1,15 +1,18 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+import os
+
+import subprocess
+import pyqtgraph as pg
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
+                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle)
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 
 from utils import (_get_base_dir, add_line, plot_cases, 
                     graph_length, radiobutton_toggled, plot_all_joints,
                     hide_joints_from_plot_cases)
 
-import pyqtgraph as pg
-import os, subprocess
+
 
 class WelcomeScreen(QMainWindow):
     def __init__(self):
@@ -37,11 +40,10 @@ class WelcomeScreen(QMainWindow):
         
         lbl_instructions = QLabel(centralWidget)
         lbl_instructions.setText(
-                        '<ol>1. Connect your camera if you intend to recording!</ol>' + 
-                        '<ol>2. Camera should be fixed (recommendation).</ol>' +
-                        '<ol>3. Press Esc button to stop recording.</ol>' +
-                        '<ol>4. Choose your desired action from following list.</ol>'
-                    )
+                    '<ol>1. Connect your camera if you intend to recording!</ol>' 
+                    + '<ol>2. Camera should be fixed (recommendation).</ol>'
+                    + '<ol>3. Press Esc button to stop recording.</ol>'
+                    + '<ol>4. Choose your desired action from following list.</ol>')
         lbl_instructions.setAlignment(Qt.AlignCenter)
         boxlayout.addWidget(lbl_instructions)
         
@@ -85,7 +87,7 @@ class WelcomeScreen(QMainWindow):
         if user_reply == 'Recording':
             try:
                 os.chdir(f'{self.BASE_DIR}/cubemos')
-                retcode = subprocess.call('python realsense.py', shell = True)
+                retcode = subprocess.call('python realsense.py', shell=True)
                 
                 if retcode == 0:
                     print('Go to screen for analysis after recording')
@@ -101,9 +103,10 @@ class WelcomeScreen(QMainWindow):
                 
         elif user_reply == 'Convert video':
             options = QFileDialog.Options()
-            fileName, _ = QFileDialog.getOpenFileName(self,
-                                                    "QFileDialog.getOpenFileName()","","All Files (*);;Bag Files (*.bag)", 
-                                                    options = options)
+            fileName, _ = QFileDialog.getOpenFileName(
+                                    self,
+                                    "QFileDialog.getOpenFileName()","","All Files (*);;Bag Files (*.bag)", 
+                                    options=options)
             try:
                 if fileName.endswith('.bag'):
                     print(fileName)
@@ -114,7 +117,7 @@ class WelcomeScreen(QMainWindow):
                     raise FileNotFoundError
                 
                 os.chdir(f'{self.BASE_DIR}/cubemos_converter')
-                retcode = subprocess.call(f'python convert_bagfile_skel.py --file {fileName}', shell = True)
+                retcode = subprocess.call(f'python convert_bagfile_skel.py --file {fileName}', shell=True)
                 
                 if retcode == 0:
                     print('Go to converter screen')
@@ -137,9 +140,10 @@ class WelcomeScreen(QMainWindow):
                 
         elif user_reply == 'Text analysis':
             options = QFileDialog.Options()
-            fileName, _ = QFileDialog.getOpenFileName(self,
-                                                    "QFileDialog.getOpenFileName()","","All Files (*);;Text Files (*.txt)", 
-                                                    options = options)
+            fileName, _ = QFileDialog.getOpenFileName(
+                                    self,
+                                    "QFileDialog.getOpenFileName()","","All Files (*);;Text Files (*.txt)", 
+                                    options=options)
             try:
                 if fileName.endswith('.txt'):
                     print(fileName)
@@ -150,7 +154,7 @@ class WelcomeScreen(QMainWindow):
                     raise FileNotFoundError
                 
                 os.chdir(f'{self.BASE_DIR}/datatypes')
-                retcode = subprocess.call(f'python processing.py --file {fileName}', shell = True)
+                retcode = subprocess.call(f'python processing.py --file {fileName}', shell=True)
                 
                 if retcode == 0:
                     print('Text Analysis')
@@ -222,10 +226,12 @@ class VideoAnalysisScreen(QMainWindow):
         self.gridLayout.setHorizontalSpacing(1)
         self.checkboxes = []
         
-        names = ['nose', 'sternum', 'shoulder_r', 'elbow_r',
-                'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
-                'hip_r', 'knee_r', 'ankle_r', 'hip_l',
-                'knee_l', 'ankle_l', '', '']
+        names = [
+            'nose', 'sternum', 'shoulder_r', 'elbow_r',
+            'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
+            'hip_r', 'knee_r', 'ankle_r', 'hip_l',
+            'knee_l', 'ankle_l', '', ''
+            ]
         
         positions = [(i, j) for i in range(4) for j in range(4)]
 
@@ -242,7 +248,7 @@ class VideoAnalysisScreen(QMainWindow):
         
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setBackground('w')
-        self.graphWidget.showGrid(x = True, y = True)
+        self.graphWidget.showGrid(x=True, y=True)
         self.graphWidget.setMaximumHeight(450)
         self.line = 0
         
@@ -360,7 +366,10 @@ class VideoAnalysisScreen(QMainWindow):
         frame_position = self.get_frame_position(position)
         
         if self.line == 0:
-            self.line = self.graphWidget.addLine(x = 0, pen = pg.mkPen('g', width = 2), movable = False)
+            self.line = self.graphWidget.addLine(
+                            x=0, 
+                            pen=pg.mkPen('g', width=2), 
+                            movable=False)
             
         else:
             self.graphWidget.removeItem(self.line) 
@@ -391,7 +400,7 @@ class VideoAnalysisScreen(QMainWindow):
                 self.index_analysis = 1
             
             os.chdir(f'{self.BASE_DIR}/datatypes')
-            subprocess.call(f'python processing.py --flag {flag}', shell = True)
+            subprocess.call(f'python processing.py --flag {flag}', shell=True)
         else:
             pass
         
@@ -403,8 +412,7 @@ class VideoAnalysisScreen(QMainWindow):
                             self.radioButtonThree, 
                             self.radioButtonSix, 
                             self.radioButtonNine, 
-                            self.combobox,
-                        )
+                            self.combobox)
         
         self.frames = self.initial_frames - frames_pos
     
@@ -432,17 +440,19 @@ class TextFileScreen(QMainWindow):
         
         self.graphWidget_all = pg.PlotWidget()
         self.graphWidget_all.setBackground('w')
-        self.graphWidget_all.showGrid(x = True, y = True)
+        self.graphWidget_all.showGrid(x=True, y=True)
         self.legend_all = plot_all_joints(self.BASE_DIR, self.graphWidget_all, self.fileName) # at 0 is the legend
         
         self.gridLayout = QGridLayout()
         self.gridLayout.setHorizontalSpacing(1)
         self.checkboxes = []
         
-        names = ['nose', 'sternum', 'shoulder_r', 'elbow_r',
-                'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
-                'hip_r', 'knee_r', 'ankle_r', 'hip_l',
-                'knee_l', 'ankle_l', '', '']
+        names = [
+            'nose', 'sternum', 'shoulder_r', 'elbow_r',
+            'wrist_r', 'shoulder_l', 'elbow_l', 'wrist_l',
+            'hip_r', 'knee_r', 'ankle_r', 'hip_l',
+            'knee_l', 'ankle_l', '', ''
+            ]
         
         positions = [(i, j) for i in range(4) for j in range(4)]
 
@@ -459,7 +469,7 @@ class TextFileScreen(QMainWindow):
         
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setBackground('w')
-        self.graphWidget.showGrid(x = True, y = True)
+        self.graphWidget.showGrid(x=True, y=True)
         
         self.combobox = QComboBox()
         self.combobox.addItem('None')
@@ -502,12 +512,11 @@ class TextFileScreen(QMainWindow):
     
     def button_toggled(self):
         radiobutton_toggled(
-                            self.BASE_DIR, 
-                            self.radioButtonThree, 
-                            self.radioButtonSix, 
-                            self.radioButtonNine, 
-                            self.combobox,
-                        )
+                    self.BASE_DIR, 
+                    self.radioButtonThree, 
+                    self.radioButtonSix, 
+                    self.radioButtonNine, 
+                    self.combobox)
     
     def hide_joints_from_plot(self):
         hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)

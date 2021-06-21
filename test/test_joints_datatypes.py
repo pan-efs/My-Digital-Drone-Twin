@@ -1,6 +1,6 @@
 import os
-from unittest import TestCase
 from pandas import DataFrame
+from unittest import TestCase
 
 from datatypes.joints import JointsDataframe, JointsNumpys, JointsList
 
@@ -16,8 +16,9 @@ except Exception as ex:
 class TestJointsDatatype(TestCase):
     
     def test_dataframes(self):
-        dfs = JointsDataframe(input_path, 
-                                    output_path).__return__()
+        dfs = JointsDataframe(
+                        input_path, 
+                        output_path).__return__()
         
         self.assertEqual(len(dfs), 18)
         
@@ -31,8 +32,9 @@ class TestJointsDatatype(TestCase):
                 self.assertEqual(dfs[i].isnull().sum().sum(), 0) # filtering has been applied
     
     def test_numpys(self):
-        ls = JointsNumpys(input_path, 
-                                output_path).__return__()
+        ls = JointsNumpys(
+                    input_path, 
+                    output_path).__return__()
         
         self.assertEqual(len(ls), 54)
         self.assertTrue(type(ls) is list)
@@ -41,8 +43,9 @@ class TestJointsDatatype(TestCase):
             self.assertEqual(len(ls[i]), len(ls[i+1]), len(ls[i+2]))
     
     def test_list(self):
-        ls = JointsList(input_path, 
-                                output_path).__return__()
+        ls = JointsList(
+                    input_path, 
+                    output_path).__return__()
         
         self.assertEqual(len(ls), 54)
         

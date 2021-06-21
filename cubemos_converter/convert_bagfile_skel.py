@@ -1,28 +1,32 @@
-from collections import namedtuple 
-import pyrealsense2 as rs
+import math
+import argparse
 import numpy as np
-import cv2, math, argparse
+from collections import namedtuple
+
+import cv2
+import pyrealsense2 as rs
 
 from skeleton_utils import utils as cm
 from skeleton_utils.skeletontracker import skeletontracker
 
 # Starting point
-parser = argparse.ArgumentParser(description = 'Provide directory of .bag file.')
-parser.add_argument('--file', type = str,
-                    help = 'Provide the directory of a .bag file.',
-                    required = True)
+parser = argparse.ArgumentParser(description='Provide directory of .bag file.')
+parser.add_argument(
+            '--file', 
+            type=str,
+            help='Provide the directory of a .bag file.',
+            required=True)
 args = parser.parse_args()
 
 if not args.file:
     raise NotImplementedError
 
-def render_ids_3d(
-    render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
-):
+def render_ids_3d(render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence):
     thickness = 1
     text_color = (255, 255, 255)
     rows, cols, channel = render_image.shape[:3]
     distance_kernel_size = 5
+    
     # calculate 3D keypoints and display them
     for skeleton_index in range(len(skeletons_2d)): 
         skeleton_2D = skeletons_2d[skeleton_index]
@@ -40,6 +44,7 @@ def render_ids_3d(
                     2,
                 )
                 did_once = True
+                
             # check if the joint was detected and has valid coordinate
             if skeleton_2D.confidences[joint_index] > joint_confidence:
                 distance_in_kernel = []

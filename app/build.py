@@ -1,8 +1,8 @@
-from gui import WelcomeScreen
-
-from PyQt5.QtWidgets import *
 import sys
 
+from PyQt5.QtWidgets import QApplication
+
+from gui import WelcomeScreen
 
 class SkeletonTrackingApp:
     def __init__(self):

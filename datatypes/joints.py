@@ -1,5 +1,5 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from exceptions.movement_analysis import LengthArraysError
 
@@ -136,7 +136,8 @@ class JointsDataframe:
         joint_16 = joint_16.reset_index(drop=True)
         joint_17 = joint_17.reset_index(drop=True)
         
-        return joint_0, joint_1, joint_2, joint_3, joint_4, joint_5, joint_6, joint_7, joint_8, joint_9, joint_10, joint_11, joint_12, joint_13, joint_14, joint_15, joint_16, joint_17
+        return (joint_0, joint_1, joint_2, joint_3, joint_4, joint_5, joint_6, joint_7, joint_8, 
+                joint_9, joint_10, joint_11, joint_12, joint_13, joint_14, joint_15, joint_16, joint_17)
     
     def remove_brackets(self):
         """
@@ -157,11 +158,13 @@ class JointsNumpys:
         self.text_path = text_path
         self.out_path = out_path
         
-        [self._joint0, self._joint1, self._joint2, self._joint3, 
+        [
+        self._joint0, self._joint1, self._joint2, self._joint3, 
         self._joint4, self._joint5, self._joint6, self._joint7,
         self._joint8, self._joint9, self._joint10, self._joint11,
         self._joint12, self._joint13, self._joint14, self._joint15,
-        self._joint16, self._joint17]                                = JointsDataframe(self.text_path, self.out_path).__return__()
+        self._joint16, self._joint17
+        ]                                = JointsDataframe(self.text_path, self.out_path).__return__()
     
     def __str__(self):
         return f'The input text path is: {self.text_path} AND the output path is: {self.out_path}'
@@ -173,11 +176,13 @@ class JointsNumpys:
         return self.__return_nps__()
     
     def __return_dfs__(self):
-        ls = [self._joint0, self._joint1, self._joint2, self._joint3, 
-                self._joint4, self._joint5, self._joint6, self._joint7,
-                self._joint8, self._joint9, self._joint10, self._joint11,
-                self._joint12, self._joint13, self._joint14, self._joint15,
-                self._joint16, self._joint17]
+        ls = [
+            self._joint0, self._joint1, self._joint2, self._joint3, 
+            self._joint4, self._joint5, self._joint6, self._joint7,
+            self._joint8, self._joint9, self._joint10, self._joint11,
+            self._joint12, self._joint13, self._joint14, self._joint15,
+            self._joint16, self._joint17
+            ]
         
         return ls
     
@@ -220,7 +225,8 @@ class JointsList:
         self.text_path = text_path
         self.out_path = out_path
         
-        [self.arr_0x, self.arr_0y, self.arr_0z,
+        [
+        self.arr_0x, self.arr_0y, self.arr_0z,
         self.arr_1x, self.arr_1y, self.arr_1z,
         self.arr_2x, self.arr_2y, self.arr_2z,
         self.arr_3x, self.arr_3y, self.arr_3z,
@@ -237,7 +243,8 @@ class JointsList:
         self.arr_14x, self.arr_14y, self.arr_14z,
         self.arr_15x, self.arr_15y, self.arr_15z,
         self.arr_16x, self.arr_16y, self.arr_16z,
-        self.arr_17x, self.arr_17y, self.arr_17z] = JointsNumpys(self.text_path, self.out_path).__return__()
+        self.arr_17x, self.arr_17y, self.arr_17z
+        ]                                         = JointsNumpys(self.text_path, self.out_path).__return__()
     
     def __str__(self):
         return f'The input text path is: {self.text_path} AND the output path is: {self.out_path}'
@@ -249,7 +256,8 @@ class JointsList:
         return self.__return_all__()
     
     def __return_all__(self):
-        return [self.arr_0x, self.arr_0y, self.arr_0z,
+        return [
+                self.arr_0x, self.arr_0y, self.arr_0z,
                 self.arr_1x, self.arr_1y, self.arr_1z,
                 self.arr_2x, self.arr_2y, self.arr_2z,
                 self.arr_3x, self.arr_3y, self.arr_3z,
@@ -266,7 +274,8 @@ class JointsList:
                 self.arr_14x, self.arr_14y, self.arr_14z,
                 self.arr_15x, self.arr_15y, self.arr_15z,
                 self.arr_16x, self.arr_16y, self.arr_16z,
-                self.arr_17x, self.arr_17y, self.arr_17z]
+                self.arr_17x, self.arr_17y, self.arr_17z
+                ]
     
     def _converter_to_list(self, arr_x: np.ndarray, arr_y: np.ndarray, arr_z: np.ndarray):
         """
@@ -282,7 +291,7 @@ class JointsList:
         
         :rtype: List
         """
-        if (len(arr_x) != len(arr_y)) or (len(arr_x) != len(arr_z)) or (len(arr_y) != len(arr_z)):
+        if (len(arr_x)!=len(arr_y)) or (len(arr_x)!=len(arr_z)) or (len(arr_y)!=len(arr_z)):
             raise LengthArraysError()
         
         xyz = []

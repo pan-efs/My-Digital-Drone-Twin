@@ -1,5 +1,6 @@
 import os
 import platform
+
 from cubemos.skeletontracking.core_wrapper import CM_TargetComputeDevice
 from cubemos.skeletontracking.core_wrapper import initialise_logging, CM_LogLevel
 from cubemos.skeletontracking.native_wrapper import Api, TrackingContext, SkeletonKeypoints

@@ -1,9 +1,11 @@
-import os, argparse, pickle
+import os
+import pickle
+import argparse
 
-from joints import JointsDataframe, JointsNumpys, JointsList
+from joints import JointsList
+from biomechanics.biomechanics3D import Slope
 from utils.helpers import xyz_to_list, magnitude
 from filters.moving_average import MovingAverage as MovingAverage
-from biomechanics.biomechanics3D import Slope
 
 # Starting point
 try:
@@ -12,17 +14,23 @@ except:
     raise OSError
 
 # Flag for analysis
-parser = argparse.ArgumentParser(description = 'Provide flag or file.')
-parser.add_argument('--flag', type = str,
-                    help = '--cubemos or --cubemos_converter',
-                    required = False)
-parser.add_argument('--file', type = str,
-                    help = 'Provide the directory of a 3D joints text file.',
-                    required = False)
-parser.add_argument('--wsize', type = int,
-                    help = 'Provide moving average filter window size.',
-                    default = 6,
-                    required = False)
+parser = argparse.ArgumentParser(description='Provide flag or file.')
+parser.add_argument(
+                '--flag', 
+                type=str,
+                help='--cubemos or --cubemos_converter',
+                required=False)
+parser.add_argument(
+                    '--file', 
+                    type=str,
+                    help='Provide the directory of a 3D joints text file.',
+                    required=False)
+parser.add_argument(
+                    '--wsize', 
+                    type=int,
+                    help='Provide moving average filter window size.',
+                    default=6,
+                    required=False)
 args = parser.parse_args()
 
 # Get the path according to the flag
@@ -32,24 +40,29 @@ if args.file and args.flag:
 if args.flag:
     if args.flag == 'cubemos_converter':
         print('reading from cubemos_converter')
-        jl = JointsList(f'{BASE_DIR}/cubemos_converter/logging/write_3d_joints_from_video.txt',
+        jl = JointsList(
+                    f'{BASE_DIR}/cubemos_converter/logging/write_3d_joints_from_video.txt',
                     f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
         jLs = jl.__return__()
+        
     elif args.flag == 'cubemos':
         print('reading from cubemos')
-        jl = JointsList(f'{BASE_DIR}/cubemos/logging/get_3d_joints.txt',
-                f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
+        jl = JointsList(
+                    f'{BASE_DIR}/cubemos/logging/get_3d_joints.txt',
+                    f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
         jLs = jl.__return__()
 
 if args.file:
     print('reading from text file')
-    jl = JointsList(args.file,
+    jl = JointsList(
+                args.file,
                 f'{BASE_DIR}/datatypes/logging/clean_3d.txt')
     jLs = jl.__return__()
 
 if not args.flag and not args.file:
     print('reading from after_filter')
-    jl = JointsList(f'{BASE_DIR}/datatypes/logging/clean_3d.txt',
+    jl = JointsList(
+                f'{BASE_DIR}/datatypes/logging/clean_3d.txt',
                 f'{BASE_DIR}/datatypes/logging/set_joints_after_filter.txt')
     jLs = jl.__return__()
 

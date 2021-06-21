@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-from collections import namedtuple
-from datetime import datetime
-import os, cv2, math, shutil
+import os
+import math
 import numpy as np
+from collections import namedtuple
 
+import cv2
+import shutil
 import pyrealsense2 as rs
+from datetime import datetime
 
 from skeleton_utils import utils as cm
 from skeleton_utils.skeletontracker import skeletontracker
@@ -14,9 +17,7 @@ def _get_base_dir():
     
     return BASE_DIR
 
-def render_ids_3d(
-    render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence
-):
+def render_ids_3d(render_image, skeletons_2d, depth_map, depth_intrinsic, joint_confidence):
     thickness = 1
     text_color = (255, 255, 255)
     rows, cols, channel = render_image.shape[:3]

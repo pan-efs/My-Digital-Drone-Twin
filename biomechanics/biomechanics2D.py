@@ -1,6 +1,7 @@
-import pandas as pd
-import numpy as np
 import math
+import numpy as np
+import pandas as pd
+
 from exceptions.movement_analysis import ShapeDataFrame2DError, ColNamesDataFrame2DError
 
 def __errors__(data: pd.DataFrame):
@@ -143,7 +144,7 @@ class AngularKinematics:
             try:
                 th = math.degrees(
                 math.acos(
-                (-((math.pow(a, 2) - math.pow(b, 2) - math.pow(c, 2)) / (2 * b * c)))
+                (-((math.pow(a, 2) - math.pow(b, 2) - math.pow(c, 2)) / (2*b*c)))
                 ))
                 theta.append(th)
             except ValueError:
