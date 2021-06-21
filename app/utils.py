@@ -178,6 +178,12 @@ def magnitude_all_joints(base_dir: str, event: str):
                     f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
         jLs = jl.__return__()
     
+    elif event == 'plus video':
+        print('all joints text + video')
+        jl = JointsList(f'{base_dir}/datatypes/logging/input_file_plus_video.txt',
+                    f'{base_dir}/datatypes/logging/all_joints_clean_3d.txt')
+        jLs = jl.__return__()
+    
     magnitude_jLs = []
     
     for i in range(0, 54, 3):
@@ -231,6 +237,10 @@ def show_joint(graphwidget, joint):
     graphwidget.addItem(joint)
 
 def hide_joints_from_plot_cases(graphWidget_all, legend_all, checkboxes: list):
+    """
+    Could be replaced with match-case if py.version==3.10. Dict may not be good idea for our case.
+    In practice runs within 0.004-0.005s. The running time can be considered as 'fast' for real-time.
+    """
     if checkboxes[0].isChecked():
         hide_joint(graphWidget_all, legend_all[0], legend_all[1])
     else:

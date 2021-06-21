@@ -1,10 +1,11 @@
 import os
 
+import shutil
 import subprocess
 import pyqtgraph as pg
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
-                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle)
+from PyQt5.QtWidgets import (QMainWindow, QProgressDialog, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
+                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle, QProgressBar)
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 
@@ -82,6 +83,12 @@ class WelcomeScreen(QMainWindow):
         msg_format.setStandardButtons(QMessageBox.Ok)
         msg_format.setDefaultButton(QMessageBox.Ok)
         
+        msg_txt = QMessageBox()
+        msg_txt.setText('Now, choose a video. Yet, it is not required.')
+        msg_txt.setIcon(QMessageBox.Information)
+        msg_txt.setStandardButtons(QMessageBox.Ok)
+        msg_txt.setDefaultButton(QMessageBox.Ok)
+        
         user_reply = self.start_box.currentText()
         
         if user_reply == 'Recording':
@@ -91,7 +98,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to screen for analysis after recording')
-                    self.switch_to_video_screen('Yes').show()
+                    self.switch_to_video_screen('Yes', '', '').show()
                 else:
                     raise RuntimeError
                 
@@ -121,7 +128,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to converter screen')
-                    self.switch_to_video_screen('No').show()
+                    self.switch_to_video_screen('No', '', '').show()
                 else:
                     raise RuntimeError
             
@@ -137,43 +144,83 @@ class WelcomeScreen(QMainWindow):
             except OSError:
                 msg_path.exec()
             
-                
         elif user_reply == 'Text analysis':
             options = QFileDialog.Options()
             fileName, _ = QFileDialog.getOpenFileName(
                                     self,
                                     "QFileDialog.getOpenFileName()","","All Files (*);;Text Files (*.txt)", 
                                     options=options)
-            try:
-                if fileName.endswith('.txt'):
-                    print(fileName)
+            msg_txt.exec()
+            
+            video_fileName, _ = QFileDialog.getOpenFileName(
+                                    self,
+                                    "QFileDialog.getOpenFileName()","","All Files (*);;Video Files (*.avi)", 
+                                    options=options)
+            
+            # only text file
+            if fileName != '' and video_fileName == '':
+                try:
+                    if fileName.endswith('.txt'):
+                        print(fileName)
+                        pass
+                    elif fileName == '':
+                        raise NotImplementedError
+                    else:
+                        raise FileNotFoundError
+                
+                    os.chdir(f'{self.BASE_DIR}/datatypes')
+                    retcode = subprocess.call(f'python processing.py --file {fileName}', shell=True)
+                
+                    if retcode == 0:
+                        print('Text Analysis')
+                        self.switch_to_text_screen(fileName).show()
+            
+                except FileNotFoundError:
+                    msg_format.exec()
+            
+                except OSError:
+                    msg_path.exec()
+            
+                except NotImplementedError:
                     pass
-                elif fileName == '':
-                    raise NotImplementedError
-                else:
-                    raise FileNotFoundError
+            
+            # text file and video
+            if fileName != '' and video_fileName != '':
+                try:
+                    if video_fileName.endswith('.avi'):
+                        print(video_fileName)
+                        pass
+                    else:
+                        raise FileNotFoundError
+                    
+                    os.chdir(f'{self.BASE_DIR}/datatypes')
+                    
+                    shutil.copyfile(fileName, 'logging/input_file_plus_video.txt')
+                    
+                    retcode = subprocess.call(f'python processing.py --file {fileName}', shell=True)
                 
-                os.chdir(f'{self.BASE_DIR}/datatypes')
-                retcode = subprocess.call(f'python processing.py --file {fileName}', shell=True)
-                
-                if retcode == 0:
-                    print('Text Analysis')
-                    self.switch_to_text_screen(fileName).show()
+                    if retcode == 0:
+                        print('Text Analysis + Video')
+                        pass
+                    else:
+                        raise ValueError
+                    
+                    self.switch_to_video_screen('plus video', video_fileName, fileName).show()
+                        
+                except FileNotFoundError:
+                    msg_format.exec()
             
-            except FileNotFoundError:
-                msg_format.exec()
+                except OSError:
+                    msg_path.exec()
             
-            except OSError:
-                msg_path.exec()
-            
-            except NotImplementedError:
-                pass
+                except NotImplementedError:
+                    pass
             
         elif user_reply == 'Choose your next movement...':
             pass
     
-    def switch_to_video_screen(self, event: str):
-        self.hammer = VideoAnalysisScreen(event)
+    def switch_to_video_screen(self, event: str, video_fileName: str, text_file: str):
+        self.hammer = VideoAnalysisScreen(event, video_fileName, text_file)
         
         return self.hammer
     
@@ -191,10 +238,12 @@ class WelcomeScreen(QMainWindow):
                             border-color: rgba(0,0,0,255);')
 
 class VideoAnalysisScreen(QMainWindow):
-    def __init__(self, welcome_screen_event):
+    def __init__(self, welcome_screen_event='', video_file='', text_file=''):
         QMainWindow.__init__(self)
         
         self.welcome_screen_event = welcome_screen_event
+        self.video_file = video_file
+        self.text_file = text_file
         
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
@@ -315,12 +364,16 @@ class VideoAnalysisScreen(QMainWindow):
     def open_video(self, previous_screen_event: str):
         if previous_screen_event == 'Yes':
             format = '/cubemos'
+            desired_dir = f'{self.BASE_DIR}{format}'
+            video_path = self.remove_videos(desired_dir)
             
         elif previous_screen_event == 'No':
             format = '/cubemos_converter'
+            desired_dir = f'{self.BASE_DIR}{format}'
+            video_path = self.remove_videos(desired_dir)
         
-        desired_dir = f'{self.BASE_DIR}{format}'
-        video_path = self.remove_videos(desired_dir)
+        else:
+            video_path = self.video_file
         
         self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(video_path)))
         self.playButton.setEnabled(True)
@@ -393,14 +446,20 @@ class VideoAnalysisScreen(QMainWindow):
                 flag = 'cubemos'
                 print('from cubemos')
                 self.index_analysis = 1
+                os.chdir(f'{self.BASE_DIR}/datatypes')
+                subprocess.call(f'python processing.py --flag {flag}', shell=True)
                 
             elif self.welcome_screen_event == 'No':
                 flag = 'cubemos_converter'
                 print('from cubemos_converter')
                 self.index_analysis = 1
+                os.chdir(f'{self.BASE_DIR}/datatypes')
+                subprocess.call(f'python processing.py --flag {flag}', shell=True)
             
-            os.chdir(f'{self.BASE_DIR}/datatypes')
-            subprocess.call(f'python processing.py --flag {flag}', shell=True)
+            elif self.welcome_screen_event == 'plus video':
+                os.chdir(f'{self.BASE_DIR}/datatypes')
+                subprocess.call(f'python processing.py --file {self.text_file}', shell=True)
+            
         else:
             pass
         
