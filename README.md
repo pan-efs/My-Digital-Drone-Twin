@@ -8,6 +8,16 @@
 Are you curious to find out how `SkeletonTrackingApp` works?
 
 Watch or download the promotional video [here.](https://drive.google.com/file/d/1WBjRNW6FlqsLQqymOTFPxqlRbu2dfU2y/view?usp=sharing)
+
+`SkeletonTrackingApp` is a software prototype.
+
+# Information
+- Read some simple instructions on welcome screen, when you run the app.
+- After `Recording` the recorded video is saved on your desktop automatically.
+- After `Convert video` a text file with all joints and their respective 3D positions is saved on your desktop automatically.
+- Video is not required for `Text analysis`. 
+- 3D joints' positions are the `points coordinates` in meters.
+- Default values are `depth`: 1024x768, `color`: 1280x720 and `fps`=30 during streaming. 
 # Prep
 - The project has been built with `python=3.7.9` version on `Windows 10 OS`.
 - You must have `python3` and the version to be `< 3.8` due to Cubemos restrictions.
