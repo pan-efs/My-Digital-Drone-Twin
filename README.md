@@ -26,18 +26,6 @@ You can follow the install instructions related to `Cubemos Skeleton Tracking` f
 # VS Code
 `VS Code` is recommended but it's not necessary.
 
-Add `.vscode` folder and create a `settings.json` file. Import the below code block, modify `user` accordingly.
-
-```
-{
-
-    "python.pythonPath": "C:\\Users\\<user name>\\miniconda3\\envs\\thesis\\python.exe",
-    "python.linting.pylintArgs": ["--generate-members"],
-
-}
-```
-
-`python.pythonPath` may not be the same. Look your directory.
 # Run the app via command
 Use the below command to run the app. `-W ignore` flag ignores useless warnings which are popped up.
 
