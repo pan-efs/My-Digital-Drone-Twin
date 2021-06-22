@@ -4,8 +4,8 @@ import shutil
 import subprocess
 import pyqtgraph as pg
 from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWidgets import (QMainWindow, QProgressDialog, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
-                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle, QProgressBar)
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
+                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle)
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 
@@ -13,14 +13,11 @@ from utils import (_get_base_dir, add_line, plot_cases,
                     graph_length, radiobutton_toggled, plot_all_joints,
                     hide_joints_from_plot_cases)
 
-
-
 class WelcomeScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         
-        self.setMinimumHeight(500)
-        self.setMinimumWidth(500)
+        self.setFixedSize(500,500)
         self.setWindowTitle("Welcome!")
         self.main_style()
         
@@ -30,7 +27,7 @@ class WelcomeScreen(QMainWindow):
             raise NotImplementedError
         
         centralWidget = QWidget(self)          
-        self.setCentralWidget(centralWidget) 
+        self.setCentralWidget(centralWidget)
         
         boxlayout = QBoxLayout(QBoxLayout.TopToBottom)
         
@@ -235,7 +232,7 @@ class WelcomeScreen(QMainWindow):
                             color: rgba(0,0,0,255); \
                             border-style: solid; \
                             border-radius: 2px; border-width: 1px; \
-                            border-color: rgba(0,0,0,255);')
+                            border-color: rgba(0, 0, 0, 255);')
 
 class VideoAnalysisScreen(QMainWindow):
     def __init__(self, welcome_screen_event='', video_file='', text_file=''):
@@ -248,7 +245,7 @@ class VideoAnalysisScreen(QMainWindow):
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Video analysis')
-        self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
+        self.main_style()
         
         try:
             self.BASE_DIR = _get_base_dir()
@@ -310,6 +307,14 @@ class VideoAnalysisScreen(QMainWindow):
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
         
+        self.playrateSlider = QSlider(Qt.Horizontal)
+        self.playrateSlider.setMinimum(1)
+        self.playrateSlider.setMaximum(3)
+        self.playrateSlider.setValue(1)
+        self.playrateSlider.setTickPosition(3)
+        self.playrateSlider.setTickInterval(3)
+        self.playrateSlider.valueChanged.connect(self.set_video_rate)
+        
         controlLayout = QHBoxLayout()
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.positionSlider)
@@ -331,15 +336,24 @@ class VideoAnalysisScreen(QMainWindow):
         self.radioButtonNine.pressed.connect(self.button_toggled)
         self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
+        lbl_filter = QLabel('MAVG:')
+        lbl_speed = QLabel('Speed:')
+        
         radioLayout = QHBoxLayout()
+        radioLayout.addWidget(lbl_filter)
         radioLayout.addWidget(self.radioButtonThree)
         radioLayout.addWidget(self.radioButtonSix)
         radioLayout.addWidget(self.radioButtonNine)
         radioLayout.addWidget(self.radioButtonTwelve)
         
+        speedLayout = QHBoxLayout()
+        speedLayout.addWidget(lbl_speed)
+        speedLayout.addWidget(self.playrateSlider)
+        
         filterLayout = QVBoxLayout()
         filterLayout.addWidget(self.combobox)
         filterLayout.addLayout(radioLayout)
+        filterLayout.addLayout(speedLayout)
         
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
@@ -404,6 +418,9 @@ class VideoAnalysisScreen(QMainWindow):
     
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
+    
+    def set_video_rate(self, rate_value):
+        self.mediaPlayer.setPlaybackRate(rate_value)
     
     def mediaStateChanged(self, state):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
@@ -477,6 +494,14 @@ class VideoAnalysisScreen(QMainWindow):
     
     def hide_joints_from_plot(self):
         hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
+    
+    def main_style(self):
+        self.setStyleSheet('margin: 1px; padding: 10px; \
+                            background-color: rgba(171, 198, 228, 0.5); \
+                            color: rgba(0,0,0,255); \
+                            border-style: solid; \
+                            border-radius: 2px; border-width: 1px; \
+                            border-color: rgba(160, 198, 228, 0.5);')
 
 class TextFileScreen(QMainWindow):
     def __init__(self, file_name):
@@ -485,7 +510,7 @@ class TextFileScreen(QMainWindow):
         self.setMinimumHeight(900)
         self.setMinimumWidth(1700)
         self.setWindowTitle('Text Analysis')
-        self.setStyleSheet('background-color: rgba(171, 198, 228, 0.5);')
+        self.main_style()
         
         self.fileName = file_name
         
@@ -548,7 +573,10 @@ class TextFileScreen(QMainWindow):
         self.radioButtonNine.pressed.connect(self.button_toggled)
         self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
+        lbl_filter = QLabel('MAVG:')
+        
         radioLayout = QHBoxLayout()
+        radioLayout.addWidget(lbl_filter)
         radioLayout.addWidget(self.radioButtonThree)
         radioLayout.addWidget(self.radioButtonSix)
         radioLayout.addWidget(self.radioButtonNine)
@@ -579,3 +607,11 @@ class TextFileScreen(QMainWindow):
     
     def hide_joints_from_plot(self):
         hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
+    
+    def main_style(self):
+        self.setStyleSheet('margin: 1px; padding: 10px; \
+                            background-color: rgba(171, 198, 228, 0.5); \
+                            color: rgba(0,0,0,255); \
+                            border-style: solid; \
+                            border-radius: 2px; border-width: 1px; \
+                            border-color: rgba(160, 198, 228, 0.5);')
