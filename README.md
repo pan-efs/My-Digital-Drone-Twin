@@ -7,7 +7,7 @@
 # How SkeletonTrackingApp works?
 Are you curious to find out how `SkeletonTrackingApp` works?
 
-Watch or download the promotional video [here.](https://drive.google.com/file/d/1WBjRNW6FlqsLQqymOTFPxqlRbu2dfU2y/view?usp=sharing)
+Watch or download the promotional video [here.](https://drive.google.com/file/d/1jBj1NEGkHDlKoi4hIVkaVtir5x2B-z0S/view?usp=sharing)
 
 `SkeletonTrackingApp` is a software prototype.
 
