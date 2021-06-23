@@ -1,23 +1,25 @@
 import os
+import sys
 
 import shutil
 import subprocess
 import pyqtgraph as pg
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtWidgets import (QMainWindow, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
-                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle)
+from PyQt5.QtCore import Qt, QUrl 
+from PyQt5.QtWidgets import (QMainWindow, QStackedWidget, QWidget, QLabel, QBoxLayout, QVBoxLayout, QHBoxLayout, QGridLayout, 
+                            QComboBox, QMessageBox, QFileDialog, QRadioButton, QPushButton, QCheckBox, QSlider, QStyle, QApplication)
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 
+from exceptions.application import RunningError
 from utils import (_get_base_dir, add_line, plot_cases, 
                     graph_length, radiobutton_toggled, plot_all_joints,
-                    hide_joints_from_plot_cases)
+                    hide_joints_from_plot_cases, center)
 
 class WelcomeScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         
-        self.setFixedSize(500,500)
+        self.setFixedSize(500, 500)
         self.setWindowTitle("Welcome!")
         self.main_style()
         
@@ -95,7 +97,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to screen for analysis after recording')
-                    self.switch_to_video_screen('Yes', '', '').show()
+                    self.switch_to_video_screen('Yes', '', '')
                 else:
                     raise RuntimeError
                 
@@ -125,7 +127,7 @@ class WelcomeScreen(QMainWindow):
                 
                 if retcode == 0:
                     print('Go to converter screen')
-                    self.switch_to_video_screen('No', '', '').show()
+                    self.switch_to_video_screen('No', '', '')
                 else:
                     raise RuntimeError
             
@@ -170,7 +172,7 @@ class WelcomeScreen(QMainWindow):
                 
                     if retcode == 0:
                         print('Text Analysis')
-                        self.switch_to_text_screen(fileName).show()
+                        self.switch_to_text_screen(fileName)
             
                 except FileNotFoundError:
                     msg_format.exec()
@@ -202,7 +204,7 @@ class WelcomeScreen(QMainWindow):
                     else:
                         raise ValueError
                     
-                    self.switch_to_video_screen('plus video', video_fileName, fileName).show()
+                    self.switch_to_video_screen('plus video', video_fileName, fileName)
                         
                 except FileNotFoundError:
                     msg_format.exec()
@@ -217,14 +219,22 @@ class WelcomeScreen(QMainWindow):
             pass
     
     def switch_to_video_screen(self, event: str, video_fileName: str, text_file: str):
-        self.hammer = VideoAnalysisScreen(event, video_fileName, text_file)
-        
-        return self.hammer
+        self.video_screen = VideoAnalysisScreen(event, video_fileName, text_file)
+        widget.setMinimumHeight(900)
+        widget.setMinimumWidth(1700)
+        widget.setWindowTitle('Video Analysis')
+        center(widget)
+        widget.addWidget(self.video_screen)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
     
     def switch_to_text_screen(self, file_name: str):
         self.text_screen = TextFileScreen(file_name)
-        
-        return self.text_screen
+        widget.setMinimumHeight(900)
+        widget.setMinimumWidth(1700)
+        widget.setWindowTitle('Text Analysis')
+        center(widget)
+        widget.addWidget(self.text_screen)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
     
     def main_style(self):
         self.setStyleSheet('margin: 1px; padding: 10px; \
@@ -336,6 +346,11 @@ class VideoAnalysisScreen(QMainWindow):
         self.radioButtonNine.pressed.connect(self.button_toggled)
         self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
+        self.back_button = QPushButton('Back')
+        self.back_button.setStyleSheet('background-color: rgba(159, 170, 200, 0.5); \
+                                        font: bold 14px;')
+        self.back_button.pressed.connect(self.switch_to_welcome_screen)
+        
         lbl_filter = QLabel('MAVG:')
         lbl_speed = QLabel('Speed:')
         
@@ -354,6 +369,7 @@ class VideoAnalysisScreen(QMainWindow):
         filterLayout.addWidget(self.combobox)
         filterLayout.addLayout(radioLayout)
         filterLayout.addLayout(speedLayout)
+        filterLayout.addWidget(self.back_button)
         
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
@@ -495,6 +511,14 @@ class VideoAnalysisScreen(QMainWindow):
     def hide_joints_from_plot(self):
         hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
     
+    def switch_to_welcome_screen(self):
+        self.welcome_screen = WelcomeScreen()
+        widget.setFixedSize(500, 500)
+        widget.setWindowTitle('Welcome!')
+        center(widget)
+        widget.addWidget(self.welcome_screen)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+    
     def main_style(self):
         self.setStyleSheet('margin: 1px; padding: 10px; \
                             background-color: rgba(171, 198, 228, 0.5); \
@@ -573,6 +597,11 @@ class TextFileScreen(QMainWindow):
         self.radioButtonNine.pressed.connect(self.button_toggled)
         self.radioButtonTwelve.pressed.connect(self.button_toggled)
         
+        self.back_button = QPushButton('Back')
+        self.back_button.setStyleSheet('background-color: rgba(159, 170, 200, 0.5); \
+                                        font: bold 14px;')
+        self.back_button.pressed.connect(self.switch_to_welcome_screen)
+        
         lbl_filter = QLabel('MAVG:')
         
         radioLayout = QHBoxLayout()
@@ -585,6 +614,7 @@ class TextFileScreen(QMainWindow):
         filterLayout = QVBoxLayout()
         filterLayout.addWidget(self.combobox)
         filterLayout.addLayout(radioLayout)
+        filterLayout.addWidget(self.back_button)
         
         visLayout = QHBoxLayout()
         visLayout.addWidget(self.graphWidget)
@@ -608,6 +638,14 @@ class TextFileScreen(QMainWindow):
     def hide_joints_from_plot(self):
         hide_joints_from_plot_cases(self.graphWidget_all, self.legend_all, self.checkboxes)
     
+    def switch_to_welcome_screen(self):
+        self.welcome_screen = WelcomeScreen()
+        widget.setFixedSize(500, 500)
+        widget.setWindowTitle('Welcome!')
+        center(widget)
+        widget.addWidget(self.welcome_screen)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+    
     def main_style(self):
         self.setStyleSheet('margin: 1px; padding: 10px; \
                             background-color: rgba(171, 198, 228, 0.5); \
@@ -615,3 +653,23 @@ class TextFileScreen(QMainWindow):
                             border-style: solid; \
                             border-radius: 2px; border-width: 1px; \
                             border-color: rgba(160, 198, 228, 0.5);')
+
+
+#--------------------------------------------#
+#____________________RUN_____________________#
+#____________________________________________#
+if __name__ == '__main__':
+    try:
+        app = QApplication(sys.argv)
+        
+        welcome = WelcomeScreen()
+        
+        widget = QStackedWidget()
+        widget.addWidget(welcome)
+        widget.setWindowTitle('Welcome!')
+        widget.show()
+        
+        sys.exit(app.exec_())
+        
+    except Exception as ex:
+        raise RunningError(ex)

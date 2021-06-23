@@ -1,9 +1,10 @@
 import os
-
 import pickle
+
 import shutil
 import subprocess
 import pyqtgraph as pg
+from PyQt5.QtWidgets import QDesktopWidget
 
 from datatypes.joints import JointsList
 from datatypes.utils.helpers import magnitude
@@ -12,6 +13,12 @@ def _get_base_dir():
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     return BASE_DIR
+
+def center(widget):
+	qr = widget.frameGeometry()
+	cp = QDesktopWidget().availableGeometry().center()
+	qr.moveCenter(cp)
+	widget.move(qr.topLeft())
 
 def add_line(graphWidget, position):
     new_line = graphWidget.addLine(
