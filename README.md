@@ -35,11 +35,16 @@ To install `miniconda` you can follow [the instructions of official website](htt
 You need to create a new `conda` environment with all the essential `python` packages installed. You can create this environment from the provided `environment.yml` file in this repository in the following way:
 - `conda env create -f environment.yml`
 
+Also, you can install `requirements` using the command.
+- `pip install -r requirements.txt`
+
 # Cubemos
 You can follow the install instructions related to `Cubemos Skeleton Tracking` from [getting started guide](https://download-skeleton-tracking-sdk.s3.eu-central-1.amazonaws.com/GettingStartedGuide.pdf) or [realsense installation guide](https://dev.intelrealsense.com/docs/skeleton-tracking-sdk-installation-guide).
 
 # VS Code
 `VS Code` is recommended but it's not necessary.
+
+Read this [official tutorial](https://code.visualstudio.com/docs/editor/github) related to GitHub and Visual Studio Code. For instance, how can you clone a repository...and so on!
 
 # Run the app via command
 Use the below command to run the app. `-W ignore` flag ignores useless warnings which are popped up.
