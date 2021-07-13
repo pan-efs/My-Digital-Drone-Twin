@@ -4,6 +4,8 @@
 
 ![kth logo](https://www.findaphd.com/common/institutions/logos/Institutions/PID208.gif)
 
+Find project's website [here.](https://www.kth.se/profile/marjacob/page/my-digital-drone-twin)
+
 # How SkeletonTrackingApp works?
 Are you curious to find out how `SkeletonTrackingApp` works?
 
