@@ -1,4 +1,0 @@
-{
-    "python.defaultInterpreterPath": "C:\\Users\\Drone\\miniconda3\\envs\\thesis\\python.exe",
-    "python.linting.pylintArgs": ["--generate-members"],
-}
