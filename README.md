@@ -55,4 +55,4 @@ Use the below command to run the app. `-W ignore` flag ignores useless warnings 
 
 `python -W ignore run_gui.py`
 # Run unittests
-Use the command `python run_tests.py` to run the `unittests`.
+`cd test`, and then use the command `pytest`.
