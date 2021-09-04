@@ -28,7 +28,7 @@ Watch or download the promotional video [here.](https://drive.google.com/file/d/
 # Prep
 - The project has been built with `python=3.7.9` version on `Windows 10 OS`.
 - You must have `python3` and the version to be `< 3.8` due to Cubemos restrictions.
-- You need an Intel RealSense camera `L515` if you intend to use the functionaly `Recording`. `D400` serie should work as well.
+- You need an Intel RealSense camera `L515` if you intend to use the functionality `Recording`. `D400` serie should work as well.
 
 # Miniconda installation
 To install `miniconda` you can follow [the instructions of official website](https://docs.conda.io/en/latest/miniconda.html).
