@@ -9,7 +9,7 @@ chardet==4.0.0
 click==8.0.1
 colorama 
 coverage==5.3
-cubemos.skeletontracking==3.1.0 # you need to have cubemos
+cubemos.skeletontracking==3.1.0
 cycler==0.10.0
 dataclasses==0.6
 decorator==4.4.2
@@ -43,8 +43,7 @@ mkl==2021.3.0
 mkl-fft==1.2.0
 mkl-service==2.3.0
 more-itertools 
-moviepy==1.0.3
-my-digital-drone-twin 
+moviepy==1.0.3 
 mypy-extensions==0.4.3
 numpy==1.19.5
 olefile==0.46
